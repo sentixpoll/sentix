@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentix</title>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #060b14;
+            --bg-secondary: #0b1221;
+            --bg-card: #0f1729;
+            --bg-card-hover: #131d33;
+            --border-subtle: rgba(255,255,255,0.06);
+            --border-medium: rgba(255,255,255,0.10);
+            --text-primary: #e8ecf2;
+            --text-secondary: #9aa4b8;
+            --text-muted: #5f6b80;
+            --bullish: #10b981;
+            --bullish-glow: rgba(16,185,129,0.45);
+            --bullish-bg: rgba(16,185,129,0.08);
+            --bullish-border: rgba(16,185,129,0.35);
+            --bearish: #ef4444;
+            --bearish-glow: rgba(239,68,68,0.45);
+            --bearish-bg: rgba(239,68,68,0.08);
+            --bearish-border: rgba(239,68,68,0.35);
+            --neutral: #f59e0b;
+            --neutral-glow: rgba(245,158,11,0.45);
+            --neutral-bg: rgba(245,158,11,0.08);
+            --neutral-border: rgba(245,158,11,0.35);
+            --accent: #38bdf8;
+            --radius-sm: 10px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            --shadow-card: 0 4px 32px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.04) inset;
+            --shadow-elevated: 0 12px 48px rgba(0,0,0,0.55), 0 1px 0 rgba(255,255,255,0.05) inset;
+            --transition-fast: 0.18s cubic-bezier(0.4,0,0.2,1);
+            --transition-smooth: 0.35s cubic-bezier(0.4,0,0.2,1);
+            --transition-bounce: 0.5s cubic-bezier(0.34,1.56,0.64,1);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; font-size:16px; }
+        body {
+            font-family:'Inter', system-ui, -apple-system, sans-serif;
+            background:var(--bg-primary); color:var(--text-primary);
+            min-height:100vh; overflow-x:hidden; line-height:1.5;
+            background-image: radial-gradient(ellipse at 30% 15%, rgba(56,189,248,0.04) 0%, transparent 60%),
+                              radial-gradient(ellipse at 70% 75%, rgba(16,185,129,0.03) 0%, transparent 60%),
+                              radial-gradient(ellipse at 50% 50%, rgba(139,92,246,0.02) 0%, transparent 70%);
+        }
+        .grid-bg { position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.2; background-image:linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px); background-size:40px 40px; mask-image:radial-gradient(ellipse at center, black 25%, transparent 70%); }
+        .orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; filter:blur(80px); opacity:0.1; animation:orbFloat 18s infinite; }
+        .orb-1 { width:300px; height:300px; background:#10b981; top:-5%; left:-3%; }
+        .orb-2 { width:250px; height:250px; background:#ef4444; bottom:-8%; right:-4%; animation-delay:-6s; }
+        .orb-3 { width:200px; height:200px; background:#f59e0b; top:40%; left:60%; animation-delay:-12s; }
+        @keyframes orbFloat { 0%,100%{ transform:translate(0,0) scale(1); } 20%{ transform:translate(35px,-25px) scale(1.1); } 40%{ transform:translate(-20px,30px) scale(0.9); } 60%{ transform:translate(28px,18px) scale(1.08); } 80%{ transform:translate(-30px,-20px) scale(0.95); } }
+        .app-container { position:relative; z-index:1; max-width:720px; margin:0 auto; padding:18px 16px 50px; }
+        .header { display:flex; align-items:center; justify-content:space-between; padding:14px 18px; margin-bottom:22px; background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); backdrop-filter:blur(20px); box-shadow:var(--shadow-card); flex-wrap:wrap; gap:10px; }
+        .logo-area { display:flex; align-items:center; gap:8px; }
+        .logo-icon { width:38px; height:38px; border-radius:var(--radius-sm); background:linear-gradient(135deg,#1a2332,#0f1729); border:1px solid var(--border-medium); display:flex; align-items:center; justify-content:center; font-size:1.2rem; color:var(--accent); box-shadow:0 0 18px var(--accent-glow); }
+        .logo-text { font-weight:800; font-size:1.25rem; letter-spacing:-0.4px; background:linear-gradient(135deg,#e8ecf2,#bcc5d6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+        .logo-dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:#10b981; margin-left:2px; animation:dotPulse 2s infinite; box-shadow:0 0 8px var(--bullish-glow); }
+        @keyframes dotPulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.4; transform:scale(1.8); } }
+        .header-stats { display:flex; gap:16px; font-size:0.78rem; color:var(--text-secondary); font-family:'JetBrains Mono', monospace; }
+        .header-stats span { display:flex; align-items:center; gap:4px; }
+        .header-stats .val { color:var(--text-primary); font-weight:600; }
+        .btn-icon { background:var(--bg-secondary); border:1px solid var(--border-medium); color:var(--text-primary); padding:8px 15px; border-radius:22px; cursor:pointer; font-size:0.82rem; font-weight:500; transition:var(--transition-fast); display:flex; align-items:center; gap:6px; white-space:nowrap; }
+        .btn-icon:hover { background:#1a2538; border-color:var(--border-glow); box-shadow:0 0 18px rgba(255,255,255,0.03); }
+        .btn-primary { background:linear-gradient(135deg,#1e3a5f,#1a3355); border:1px solid rgba(56,189,248,0.3); color:#e0f0ff; font-weight:600; box-shadow:0 0 18px rgba(56,189,248,0.08); }
+        .ticker-bar { background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:20px; padding:7px 16px; margin-bottom:18px; overflow:hidden; white-space:nowrap; font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--text-muted); letter-spacing:0.3px; box-shadow:var(--shadow-card); position:relative; }
+        .ticker-bar::after { content:''; position:absolute; right:0; top:0; bottom:0; width:40px; background:linear-gradient(to right, transparent, var(--bg-card)); pointer-events:none; }
+        .ticker-inner { display:inline-block; animation:tickerScroll 30s linear infinite; }
+        .ticker-inner span { margin:0 18px; opacity:0.6; }
+        .tick-bull { color:#10b981; } .tick-bear { color:#ef4444; } .tick-neut { color:#f59e0b; }
+        @keyframes tickerScroll { 0%{ transform:translateX(0); } 100%{ transform:translateX(-50%); } }
+        .poll-card { background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-xl); padding:26px 24px 22px; margin-bottom:18px; box-shadow:var(--shadow-card); backdrop-filter:blur(20px); position:relative; overflow:hidden; transition:var(--transition-smooth); }
+        .poll-card.featured { border-color:var(--border-medium); box-shadow:var(--shadow-elevated); }
+        .poll-meta { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; font-size:0.75rem; color:var(--text-muted); font-family:'JetBrains Mono',monospace; }
+        .badge { padding:4px 10px; border-radius:12px; font-size:0.7rem; font-weight:600; text-transform:uppercase; }
+        .badge-live { background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.3); }
+        .badge-ended { background:rgba(107,114,128,0.15); color:#6b7280; border:1px solid rgba(107,114,128,0.25); }
+        .badge-countdown { background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.25); }
+        .poll-title { font-size:1.45rem; font-weight:700; letter-spacing:-0.3px; color:#f1f5f9; margin-bottom:4px; }
+        .poll-desc { color:var(--text-secondary); font-size:0.85rem; margin-bottom:12px; line-height:1.5; }
+        .poll-media { margin-bottom:14px; border-radius:var(--radius-md); overflow:hidden; border:1px solid var(--border-subtle); max-height:340px; display:flex; align-items:center; justify-content:center; background:#050a13; }
+        .poll-media img { width:100%; height:auto; max-height:340px; object-fit:contain; }
+        .poll-media iframe { width:100%; height:300px; border:none; }
+        .vote-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+        .vote-btn { flex:1; min-width:100px; padding:14px 14px; border-radius:var(--radius-md); font-size:0.9rem; font-weight:700; cursor:pointer; border:2px solid transparent; transition:var(--transition-bounce); text-align:center; display:flex; flex-direction:column; align-items:center; gap:4px; user-select:none; }
+        .vote-btn .emoji { font-size:1.4rem; }
+        .vote-btn-bullish { background:var(--bullish-bg); border-color:var(--bullish-border); color:#10b981; }
+        .vote-btn-bullish:hover { background:rgba(16,185,129,0.14); border-color:#10b981; box-shadow:0 0 20px var(--bullish-glow); }
+        .vote-btn-bearish { background:var(--bearish-bg); border-color:var(--bearish-border); color:#ef4444; }
+        .vote-btn-bearish:hover { background:rgba(239,68,68,0.14); border-color:#ef4444; box-shadow:0 0 20px var(--bearish-glow); }
+        .vote-btn-neutral { background:var(--neutral-bg); border-color:var(--neutral-border); color:#f59e0b; }
+        .vote-btn-neutral:hover { background:rgba(245,158,11,0.14); border-color:#f59e0b; box-shadow:0 0 20px var(--neutral-glow); }
+        .vote-btn:active { transform:scale(0.94); }
+        .vote-btn.voted-disabled { pointer-events:none; opacity:0.5; filter:grayscale(20%); }
+        .results-area { margin-top:4px; }
+        .result-bar-wrap { margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+        .result-label { width:65px; font-size:0.78rem; font-weight:600; text-align:right; }
+        .result-label.bull { color:#10b981; } .result-label.bear { color:#ef4444; } .result-label.neut { color:#f59e0b; }
+        .result-track { flex:1; height:24px; background:rgba(255,255,255,0.03); border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.04); }
+        .result-fill { height:100%; border-radius:12px; display:flex; align-items:center; padding-left:10px; font-size:0.75rem; font-weight:700; color:#fff; font-family:'JetBrains Mono',monospace; min-width:32px; }
+        .result-fill.bull { background:linear-gradient(90deg,#10b981,#059669); }
+        .result-fill.bear { background:linear-gradient(90deg,#ef4444,#dc2626); }
+        .result-fill.neut { background:linear-gradient(90deg,#f59e0b,#d97706); }
+        .result-count { font-family:'JetBrains Mono',monospace; font-size:0.75rem; color:var(--text-secondary); width:35px; }
+        .total-votes-text { text-align:center; font-size:0.75rem; color:var(--text-muted); margin-top:4px; }
+        .section-title { font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--text-muted); margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+        .section-title::after { content:''; flex:1; height:1px; background:var(--border-subtle); }
+        .create-card { background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:20px 22px; margin-bottom:18px; display:none; box-shadow:var(--shadow-card); }
+        .create-card.open { display:block; animation:slideDown 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+        @keyframes slideDown { from{ opacity:0; transform:translateY(-12px); } to{ opacity:1; transform:translateY(0); } }
+        .create-card label { display:block; font-size:0.78rem; font-weight:600; color:var(--text-secondary); margin-bottom:3px; text-transform:uppercase; }
+        .create-card input, .create-card textarea { width:100%; padding:10px 12px; background:var(--bg-secondary); border:1px solid var(--border-medium); border-radius:var(--radius-sm); color:var(--text-primary); font-size:0.88rem; margin-bottom:12px; outline:none; }
+        .create-card input[type="datetime-local"] { color-scheme:dark; }
+        .create-card .hint { font-size:0.7rem; color:var(--text-muted); margin-top:-8px; margin-bottom:10px; }
+        .create-actions { display:flex; gap:8px; }
+        .btn-submit { padding:11px 22px; border-radius:22px; font-weight:700; cursor:pointer; border:none; background:linear-gradient(135deg,#10b981,#059669); color:#fff; font-size:0.88rem; transition:var(--transition-bounce); }
+        .btn-submit:hover { background:linear-gradient(135deg,#06d8a0,#04a36c); transform:translateY(-1px); box-shadow:0 8px 24px rgba(16,185,129,0.3); }
+        .btn-cancel { padding:11px 20px; border-radius:22px; border:1px solid var(--border-medium); background:transparent; color:var(--text-secondary); cursor:pointer; font-size:0.85rem; }
+        .history-list { display:flex; flex-direction:column; gap:8px; }
+        .history-item { background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:12px 16px; cursor:pointer; transition:var(--transition-fast); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
+        .history-item:hover { background:var(--bg-card-hover); border-color:var(--border-medium); transform:translateY(-1px); box-shadow:0 4px 18px rgba(0,0,0,0.3); }
+        .history-item .hi-title { font-weight:600; font-size:0.88rem; flex:1; min-width:120px; }
+        .history-item .hi-meta { font-size:0.7rem; color:var(--text-muted); font-family:'JetBrains Mono',monospace; }
+        .toast-container { position:fixed; top:20px; right:20px; z-index:999; display:flex; flex-direction:column; gap:6px; pointer-events:none; }
+        .toast { padding:10px 18px; border-radius:20px; font-weight:600; font-size:0.8rem; animation:toastIn 0.3s ease, toastOut 0.3s ease 2.2s forwards; background:rgba(16,185,129,0.9); color:#fff; backdrop-filter:blur(10px); }
+        @keyframes toastIn { from{ opacity:0; transform:translateX(40px); } to{ opacity:1; transform:translateX(0); } }
+        @keyframes toastOut { from{ opacity:1; } to{ opacity:0; transform:translateX(30px); } }
+        .status-banner { background: #1e293b; border: 1px solid #f59e0b; color: #fbbf24; text-align: center; padding: 8px; border-radius: 10px; margin-bottom: 16px; font-size: 0.8rem; display: none; }
+        @media (max-width:600px) {
+            .app-container { padding:10px 8px 30px; }
+            .poll-card { padding:18px 12px 16px; }
+            .vote-btn { padding:12px 8px; font-size:0.8rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="app-container">
+        <div id="statusBanner" class="status-banner">🟡 Connecting to Firebase... (if this persists, check your config)</div>
+        <header class="header">
+            <div class="logo-area">
+                <div class="logo-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <span class="logo-text">Sentix<span class="logo-dot"></span></span>
+            </div>
+            <div class="header-stats">
+                <span>🗳️ <span class="val" id="totalPollsCount">0</span></span>
+                <span>✅ <span class="val" id="totalVotesCount">0</span></span>
+            </div>
+            <button class="btn-icon btn-primary" onclick="toggleCreateForm()" id="btnCreate">+ New Poll</button>
+        </header>
+
+        <div class="ticker-bar">
+            <div class="ticker-inner">
+                <span>📈 Market Sentiment</span>
+                <span class="tick-bull">▲ BULLISH</span>
+                <span class="tick-bear">▼ BEARISH</span>
+                <span class="tick-neut">◆ NEUTRAL</span>
+                <span>⏳ Exact expiration</span>
+                <span>🔗 Global sync via Firebase</span>
+                <span class="tick-bull">▲ BULLISH</span>
+                <span class="tick-bear">▼ BEARISH</span>
+                <span class="tick-neut">◆ NEUTRAL</span>
+            </div>
+        </div>
+
+        <div class="create-card" id="createCard">
+            <div class="section-title">New Poll</div>
+            <label>Question</label>
+            <input type="text" id="pollQuestion" placeholder="e.g. Your sentiment on Bitcoin?" maxlength="200">
+            <label>Context (optional)</label>
+            <textarea id="pollContext" rows="2" placeholder="Any extra details..." maxlength="500"></textarea>
+            <label>Expires at</label>
+            <input type="datetime-local" id="pollExpiration">
+            <p class="hint">Voting closes exactly at this moment.</p>
+            <label>Media URL (optional)</label>
+            <input type="text" id="pollMedia" placeholder="Image link or YouTube URL">
+            <div class="create-actions">
+                <button class="btn-submit" onclick="createPoll()">Publish</button>
+                <button class="btn-cancel" onclick="toggleCreateForm(false)">Cancel</button>
+            </div>
+        </div>
+
+        <div id="activePollArea">
+            <div class="section-title">Current Poll</div>
+            <div id="activePollContainer"></div>
+        </div>
+
+        <div style="margin-top:20px;">
+            <div class="section-title">History</div>
+            <div class="history-list" id="historyList"></div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const firebaseConfig = {
+  apiKey: "AIzaSyB5vn-Fj6XpzzBsSBzBR2G4HGpmTQwV2-E",
+  authDomain: "sentix-eeca0.firebaseapp.com",
+  databaseURL: "https://sentix-eeca0-default-rtdb.firebaseio.com",
+  projectId: "sentix-eeca0",
+  storageBucket: "sentix-eeca0.firebasestorage.app",
+  messagingSenderId: "289213404201",
+  appId: "1:289213404201:web:51a9e37f2fff18abc0f838",
+  measurementId: "G-NJXW4HGQGX"
+};
+            // =========================================================================
+
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.database();
+
+            // Voter ID (persists per browser)
+            const voterId = (() => {
+                let id = localStorage.getItem('sentix_voter');
+                if (!id) { id = 'v_' + Math.random().toString(36).substr(2,10); localStorage.setItem('sentix_voter', id); }
+                return id;
+            })();
+
+            let activePollId = null;
+            let allPolls = [];         // array of { id, ... }
+            let countdownTimer = null;
+
+            const statusBanner = document.getElementById('statusBanner');
+
+            // Toast
+            function showToast(msg) {
+                const c = document.getElementById('toastContainer');
+                const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+                c.appendChild(t); setTimeout(() => t.remove(), 2500);
+            }
+
+            // Toggle form
+            window.toggleCreateForm = function(forceClose) {
+                const card = document.getElementById('createCard');
+                const btn = document.getElementById('btnCreate');
+                if (forceClose || card.classList.contains('open')) {
+                    card.classList.remove('open');
+                    btn.innerHTML = '+ New Poll';
+                } else {
+                    card.classList.add('open');
+                    btn.innerHTML = '✕ Close';
+                    document.getElementById('pollQuestion').focus();
+                    const expInput = document.getElementById('pollExpiration');
+                    if (!expInput.value) {
+                        const def = new Date(Date.now() + 86400000);
+                        expInput.value = def.toISOString().slice(0,16);
+                    }
+                }
+            };
+
+            // Create poll in Firebase
+            window.createPoll = function() {
+                const q = document.getElementById('pollQuestion').value.trim();
+                const expVal = document.getElementById('pollExpiration').value;
+                const ctx = document.getElementById('pollContext').value.trim();
+                const media = document.getElementById('pollMedia').value.trim();
+
+                if (!q) { showToast('Enter a question.'); return; }
+                if (!expVal) { showToast('Set an expiration time.'); return; }
+                const expDate = new Date(expVal);
+                if (isNaN(expDate.getTime()) || expDate <= new Date()) { showToast('Expiration must be in the future.'); return; }
+
+                let mediaType = null, mediaUrl = null;
+                if (media) {
+                    const yt = media.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+                    if (yt) { mediaType = 'youtube'; mediaUrl = 'https://www.youtube.com/embed/' + yt[1]; }
+                    else if (/\.(jpg|jpeg|png|gif|webp)$/i.test(media)) { mediaType = 'image'; mediaUrl = media; }
+                    else if (media.length > 5) { mediaType = 'image'; mediaUrl = media; }
+                }
+
+                const pollRef = db.ref('polls').push();
+                const pollData = {
+                    title: q,
+                    description: ctx,
+                    expiration: expDate.toISOString(),
+                    mediaType, mediaUrl,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP,
+                    bullish: 0, bearish: 0, neutral: 0
+                };
+
+                pollRef.set(pollData).then(() => {
+                    activePollId = pollRef.key;
+                    updateUrl(activePollId);
+                    clearForm();
+                    showToast('Poll published! Link copied.');
+                    copyShareLink(activePollId);
+                }).catch(err => showToast('Error: ' + err.message));
+            };
+
+            // Vote (atomic update with transaction)
+            window.castVote = function(pollId, choice) {
+                const pollRef = db.ref('polls/' + pollId);
+                pollRef.transaction(currentData => {
+                    if (currentData === null) return; // poll deleted
+                    // Check expiration
+                    if (new Date(currentData.expiration) < new Date()) return; // ended
+                    // Check if already voted
+                    if (currentData.votes && currentData.votes[voterId]) return; // already voted
+                    // First vote for this voter
+                    if (!currentData.votes) currentData.votes = {};
+                    currentData.votes[voterId] = choice;
+                    currentData[choice] = (currentData[choice] || 0) + 1;
+                    return currentData;
+                }, (error, committed, snapshot) => {
+                    if (error) { showToast('Vote failed. Try again.'); }
+                    else if (!committed) { showToast('You already voted or poll ended.'); }
+                    else { showToast('Vote recorded!'); }
+                });
+            };
+
+            // Share link
+            window.copyShareLink = function(pollId) {
+                const url = new URL(window.location);
+                url.searchParams.set('poll', pollId);
+                navigator.clipboard.writeText(url.href).then(() => showToast('🔗 Link copied!')).catch(() => showToast('Copy URL manually.'));
+            };
+
+            function updateUrl(pollId) {
+                const url = new URL(window.location);
+                url.searchParams.set('poll', pollId);
+                window.history.replaceState({}, '', url);
+            }
+
+            function clearForm() {
+                document.getElementById('pollQuestion').value = '';
+                document.getElementById('pollContext').value = '';
+                document.getElementById('pollMedia').value = '';
+                document.getElementById('createCard').classList.remove('open');
+                document.getElementById('btnCreate').innerHTML = '+ New Poll';
+            }
+
+            window.viewPoll = function(pollId) {
+                activePollId = pollId;
+                updateUrl(pollId);
+                document.getElementById('activePollArea').scrollIntoView({ behavior:'smooth' });
+                // renderAll is triggered by Firebase listener
+            };
+
+            function getCountdown(expiration) {
+                const diff = new Date(expiration) - new Date();
+                if (diff <= 0) return 'Ended';
+                const s = Math.floor(diff/1000), m = Math.floor(s/60), h = Math.floor(m/60), d = Math.floor(h/24);
+                if (d > 0) return `${d}d ${h%24}h`;
+                if (h > 0) return `${h}h ${m%60}m`;
+                if (m > 0) return `${m}m ${s%60}s`;
+                return `${s}s`;
+            }
+
+            function escapeHtml(str) {
+                const div = document.createElement('div'); div.textContent = str; return div.innerHTML;
+            }
+
+            // ---------- Firebase listeners ----------
+            function startSync() {
+                db.ref('polls').on('value', snapshot => {
+                    const data = snapshot.val();
+                    const pollsArr = [];
+                    if (data) {
+                        Object.keys(data).forEach(key => {
+                            pollsArr.push({ id: key, ...data[key] });
+                        });
+                    }
+                    allPolls = pollsArr.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+
+                    // Update stats
+                    document.getElementById('totalPollsCount').textContent = allPolls.length;
+                    let totalVotes = 0;
+                    allPolls.forEach(p => totalVotes += (p.bullish||0)+(p.bearish||0)+(p.neutral||0));
+                    document.getElementById('totalVotesCount').textContent = totalVotes;
+
+                    // Determine active poll
+                    let targetActive = activePollId && allPolls.find(p => p.id === activePollId);
+                    if (!targetActive && allPolls.length > 0) {
+                        // default to most recent
+                        targetActive = allPolls[0];
+                        activePollId = targetActive.id;
+                        updateUrl(activePollId);
+                    }
+                    if (!targetActive) {
+                        document.getElementById('activePollContainer').innerHTML = `<div class="poll-card featured"><div style="text-align:center;padding:30px;color:var(--text-muted);">📭 No polls yet. Create one!</div></div>`;
+                        document.getElementById('historyList').innerHTML = '';
+                        return;
+                    }
+
+                    renderActivePoll(targetActive);
+                    renderHistory(allPolls.filter(p => p.id !== activePollId));
+                    statusBanner.style.display = 'none';
+                }, error => {
+                    statusBanner.style.display = 'block';
+                    statusBanner.textContent = '⚠️ Could not connect to Firebase. Check your internet or config.';
+                });
+            }
+
+            function renderActivePoll(poll) {
+                const container = document.getElementById('activePollContainer');
+                const total = (poll.bullish||0)+(poll.bearish||0)+(poll.neutral||0);
+                const expired = new Date(poll.expiration) < new Date();
+                const userVote = poll.votes && poll.votes[voterId];
+                const hasVoted = !!userVote;
+                const voteDisabled = expired || hasVoted;
+
+                const bullPct = total ? Math.round((poll.bullish||0)/total*100) : 0;
+                const bearPct = total ? Math.round((poll.bearish||0)/total*100) : 0;
+                const neutPct = total ? Math.round((poll.neutral||0)/total*100) : 0;
+
+                let mediaHtml = '';
+                if (poll.mediaType === 'image' && poll.mediaUrl) {
+                    mediaHtml = `<div class="poll-media"><img src="${escapeHtml(poll.mediaUrl)}" alt="media" onerror="this.style.display='none'"></div>`;
+                } else if (poll.mediaType === 'youtube' && poll.mediaUrl) {
+                    mediaHtml = `<div class="poll-media"><iframe src="${escapeHtml(poll.mediaUrl)}" allowfullscreen></iframe></div>`;
+                }
+
+                const btnClass = (c) => voteDisabled ? `vote-btn-${c} voted-disabled` : `vote-btn-${c}`;
+
+                container.innerHTML = `
+                <div class="poll-card featured">
+                    <div class="poll-meta">
+                        <span class="badge ${expired ? 'badge-ended' : 'badge-live'}">${expired ? 'ENDED' : 'LIVE'}</span>
+                        <span class="badge badge-countdown" id="countdownBadge">⏳ ${getCountdown(poll.expiration)}</span>
+                        <span style="flex:1;"></span>
+                        <button class="btn-icon" style="padding:5px 12px;font-size:0.75rem;" onclick="copyShareLink('${activePollId}')">🔗 Share</button>
+                    </div>
+                    <div class="poll-title">${escapeHtml(poll.title)}</div>
+                    ${poll.description ? `<div class="poll-desc">${escapeHtml(poll.description)}</div>` : ''}
+                    ${mediaHtml}
+                    <div class="vote-row">
+                        <button class="vote-btn ${btnClass('bullish')}" onclick="castVote('${activePollId}','bullish')" ${voteDisabled?'disabled':''}><span class="emoji">🐂</span> Bullish</button>
+                        <button class="vote-btn ${btnClass('bearish')}" onclick="castVote('${activePollId}','bearish')" ${voteDisabled?'disabled':''}><span class="emoji">🐻</span> Bearish</button>
+                        <button class="vote-btn ${btnClass('neutral')}" onclick="castVote('${activePollId}','neutral')" ${voteDisabled?'disabled':''}><span class="emoji">⚖️</span> Neutral</button>
+                    </div>
+                    ${total > 0 ? `
+                    <div class="results-area">
+                        <div class="result-bar-wrap"><span class="result-label bull">Bullish</span><div class="result-track"><div class="result-fill bull" style="width:${bullPct}%;">${bullPct>8?bullPct+'%':''}</div></div><span class="result-count">${poll.bullish||0}</span></div>
+                        <div class="result-bar-wrap"><span class="result-label bear">Bearish</span><div class="result-track"><div class="result-fill bear" style="width:${bearPct}%;">${bearPct>8?bearPct+'%':''}</div></div><span class="result-count">${poll.bearish||0}</span></div>
+                        <div class="result-bar-wrap"><span class="result-label neut">Neutral</span><div class="result-track"><div class="result-fill neut" style="width:${neutPct}%;">${neutPct>8?neutPct+'%':''}</div></div><span class="result-count">${poll.neutral||0}</span></div>
+                    </div>
+                    <div class="total-votes-text">Total votes: ${total}</div>
+                    ` : `<div class="total-votes-text" style="color:var(--text-muted);">No votes yet</div>`}
+                    ${hasVoted ? `<div style="margin-top:6px;font-size:0.7rem;color:var(--text-muted);">✅ You voted ${userVote.toUpperCase()}</div>` : ''}
+                </div>`;
+
+                // Live countdown
+                if (countdownTimer) clearInterval(countdownTimer);
+                if (!expired) {
+                    countdownTimer = setInterval(() => {
+                        const badge = document.getElementById('countdownBadge');
+                        if (badge) badge.textContent = '⏳ ' + getCountdown(poll.expiration);
+                        if (new Date(poll.expiration) < new Date()) {
+                            clearInterval(countdownTimer);
+                            // re-render will happen because Firebase will still show expired; we can force a refresh
+                            renderActivePoll(poll); // but the poll object won't change, just UI. That's fine.
+                        }
+                    }, 1000);
+                }
+            }
+
+            function renderHistory(histPolls) {
+                const list = document.getElementById('historyList');
+                if (histPolls.length === 0) {
+                    list.innerHTML = `<div style="text-align:center;padding:20px;color:var(--text-muted);">📜 No history yet</div>`;
+                    return;
+                }
+                list.innerHTML = histPolls.map(p => {
+                    const total = (p.bullish||0)+(p.bearish||0)+(p.neutral||0);
+                    const expired = new Date(p.expiration) < new Date();
+                    return `
+                    <div class="history-item" onclick="viewPoll('${p.id}')">
+                        <span class="hi-title">${escapeHtml(p.title)}</span>
+                        <span class="hi-meta">${total} votes · ${expired ? 'Ended' : '⏳ '+getCountdown(p.expiration)}</span>
+                    </div>`;
+                }).join('');
+            }
+
+            // Load poll from URL if present
+            const params = new URLSearchParams(window.location.search);
+            const urlPollId = params.get('poll');
+            if (urlPollId) activePollId = urlPollId;
+
+            // Start listening
+            startSync();
+
+            // Keyboard shortcut
+            document.addEventListener('keydown', e => {
+                if (e.ctrlKey && e.key === 'n') { e.preventDefault(); toggleCreateForm(); }
+                if (e.key === 'Escape' && document.getElementById('createCard').classList.contains('open')) toggleCreateForm(true);
+            });
+        })();
+    </script>
+</body>
+</html>
