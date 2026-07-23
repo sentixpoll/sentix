@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,15 +17,35 @@
             --bg-card: #0f1729;
             --bg-card-hover: #131d33;
             --border-subtle: rgba(255,255,255,0.06);
-            --border-medium: rgba(255,255,255,0.10);
+            --border-medium: rgba(255,255,255,0.12);
+            --border-active: rgba(56,189,248,0.4);
             --text-primary: #e8ecf2;
             --text-secondary: #9aa4b8;
             --text-muted: #5f6b80;
             --accent: #38bdf8;
-            --radius-sm: 10px;
-            --radius-md: 16px;
-            --radius-lg: 22px;
-            --shadow-card: 0 4px 32px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.04) inset;
+            --green: #10b981;
+            --red: #ef4444;
+            --amber: #f59e0b;
+            --purple: #a855f7;
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --shadow-card: 0 4px 32px rgba(0,0,0,0.45);
+            --shadow-elevated: 0 12px 48px rgba(0,0,0,0.6);
+        }
+        [data-theme="light"] {
+            --bg-primary: #f1f5f9;
+            --bg-secondary: #e2e8f0;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f8fafc;
+            --border-subtle: rgba(0,0,0,0.06);
+            --border-medium: rgba(0,0,0,0.10);
+            --border-active: rgba(56,189,248,0.5);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            --shadow-card: 0 4px 24px rgba(0,0,0,0.08);
+            --shadow-elevated: 0 12px 40px rgba(0,0,0,0.12);
         }
         * { margin:0; padding:0; box-sizing:border-box; }
         html { scroll-behavior:smooth; font-size:16px; }
@@ -33,194 +53,250 @@
             font-family:'Inter', system-ui, -apple-system, sans-serif;
             background:var(--bg-primary); color:var(--text-primary);
             min-height:100vh; overflow-x:hidden; line-height:1.5;
-            background-image: radial-gradient(ellipse at 30% 15%, rgba(56,189,248,0.04) 0%, transparent 60%),
-                              radial-gradient(ellipse at 70% 75%, rgba(16,185,129,0.03) 0%, transparent 60%);
+            transition: background 0.3s, color 0.3s;
         }
-        .grid-bg { position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.2;
-            background-image:linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-                             linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-            background-size:40px 40px;
+        .bg-pattern { position:fixed; inset:0; pointer-events:none; z-index:0; opacity:0.12;
+            background-image: radial-gradient(circle at 25% 25%, rgba(56,189,248,0.08) 0%, transparent 50%),
+                              radial-gradient(circle at 75% 75%, rgba(16,185,129,0.06) 0%, transparent 50%);
         }
-        .orb { position:fixed; border-radius:50%; pointer-events:none; z-index:0; filter:blur(80px); opacity:0.1; animation:orbFloat 18s infinite; }
-        .orb-1 { width:300px; height:300px; background:#10b981; top:-5%; left:-3%; }
-        .orb-2 { width:250px; height:250px; background:#ef4444; bottom:-8%; right:-4%; animation-delay:-6s; }
-        .orb-3 { width:200px; height:200px; background:#f59e0b; top:40%; left:60%; animation-delay:-12s; }
-        @keyframes orbFloat { 0%,100%{ transform:translate(0,0) scale(1); } 20%{ transform:translate(35px,-25px) scale(1.1); } 40%{ transform:translate(-20px,30px) scale(0.9); } 60%{ transform:translate(28px,18px) scale(1.08); } 80%{ transform:translate(-30px,-20px) scale(0.95); } }
-        .app-container { position:relative; z-index:1; max-width:780px; margin:0 auto; padding:18px 16px 50px; }
-        .header { display:flex; align-items:center; justify-content:space-between; padding:12px 18px; margin-bottom:18px;
-            background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg);
-            backdrop-filter:blur(20px); box-shadow:var(--shadow-card); flex-wrap:wrap; gap:10px;
+        .app-container { position:relative; z-index:1; max-width:820px; margin:0 auto; padding:0 16px 60px; }
+
+        .compact-header {
+            position:sticky; top:0; z-index:100;
+            background:var(--bg-card); border-bottom:1px solid var(--border-subtle);
+            backdrop-filter:blur(24px); -webkit-backdrop-filter:blur(24px);
+            padding:8px 14px; margin-bottom:14px;
+            border-radius:0 0 var(--radius-lg) var(--radius-lg);
+            box-shadow:var(--shadow-elevated);
+            display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
         }
-        .logo-area { display:flex; align-items:center; gap:10px; cursor:pointer; }
-        .logo-icon { width:36px; height:36px; border-radius:8px; background:linear-gradient(135deg,#1a2332,#0f1729);
-            border:1px solid var(--border-medium); display:flex; align-items:center; justify-content:center;
-            font-size:1.1rem; color:var(--accent);
+        .logo { display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; }
+        .logo i { font-size:1.2rem; color:var(--accent); }
+        .logo span { font-weight:800; font-size:1.1rem; letter-spacing:-0.3px;
+            background:linear-gradient(135deg, var(--text-primary), var(--text-secondary));
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
         }
-        .logo-text { font-weight:800; font-size:1.2rem; letter-spacing:-0.4px;
-            background:linear-gradient(135deg,#e8ecf2,#bcc5d6); -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+        .header-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+        .pwr-wrapper { position:relative; }
+        .pwr-badge {
+            display:flex; align-items:center; gap:5px; padding:5px 12px;
+            border-radius:16px; font-weight:700; font-size:0.78rem; cursor:pointer;
+            background:rgba(168,85,247,0.12); border:1px solid rgba(168,85,247,0.3); color:#a855f7;
+            font-family:'JetBrains Mono', monospace; transition:all 0.2s;
         }
-        .logo-dot { display:inline-block; width:6px; height:6px; border-radius:50%; background:#10b981; margin-left:2px; animation:dotPulse 2s infinite; }
-        @keyframes dotPulse { 0%,100%{ opacity:1; transform:scale(1); } 50%{ opacity:0.4; transform:scale(1.8); } }
-        .header-stats { display:flex; gap:18px; font-size:0.75rem; color:var(--text-secondary); font-family:'JetBrains Mono',monospace; }
-        .stat-item { display:flex; align-items:center; gap:5px; cursor:pointer; padding:4px 10px; border-radius:14px; transition:0.2s; }
-        .stat-item:hover { background:rgba(255,255,255,0.04); }
-        .stat-item .val { font-weight:700; color:var(--text-primary); }
-        .btn-icon { background:var(--bg-secondary); border:1px solid var(--border-medium); color:var(--text-primary);
-            padding:7px 14px; border-radius:20px; cursor:pointer; font-size:0.8rem; font-weight:500; display:flex; align-items:center; gap:6px; white-space:nowrap;
+        .pwr-badge:hover { background:rgba(168,85,247,0.22); box-shadow:0 0 20px rgba(168,85,247,0.2); }
+        .pwr-bar {
+            position:absolute; bottom:0; left:0; height:3px; border-radius:0 0 16px 16px;
+            background:linear-gradient(90deg, #a855f7, #c084fc); transition:width 0.5s;
         }
-        .btn-primary { background:linear-gradient(135deg,#1e3a5f,#1a3355); border:1px solid rgba(56,189,248,0.3); color:#e0f0ff; }
-        .welcome-card { background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:40px 24px; text-align:center; box-shadow:var(--shadow-card); margin-bottom:20px; }
-        .btn-explore { background:linear-gradient(135deg,#10b981,#059669); color:#fff; padding:12px 24px; border-radius:24px; font-weight:700; border:none; cursor:pointer; }
-        .poll-card { background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:24px 22px; margin-bottom:18px; }
-        .poll-meta { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:8px; font-size:0.75rem; color:var(--text-muted); font-family:'JetBrains Mono',monospace; }
-        .badge { padding:4px 10px; border-radius:12px; font-size:0.7rem; font-weight:600; text-transform:uppercase; }
-        .badge-live { background:rgba(239,68,68,0.2); color:#ef4444; }
-        .badge-ended { background:rgba(107,114,128,0.15); color:#6b7280; }
-        .vote-btn {
-            padding: 12px 10px; border-radius: 14px; font-weight: 600; cursor: pointer;
-            border: 1.5px solid; text-align: center; flex: 1; min-width: 100px;
-            transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
-            background: rgba(255,255,255,0.02); letter-spacing: 0.2px;
+        .icon-btn {
+            width:34px; height:34px; border-radius:50%; border:1px solid var(--border-medium);
+            background:var(--bg-secondary); color:var(--text-secondary); cursor:pointer;
+            display:flex; align-items:center; justify-content:center; font-size:0.9rem;
+            transition: all 0.2s;
         }
-        .vote-btn:hover { filter: brightness(1.2); }
-        .option-dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; opacity: 0.9; box-shadow: 0 0 6px currentColor; }
-        .results-area { margin-top: 12px; }
-        .result-row { display: flex; align-items: center; margin-bottom: 10px; gap: 12px; font-size: 0.85rem; }
-        .result-label { min-width: 100px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-        .result-bar-bg { flex: 1; height: 14px; background: rgba(255,255,255,0.03); border-radius: 7px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.3); }
-        .result-bar-fill { height: 100%; border-radius: 7px; background: linear-gradient(90deg, var(--fill-color), var(--fill-color-dark)); transition: width 0.5s ease; }
-        .result-percent { font-weight: 700; min-width: 35px; text-align: right; }
-        .history-section { margin-top:24px; }
-        .tab-bar { display:flex; gap:10px; margin-bottom:12px; align-items:center; flex-wrap:wrap; }
-        .tab { padding:6px 14px; border-radius:16px; font-size:0.8rem; font-weight:600; cursor:pointer; border:1px solid var(--border-medium); color:var(--text-secondary); background:transparent; }
-        .tab.active { background:rgba(56,189,248,0.15); border-color:#38bdf8; color:#38bdf8; }
-        .sort-search { display:flex; gap:8px; align-items:center; margin-left:auto; }
-        .sort-select, .search-input { background:var(--bg-secondary); border:1px solid var(--border-medium); color:var(--text-primary); padding:5px 10px; border-radius:14px; font-size:0.75rem; }
-        .history-item { background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:12px; padding:14px 16px; cursor:pointer; transition:0.2s; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
-        .history-item:hover { background:var(--bg-card-hover); border-color:var(--border-medium); }
-        .hi-left { display:flex; flex-direction:column; gap:4px; flex:1; min-width:140px; }
-        .hi-title { font-weight:600; font-size:0.9rem; }
-        .hi-time { font-size:0.65rem; color:var(--text-muted); font-family:'JetBrains Mono',monospace; }
-        .hi-duration-badge { width:32px; height:32px; border-radius:50%; background:rgba(255,255,255,0.04); display:flex; align-items:center; justify-content:center; font-size:0.6rem; font-weight:700; color:var(--text-secondary); border:1px solid var(--border-subtle); flex-shrink:0; }
-        .hi-sentiments { display:flex; gap:8px; align-items:center; font-size:0.68rem; font-weight:600; }
-        .sentiment-badge { display:flex; align-items:center; gap:4px; padding:3px 8px; border-radius:10px; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); }
-        .sentiment-dot { width:7px; height:7px; border-radius:2px; display:inline-block; }
-        .create-form { display:none; margin-bottom:18px; }
-        .create-card { background:var(--bg-card); border:1px solid var(--border-medium); border-radius:var(--radius-lg); padding:26px 24px 22px; box-shadow:var(--shadow-card); backdrop-filter:blur(20px); position:relative; }
-        .create-card h3 { font-weight:700; font-size:1.1rem; margin-bottom:18px; }
-        .form-group { margin-bottom:14px; }
-        .form-group label { display:block; font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.4px; color:var(--text-secondary); margin-bottom:5px; }
-        .form-input { width:100%; padding:12px 14px; background:var(--bg-secondary); border:1px solid var(--border-medium); border-radius:var(--radius-sm); color:var(--text-primary); font-size:0.9rem; outline:none; }
-        .form-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(56,189,248,0.1); }
-        .options-list { display:flex; flex-direction:column; gap:10px; margin-bottom:12px; }
-        .option-item { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.02); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:8px 14px; }
-        .option-color-dot { width:32px; height:32px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:1.1rem; }
-        .option-item input { flex:1; background:transparent; border:none; color:var(--text-primary); font-size:0.9rem; outline:none; }
-        .remove-option-btn { background:none; border:none; color:#ef4444; cursor:pointer; font-size:1.3rem; padding:4px 8px; border-radius:6px; }
-        .add-option-btn { display:flex; align-items:center; gap:8px; background:rgba(56,189,248,0.06); border:1px dashed rgba(56,189,248,0.3); color:#38bdf8; padding:10px 16px; border-radius:var(--radius-sm); cursor:pointer; font-weight:600; }
-        .btn-publish { background:linear-gradient(135deg,#10b981,#059669); color:#fff; padding:12px 24px; border-radius:24px; font-weight:700; border:none; cursor:pointer; }
-        .btn-cancel-form { background:transparent; border:1px solid var(--border-medium); color:var(--text-secondary); padding:12px 20px; border-radius:24px; font-weight:600; cursor:pointer; }
-        /* Signature modal */
-        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(4px); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; }
-        .modal-box { background:var(--bg-card); border:1px solid var(--border-medium); border-radius:var(--radius-lg); padding:24px; max-width:420px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,0.6); }
-        .modal-box h4 { font-weight:700; margin-bottom:12px; }
-        .signature-input { width:100%; padding:10px 12px; background:var(--bg-secondary); border:1px solid var(--border-medium); border-radius:var(--radius-sm); color:var(--text-primary); margin-bottom:12px; font-size:0.9rem; }
-        .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:18px; }
-        .btn-confirm { background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:10px 18px; border-radius:20px; font-weight:600; cursor:pointer; }
-        .btn-cancel-modal { background:transparent; border:1px solid var(--border-medium); color:var(--text-secondary); padding:10px 18px; border-radius:20px; cursor:pointer; }
-        .visibility-row { display:flex; gap:8px; margin-bottom:12px; align-items:center; }
-        .vis-toggle { padding:8px 12px; border-radius:20px; font-size:0.8rem; font-weight:600; border:1px solid var(--border-medium); background:transparent; color:var(--text-secondary); cursor:pointer; transition:0.2s; }
-        .vis-toggle.active { border-color:var(--accent); color:#fff; }
-        .vis-toggle.public { border-color:#10b981; color:#10b981; }
-        .vis-toggle.private { border-color:#ef4444; color:#ef4444; }
-        .vis-toggle.postpoll { border-color:#f59e0b; color:#f59e0b; }
-        .vis-toggle.public.active { background:#10b981; color:#fff; }
-        .vis-toggle.private.active { background:#ef4444; color:#fff; }
-        .vis-toggle.postpoll.active { background:#f59e0b; color:#fff; }
-        .vmark-toggle { display:flex; align-items:center; gap:8px; font-size:0.8rem; color:var(--text-secondary); cursor:pointer; }
-        .vmark-btn { padding:6px 14px; border-radius:16px; font-weight:600; border:1px solid var(--border-medium); background:transparent; color:var(--text-muted); transition:0.2s; }
-        .vmark-btn.active { background:rgba(168,85,247,0.15); border-color:#a855f7; color:#a855f7; }
-        .comments-toggle-btn { background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); color:var(--text-secondary); padding:5px 12px; border-radius:14px; font-size:0.75rem; cursor:pointer; }
-        .comments-section { margin-top:16px; border-top:1px solid var(--border-subtle); padding-top:12px; }
-        .comment-entry { display:flex; flex-direction:column; gap:6px; padding:10px 12px; background:rgba(255,255,255,0.02); border-radius:10px; margin-bottom:8px; }
-        .comment-header { display:flex; align-items:center; gap:10px; font-size:0.7rem; color:var(--text-muted); }
-        .comment-time-box { padding:2px 8px; border-radius:10px; font-size:0.65rem; background:rgba(255,255,255,0.04); border:1px solid var(--border-subtle); display:flex; align-items:center; gap:4px; }
-        .comment-time-box.green { border-color:#10b981; color:#10b981; }
-        .comment-time-box.blue { border-color:#38bdf8; color:#38bdf8; }
-        .comment-body { font-size:0.85rem; }
-        .comment-vote-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:8px; font-size:0.7rem; }
+        .icon-btn:hover { border-color:var(--accent); color:var(--accent); box-shadow:0 0 16px rgba(56,189,248,0.15); }
+        .btn { padding:8px 16px; border-radius:20px; font-weight:600; font-size:0.82rem; cursor:pointer;
+            border:1px solid var(--border-medium); background:var(--bg-secondary); color:var(--text-primary);
+            transition:all 0.2s; white-space:nowrap; display:inline-flex; align-items:center; gap:6px;
+        }
+        .btn:hover { border-color:var(--border-active); box-shadow:0 4px 16px rgba(0,0,0,0.2); }
+        .btn-accent { background:linear-gradient(135deg, #1e3a5f, #1a3355); border-color:rgba(56,189,248,0.35); color:#e0f0ff; }
+        .btn-green { background:linear-gradient(135deg, #10b981, #059669); border:none; color:#fff; }
+        .btn-red { background:rgba(239,68,68,0.15); border-color:rgba(239,68,68,0.3); color:#ef4444; }
+
+        .stats-row { display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+        .stat-card {
+            flex:1; min-width:80px; background:var(--bg-card); border:2px solid var(--border-subtle);
+            border-radius:var(--radius-md); padding:14px 12px; text-align:center;
+            cursor:pointer; transition:all 0.25s; box-shadow:0 2px 12px rgba(0,0,0,0.15);
+        }
+        .stat-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-elevated); border-color:var(--border-active); }
+        .stat-card.active { border-color:var(--accent); background:rgba(56,189,248,0.06); }
+        .stat-card.live .num { color:var(--red); } .stat-card.ended .num { color:var(--text-muted); }
+        .stat-card.votes .num { color:var(--accent); }
+        .stat-card .num { font-size:1.5rem; font-weight:800; font-family:'JetBrains Mono', monospace; }
+        .stat-card .lbl { font-size:0.68rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.6px; margin-top:3px; }
+        .live-dot { width:8px; height:8px; border-radius:50%; background:var(--red); display:inline-block; margin-right:4px; animation:pulse 1.5s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+
+        .banner-card {
+            background:var(--bg-card); border:1px solid var(--border-medium); border-radius:var(--radius-lg);
+            padding:16px 18px; margin-bottom:14px; position:relative; box-shadow:var(--shadow-card);
+            display:none;
+        }
+        .banner-close { position:absolute; top:8px; right:12px; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1rem; }
+        .banner-close:hover { color:var(--red); }
+
+        /* Global Search Bar */
+        .global-search { margin-bottom:12px; }
+        .global-search input {
+            width:100%; padding:10px 16px; border-radius:var(--radius-lg); font-size:0.88rem;
+            background:var(--bg-card); border:1px solid var(--border-medium);
+            color:var(--text-primary); outline:none; transition:border-color 0.2s;
+        }
+        .global-search input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(56,189,248,0.08); }
+
+        .filter-bar { display:flex; gap:8px; margin-bottom:12px; align-items:center; flex-wrap:wrap; }
+        .tab { padding:7px 15px; border-radius:16px; font-size:0.78rem; font-weight:600; cursor:pointer; border:1px solid var(--border-medium); background:transparent; color:var(--text-secondary); transition:all 0.2s; }
+        .tab.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+        .tab:hover:not(.active) { border-color:var(--border-active); color:var(--text-primary); }
+        .sort-group { display:flex; gap:6px; align-items:center; margin-left:auto; flex-wrap:wrap; }
+        select {
+            padding:7px 10px; border-radius:14px; font-size:0.75rem;
+            background:var(--bg-secondary); border:1px solid var(--border-medium);
+            color:var(--text-primary); outline:none; font-family:'Inter', sans-serif;
+            transition:border-color 0.2s;
+        }
+        select:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(56,189,248,0.08); }
+
+        .poll-card { background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-lg); padding:20px 18px; margin-bottom:14px; box-shadow:var(--shadow-card); }
+        .skeleton { background:linear-gradient(90deg, var(--bg-secondary) 25%, var(--bg-card-hover) 50%, var(--bg-secondary) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:var(--radius-md); height:120px; margin-bottom:14px; }
+        @keyframes shimmer { 0%{background-position:200% 0;} 100%{background-position:-200% 0;} }
+        .poll-meta { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px; font-size:0.72rem; color:var(--text-muted); font-family:'JetBrains Mono', monospace; }
+        .badge { padding:3px 9px; border-radius:10px; font-size:0.66rem; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; }
+        .badge-live { background:rgba(239,68,68,0.2); color:#ef4444; border:1px solid rgba(239,68,68,0.25); }
+        .badge-ended { background:rgba(107,114,128,0.12); color:#6b7280; border:1px solid rgba(107,114,128,0.2); }
+        .info-pills { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+        .info-pill { padding:4px 10px; border-radius:12px; font-size:0.66rem; font-weight:600; font-family:'JetBrains Mono', monospace; display:flex; align-items:center; gap:4px; }
+        .info-pill.time { background:rgba(16,185,129,0.08); border:1px solid rgba(16,185,129,0.2); color:#10b981; }
+        .info-pill.date { background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.2); color:#f59e0b; }
+        .info-pill.pwr { background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.2); color:#a855f7; }
+        .poll-title { font-size:1.25rem; font-weight:700; margin-bottom:4px; }
+        .poll-media { margin:10px 0; border-radius:var(--radius-md); overflow:hidden; max-height:300px; }
+        .vote-grid { display:flex; gap:8px; flex-wrap:wrap; margin:12px 0; }
+        .vote-btn { flex:1; min-width:90px; padding:12px 10px; border-radius:var(--radius-sm); font-weight:700; font-size:0.85rem; cursor:pointer; border:2px solid; text-align:center; transition:all 0.2s; background:rgba(255,255,255,0.02); display:flex; align-items:center; justify-content:center; gap:6px; }
+        .vote-btn:hover:not(:disabled) { transform:translateY(-1px); filter:brightness(1.3); }
+        .vote-btn:disabled { opacity:0.45; cursor:not-allowed; }
+        .results { margin-top:10px; }
+        .result-row { display:flex; align-items:center; margin-bottom:8px; gap:10px; font-size:0.82rem; }
+        .result-name { min-width:80px; font-weight:700; }
+        .result-track { flex:1; height:16px; background:rgba(128,128,128,0.06); border-radius:8px; overflow:hidden; }
+        .result-fill { height:100%; border-radius:8px; transition:width 0.6s ease; }
+        .result-pct { font-weight:700; min-width:38px; text-align:right; font-family:'JetBrains Mono', monospace; font-size:0.78rem; }
+        .history-item { background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:12px 14px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:6px; }
+        .history-item:hover { background:var(--bg-card-hover); border-color:var(--border-medium); transform:translateY(-1px); box-shadow:0 4px 16px rgba(0,0,0,0.2); }
+        .hi-circle { width:38px; height:38px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:0.6rem; font-weight:700; font-family:'JetBrains Mono', monospace; border:2px solid var(--border-medium); color:var(--text-secondary); background:rgba(255,255,255,0.02); }
+        .hi-main { flex:1; min-width:120px; }
+        .hi-title { font-weight:600; font-size:0.88rem; }
+        .hi-sub { font-size:0.65rem; color:var(--text-muted); font-family:'JetBrains Mono', monospace; }
+        .hi-top3 { display:flex; gap:5px; align-items:center; font-size:0.64rem; font-weight:600; }
+        .hi-dot { width:7px; height:7px; border-radius:2px; display:inline-block; }
+        .comment-item { padding:10px 12px; background:rgba(128,128,128,0.03); border-radius:var(--radius-sm); margin-bottom:6px; border:1px solid var(--border-subtle); }
+        .comment-meta { font-size:0.66rem; color:var(--text-muted); display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-family:'JetBrains Mono', monospace; }
+        .like-btn { background:none; border:none; cursor:pointer; padding:3px 7px; border-radius:6px; font-size:0.82rem; color:var(--text-muted); transition:all 0.15s; }
+        .like-btn:hover { background:rgba(128,128,128,0.1); }
+        .like-btn.active-like { color:var(--green); background:rgba(16,185,129,0.1); }
+        .like-btn.active-dislike { color:var(--red); background:rgba(239,68,68,0.1); }
+
+        .modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); backdrop-filter:blur(8px); z-index:1000; display:flex; align-items:center; justify-content:center; padding:20px; }
+        .modal-box { background:var(--bg-card); border:1px solid var(--border-medium); border-radius:var(--radius-lg); padding:0; max-width:560px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 24px 80px rgba(0,0,0,0.7); }
+        .modal-header { padding:20px 22px 14px; border-bottom:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:var(--bg-card); z-index:5; border-radius:var(--radius-lg) var(--radius-lg) 0 0; }
+        .modal-header h3 { font-weight:700; font-size:1.05rem; }
+        .modal-close { background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.2rem; padding:4px 8px; border-radius:6px; }
+        .modal-body { padding:18px 22px; }
+        .modal-footer { padding:14px 22px 20px; border-top:1px solid var(--border-subtle); display:flex; gap:10px; justify-content:flex-end; position:sticky; bottom:0; background:var(--bg-card); z-index:5; border-radius:0 0 var(--radius-lg) var(--radius-lg); }
+
+        .fee-bar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; padding:10px 14px; border-radius:var(--radius-sm); margin-bottom:14px; font-size:0.78rem; font-weight:600; background:rgba(168,85,247,0.08); border:1px solid rgba(168,85,247,0.25); color:var(--purple); }
+        .fee-bar.warning { background:rgba(245,158,11,0.1); border-color:rgba(245,158,11,0.35); color:var(--amber); }
+
+        .form-group { margin-bottom:12px; }
+        .form-group label { display:block; font-size:0.7rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-secondary); margin-bottom:5px; }
+        .form-input { width:100%; padding:10px 13px; border-radius:var(--radius-sm); font-size:0.88rem; background:var(--bg-secondary); border:1px solid var(--border-medium); color:var(--text-primary); outline:none; }
+        .form-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(56,189,248,0.08); }
+        textarea.form-input { resize:vertical; min-height:60px; }
+
+        .exp-chips { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+        .exp-chip { padding:7px 14px; border-radius:16px; font-size:0.78rem; font-weight:600; cursor:pointer; border:1px solid var(--border-medium); background:transparent; color:var(--text-secondary); }
+        .exp-chip:hover { border-color:var(--border-active); color:var(--text-primary); }
+        .exp-chip.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+        .dropzone { border:2px dashed var(--border-medium); border-radius:var(--radius-md); padding:24px 16px; text-align:center; cursor:pointer; transition:all 0.25s; background:rgba(255,255,255,0.01); }
+        .dropzone:hover { border-color:var(--accent); background:rgba(56,189,248,0.04); }
+        .dropzone.has-preview { padding:8px; }
+        .dropzone .dz-icon { font-size:1.8rem; color:var(--text-muted); }
+        .dropzone .preview-img { max-width:100%; max-height:200px; border-radius:var(--radius-sm); }
+        .dropzone .remove-preview { position:absolute; top:8px; right:8px; background:rgba(0,0,0,0.7); border:none; color:#fff; border-radius:50%; width:26px; height:26px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+
+        .advanced-toggle { display:flex; align-items:center; gap:8px; cursor:pointer; font-size:0.78rem; font-weight:600; color:var(--text-secondary); padding:8px 0; border-top:1px solid var(--border-subtle); margin-top:10px; }
+        .advanced-toggle i { transition:transform 0.3s; }
+        .advanced-toggle.open i { transform:rotate(180deg); }
+        .advanced-panel { display:none; }
+        .advanced-panel.open { display:block; }
+
+        .option-row { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
+        .opt-color-input { width:38px; height:38px; border-radius:8px; border:2px solid var(--border-medium); cursor:pointer; padding:0; }
+        .opt-text-input { flex:1; }
+
+        .captcha-box { background:rgba(56,189,248,0.06); border:1px solid rgba(56,189,248,0.2); border-radius:var(--radius-sm); padding:10px 14px; margin:10px 0; display:flex; align-items:center; gap:10px; font-weight:700; }
+        .captcha-box input { width:70px; text-align:center; }
+        .toggle-switch { width:42px; height:24px; border-radius:12px; background:var(--bg-secondary); border:1px solid var(--border-medium); position:relative; cursor:pointer; }
+        .toggle-switch.on { background:var(--green); border-color:var(--green); }
+        .toggle-switch::after { content:''; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:#fff; transition:all 0.25s; }
+        .toggle-switch.on::after { left:20px; }
+
+        .toast { position:fixed; top:20px; right:20px; z-index:2000; padding:10px 18px; border-radius:20px; font-weight:600; background:rgba(16,185,129,0.95); color:#fff; animation:toastIn 0.3s ease; }
+        @keyframes toastIn { from{opacity:0;transform:translateX(40px);} to{opacity:1;transform:translateX(0);} }
+        .fab { position:fixed; bottom:24px; right:24px; z-index:99; width:52px; height:52px; border-radius:50%; background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; cursor:pointer; font-size:1.4rem; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 24px rgba(16,185,129,0.3); }
+        @media (min-width:768px) { .fab { display:none; } }
+        @media (max-width:600px) { .stats-row { gap:6px; } .stat-card .num { font-size:1.2rem; } }
     </style>
 </head>
 <body>
-    <div class="grid-bg"></div>
-    <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
-    <div id="toastContainer" style="position:fixed; top:20px; right:20px; z-index:999; display:flex; flex-direction:column; gap:6px; pointer-events:none;"></div>
+    <div class="bg-pattern"></div>
+    <div id="toastRoot" style="position:fixed;top:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:6px;pointer-events:none;"></div>
+    <div id="modalRoot"></div>
 
     <div class="app-container">
-        <header class="header">
-            <div class="logo-area" onclick="goHome()" title="Home">
-                <div class="logo-icon"><i class="fa-solid fa-chart-line"></i></div>
-                <span class="logo-text">Sentix<span class="logo-dot"></span></span>
-            </div>
-            <div class="header-stats">
-                <div class="stat-item" onclick="setFilterTab('live')">🔴 Live <span class="val" id="liveCount">0</span></div>
-                <div class="stat-item" onclick="setFilterTab('ended')">⚫ Ended <span class="val" id="endedCount">0</span></div>
-                <div class="stat-item">🗳️ Total <span class="val" id="totalVotesCount">0</span></div>
-            </div>
-            <button class="btn-icon btn-primary" onclick="toggleCreateForm()">+ New Poll</button>
-        </header>
-
-        <div class="create-form" id="createForm">
-            <div class="create-card">
-                <h3><i class="fa-solid fa-pen-to-square" style="color:var(--accent);"></i> New Poll</h3>
-                <div class="form-group"><label>Question</label><input class="form-input" id="pollQuestion" placeholder="What's your question?"></div>
-                <div class="form-group"><label>Context</label><textarea class="form-input" id="pollContext" rows="2"></textarea></div>
-                <div style="display:flex; gap:12px;"><div class="form-group"><label>Expires at</label><input class="form-input" type="datetime-local" id="pollExpiration"></div><div class="form-group"><label>Media URL</label><input class="form-input" id="pollMedia" placeholder="Image or YouTube"></div></div>
-                <div class="form-group"><label>Options</label><div class="options-list" id="optionsContainer"></div><button class="add-option-btn" onclick="addOption()"><i class="fa-solid fa-plus"></i> Add option</button></div>
-                <div style="display:flex; gap:10px; margin-top:20px;"><button class="btn-publish" onclick="createPoll()">Publish</button><button class="btn-cancel-form" onclick="closeCreateForm()">Cancel</button></div>
-            </div>
-        </div>
-
-        <div id="mainView"></div>
-        <div class="history-section">
-            <div style="font-size:0.8rem; font-weight:700; text-transform:uppercase; color:var(--text-muted); margin-bottom:10px;">📋 Polls</div>
-            <div class="tab-bar">
-                <button class="tab active" id="tabLive" onclick="setFilterTab('live')">Live</button>
-                <button class="tab" id="tabEnded" onclick="setFilterTab('ended')">Ended</button>
-                <div class="sort-search">
-                    <select class="sort-select" id="sortSelect" onchange="applyFilter()"><option value="recent">Recent</option><option value="oldest">Oldest</option><option value="shortest">Shortest</option><option value="longest">Longest</option></select>
-                    <input class="search-input" id="searchInput" placeholder="Search..." oninput="applyFilter()">
+        <div class="compact-header">
+            <div class="logo" onclick="goHome()"><i class="fa-solid fa-chart-line"></i><span>Sentix</span></div>
+            <div class="header-actions">
+                <div class="pwr-wrapper">
+                    <span class="pwr-badge" onclick="openPwrPanel()" id="pwrDisplay">⚡ 0.0000</span>
+                    <div class="pwr-bar" id="pwrBar" style="width:0%;"></div>
                 </div>
+                <button class="icon-btn" onclick="toggleTheme()" id="themeBtn">🌙</button>
+                <button class="icon-btn" onclick="openProfile()"><i class="fa-solid fa-user"></i></button>
+                <button class="btn btn-accent" onclick="openCreateForm()">+ New Poll</button>
             </div>
-            <div id="historyList"></div>
         </div>
+
+        <div class="stats-row" id="statsRow">
+            <div class="stat-card live active" data-filter="live"><div class="num"><span class="live-dot"></span><span id="liveCount">0</span></div><div class="lbl">Live</div></div>
+            <div class="stat-card ended" data-filter="ended"><div class="num" id="endedCount">0</div><div class="lbl">Ended</div></div>
+            <div class="stat-card votes" data-filter="votes"><div class="num" id="totalVotesCount">0</div><div class="lbl">Votes</div></div>
+        </div>
+
+        <div id="bannerCard" class="banner-card">
+            <button class="banner-close" onclick="dismissBanner()">✕</button>
+            <div id="bannerContent"></div>
+        </div>
+
+        <!-- Global Search -->
+        <div class="global-search">
+            <input type="search" id="searchInput" placeholder="Search polls across all categories..." oninput="applyFilter()">
+        </div>
+
+        <!-- Filter Tabs & Sort -->
+        <div class="filter-bar">
+            <button class="tab active" data-tab="live">Live</button>
+            <button class="tab" data-tab="ended">Ended</button>
+            <button class="tab" data-tab="all">All</button>
+            <div class="sort-group">
+                <select id="sortSelect" onchange="applyFilter()">
+                    <option value="recent">⏱️ Recent</option>
+                    <option value="oldest">📜 Oldest</option>
+                    <option value="mostvoted">🔥 Most Voted</option>
+                    <option value="shortest">⏳ Shortest</option>
+                    <option value="longest">📅 Longest</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="pollFeed"></div>
     </div>
 
-    <!-- Signature modal -->
-    <div id="signatureModal" class="modal-overlay" style="display:none;">
-        <div class="modal-box">
-            <h4>Confirm your vote: <span id="sigOptionName"></span></h4>
-            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px;">Optionally add a comment.</p>
-            <input class="signature-input" type="text" id="sigText" placeholder="TSignature – text comment">
-            <input class="signature-input" type="text" id="sigMedia" placeholder="ISignature – image/video URL">
-            <div style="margin-top:12px;">
-                <div style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:6px;">Choose wisely:</div>
-                <div class="visibility-row" id="visibilityRow">
-                    <button class="vis-toggle public active" data-vis="public">Public</button>
-                    <button class="vis-toggle private" data-vis="private">Private</button>
-                    <button class="vis-toggle postpoll" data-vis="postpoll">Public post‑poll</button>
-                </div>
-            </div>
-            <div class="vmark-toggle" style="margin-top:12px;">
-                <button class="vmark-btn active" id="vmarkBtn" onclick="toggleVmark()">Vmark: show my vote</button>
-                <span style="font-size:0.7rem; color:var(--text-muted);">(only when comment is public)</span>
-            </div>
-            <div class="modal-actions">
-                <button class="btn-cancel-modal" onclick="closeSignatureModal()">Cancel</button>
-                <button class="btn-confirm" onclick="submitSignatureVote()">Confirm Vote</button>
-            </div>
-        </div>
-    </div>
+    <button class="fab" onclick="openCreateForm()"><i class="fa-solid fa-plus"></i></button>
 
     <script>
         (function() {
@@ -234,457 +310,221 @@
   appId: "1:289213404201:web:51a9e37f2fff18abc0f838",
   measurementId: "G-NJXW4HGQGX"
 };
-            // --------------------------------------------------------------
-
             firebase.initializeApp(firebaseConfig);
             const db = firebase.database();
 
-            const voterId = (() => {
-                let id = localStorage.getItem('sentix_voter');
-                if (!id) { id = 'v_' + Math.random().toString(36).substr(2,10); localStorage.setItem('sentix_voter', id); }
-                return id;
-            })();
+            const COLORS = ['#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899','#06b6d4','#f97316','#84cc16','#14b8a6','#6366f1','#000000','#ffd700','#c0c0c0','#ff6b6b','#4ecdc4','#45b7d1','#bb8fce','#f7dc6f','#e84393','#00b894'];
+            let allPolls=[], activeFilter='live', sortBy='recent', searchQuery='', loading=true, activePollId=null, showOnlyVoted=false;
+            let currentMediaFile=null, currentMediaUrl='';
+            const userId = (()=>{ let id=localStorage.getItem('sx_uid'); if(!id){id='u'+Date.now().toString(36)+Math.random().toString(36).substr(2,6);localStorage.setItem('sx_uid',id);} return id; })();
 
-            const DEFAULT_COLORS = ['#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899','#06b6d4','#f97316','#84cc16','#14b8a6','#6366f1'];
-            let allPolls = [], selectedPollId = null, filterTab = 'live', sortBy = 'recent', searchQuery = '', countdownInterval = null;
-            let pendingVote = { pollId: null, option: null };
-            let currentVisibility = 'public';
-            let currentShowVote = true;
+            function getPwr(){ return JSON.parse(localStorage.getItem('sx_pwr')||'{"balance":1000,"lastClaim":0,"history":[]}'); }
+            function savePwr(d){ localStorage.setItem('sx_pwr',JSON.stringify(d)); updatePwrUI(); }
+            function updatePwrUI(){ const d=getPwr(); document.getElementById('pwrDisplay').textContent='⚡ '+d.balance.toFixed(4); document.getElementById('pwrBar').style.width=Math.min(100,(d.balance/1000)*100)+'%'; }
+            function spendPwr(amt){ const d=getPwr(); if(d.balance<amt)return false; d.balance-=amt; d.history.push({amount:-amt,time:Date.now(),method:'vote'}); savePwr(d); return true; }
+            window.claimPwr=function(){ const d=getPwr(); const now=Date.now(); if(now-d.lastClaim<86400000)return toast('Already claimed today.'); if(d.lastClaim&&now-d.lastClaim>172800000)d.balance=Math.max(d.balance,1000); d.balance+=1; d.lastClaim=now; d.history.push({amount:1,time:now,method:'daily'}); savePwr(d); toast('+1 PWR claimed!'); closeModal(); };
 
-            // ---- Creation form helpers ----
-            function initOptions() {
-                const container = document.getElementById('optionsContainer');
-                container.innerHTML = '';
-                addOptionRow('Bullish', DEFAULT_COLORS[0]);
-                addOptionRow('Bearish', DEFAULT_COLORS[1]);
-                addOptionRow('Neutral', DEFAULT_COLORS[2]);
-            }
-            function addOptionRow(value = '', color = null) {
-                const container = document.getElementById('optionsContainer');
-                const idx = container.children.length;
-                const col = color || DEFAULT_COLORS[idx % DEFAULT_COLORS.length];
-                const row = document.createElement('div');
-                row.className = 'option-item';
-                row.innerHTML = `<div class="option-color-dot" style="background:${col};"></div>
-                    <input class="option-input" value="${escapeHtml(value)}" placeholder="Option ${idx+1}">
-                    <button class="remove-option-btn" onclick="removeOption(this)"><i class="fa-solid fa-xmark"></i></button>`;
-                container.appendChild(row);
-            }
-            window.addOption = () => addOptionRow();
-            window.removeOption = (btn) => {
-                if (document.getElementById('optionsContainer').children.length > 1) btn.parentElement.remove();
-                else showToast('Need at least one option.');
+            function toast(msg){ const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.getElementById('toastRoot').appendChild(t); setTimeout(()=>t.remove(),2400); }
+            function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+            function ts(d){ if(!d)return''; const diff=Date.now()-d,s=Math.floor(diff/1000),m=Math.floor(s/60),h=Math.floor(m/60),dd=Math.floor(h/24); if(s<60)return'just now'; if(m<60)return m+'m ago'; if(h<24)return h+'h ago'; if(dd<7)return dd+'d ago'; if(dd<30)return Math.floor(dd/7)+'w ago'; if(dd<365)return Math.floor(dd/30)+'mo ago'; return Math.floor(dd/365)+'y ago'; }
+            function dur(a,b){ const s=(b-a)/1000; if(s<60)return Math.round(s)+'s'; if(s<3600)return Math.round(s/60)+'m'; if(s<86400)return Math.round(s/3600)+'h'; if(s<604800)return Math.round(s/86400)+'d'; if(s<2592000)return Math.round(s/604800)+'w'; if(s<31536000)return Math.round(s/2592000)+'mo'; return Math.round(s/31536000)+'y'; }
+            function countdown(exp){ const d=new Date(exp)-new Date(); if(d<=0)return'Ended'; const s=Math.floor(d/1000),m=Math.floor(s/60),h=Math.floor(m/60),dd=Math.floor(h/24); if(dd>0)return dd+'d '+h%24+'h'; if(h>0)return h+'h '+m%60+'m'; return m+'m '+s%60+'s'; }
+            function shortId(){ const c='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'; let s=''; for(let i=0;i<8;i++)s+=c[Math.floor(Math.random()*62)]; return s; }
+            let captchaAnswer=0; function genCaptcha(){ captchaAnswer=Math.floor(Math.random()*90)+10; return captchaAnswer; }
+            function checkCaptcha(v){ return parseInt(v)===captchaAnswer; }
+
+            function openModal(html){ document.getElementById('modalRoot').innerHTML=html; }
+            window.closeModal=function(){ document.getElementById('modalRoot').innerHTML=''; };
+            window.toggleTheme=function(){ const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme',t); document.getElementById('themeBtn').textContent=t==='dark'?'🌙':'☀️'; };
+
+            window.openPwrPanel=function(){ const d=getPwr(); const hist=d.history.slice(-15).reverse().map(h=>`<div style="font-size:0.7rem;color:var(--text-secondary);">${new Date(h.time).toLocaleString()} — ${h.amount>0?'+':''}${h.amount.toFixed(4)} PWR (${h.method})</div>`).join('');
+                openModal(`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="modal-header"><h3>⚡ Power</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body"><p style="font-size:1.4rem;font-weight:800;">${d.balance.toFixed(4)} PWR</p><button class="btn btn-green" onclick="claimPwr()">Claim Daily +1</button><div style="margin-top:10px;max-height:200px;overflow-y:auto;">${hist||'No history.'}</div></div></div></div>`); };
+            window.openProfile=function(){ const p=JSON.parse(localStorage.getItem('sx_profile')||'{}');
+                openModal(`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="modal-header"><h3>👤 Profile</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body"><div class="form-group"><label>Your ID</label><input class="form-input" value="${userId}" readonly></div><div class="form-group"><label>Wallet / Contact</label><input class="form-input" id="profInput" value="${esc(p.info||'')}" placeholder="Wallet address, email, etc."></div><div class="form-group"><label>Display Name</label><input class="form-input" id="profName" value="${esc(p.name||'')}" placeholder="Optional name"></div><button class="btn btn-accent" onclick="saveProfile()">Save</button></div></div></div>`); };
+            window.saveProfile=function(){ localStorage.setItem('sx_profile',JSON.stringify({info:document.getElementById('profInput').value.trim(),name:document.getElementById('profName').value.trim()})); toast('Saved!'); closeModal(); };
+
+            // Creation form (unchanged)
+            window.openCreateForm=function(){
+                currentMediaFile=null; currentMediaUrl='';
+                const pwrData=getPwr(); const balanceOk=pwrData.balance>=10;
+                const expDate=new Date(Date.now()+86400000);
+                let optHtml=''; for(let i=0;i<3;i++) optHtml+=`<div class="option-row"><input type="color" class="opt-color-input opt-color" value="${COLORS[i]}"><input class="form-input opt-text-input opt-text" value="${['Bullish','Bearish','Neutral'][i]}"><button class="btn btn-red opt-remove" onclick="this.parentElement.remove()">×</button></div>`;
+                openModal(`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="modal-header"><h3>📝 Create New Poll</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body"><div class="fee-bar ${balanceOk?'':'warning'}"><span>⚡ Creation Fee: <strong class="fee-amount">10 PWR</strong></span><span>Balance: <strong id="createBal">${pwrData.balance.toFixed(4)}</strong> PWR ${balanceOk?'✅':'⚠️ Low'}</span></div><div class="form-group"><label>Question *</label><input class="form-input" id="crQ" placeholder="What would you like to ask the community?"></div><div class="form-group"><label>Poll Options *</label><div id="optContainer">${optHtml}</div><button class="btn" onclick="addOptRow()">+ Add Option</button></div><div class="form-group"><label>Expiration</label><div class="exp-chips" id="expChips"><button class="exp-chip active" data-minutes="5">5 min</button><button class="exp-chip" data-hours="1">1 hr</button><button class="exp-chip" data-hours="4">4 hr</button><button class="exp-chip" data-hours="24">24 hr</button><button class="exp-chip" data-hours="24" data-days="1">1 day</button><button class="exp-chip" data-hours="168">1 Week</button><button class="exp-chip" data-custom="true">📅 Custom</button></div><input class="form-input" type="datetime-local" id="crExp" value="${expDate.toISOString().slice(0,16)}"></div><div class="form-group"><label>Media (optional)</label><div class="dropzone" id="dropzone" onclick="document.getElementById('crMediaFile').click()"><div class="dz-placeholder"><i class="fa-solid fa-cloud-arrow-up dz-icon"></i><div class="dz-text">Drag & drop or tap to upload</div><div class="dz-hint">Images, videos, or paste a URL below</div><div class="paste-url-row" onclick="event.stopPropagation()"><input type="text" id="pasteUrlInput" placeholder="Paste image/video URL..."><button class="btn btn-accent" style="padding:5px 10px;font-size:0.7rem;" onclick="handlePasteUrl()">Add</button></div></div><input type="file" id="crMediaFile" accept="image/*,video/*" onchange="handleMediaSelect(this)"></div></div><div class="advanced-toggle" id="advToggle" onclick="toggleAdvanced()"><i class="fa-solid fa-chevron-down"></i> Advanced Settings</div><div class="advanced-panel" id="advPanel"><div class="form-group"><label>PWR Cost Per Vote</label><input class="form-input" type="number" id="crPwr" value="1" min="0.0001" step="0.0001"></div><div class="form-group"><label>Default Visibility</label><select class="form-input" id="crVis"><option value="">🌐 Voters choose</option><option value="public">🌐 Public</option><option value="private">🔒 Private</option><option value="postpoll">👥 Public Post-Poll</option></select></div><div class="toggle-row" onclick="document.getElementById('crVmark').classList.toggle('on')"><div class="toggle-switch" id="crVmark"></div> Default Vmark</div></div></div><div class="modal-footer"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-green" onclick="publishPoll()">🚀 Publish</button></div></div></div>`);
+                document.querySelectorAll('.exp-chip').forEach(chip=>{ chip.addEventListener('click', function(){ document.querySelectorAll('.exp-chip').forEach(c=>c.classList.remove('active')); this.classList.add('active'); const minutes=this.dataset.minutes?parseInt(this.dataset.minutes):0; const hours=this.dataset.hours?parseInt(this.dataset.hours):0; const days=this.dataset.days?parseInt(this.dataset.days):0; const expInput=document.getElementById('crExp'); if(!this.dataset.custom&&(minutes||hours||days)){ const ms=((days*24+hours)*60+minutes)*60000; const d=new Date(Date.now()+ms); expInput.value=d.toISOString().slice(0,16); } }); });
             };
-            function getOptionsData() {
-                const inputs = document.querySelectorAll('.option-input');
-                const options = [], colors = [];
-                inputs.forEach((inp, i) => {
-                    const val = inp.value.trim();
-                    if (val) {
-                        options.push(val);
-                        const dot = inp.parentElement.querySelector('.option-color-dot');
-                        colors.push(dot ? dot.style.background : DEFAULT_COLORS[i % DEFAULT_COLORS.length]);
+            window.handleMediaSelect=function(input){ const file=input.files[0]; if(!file)return; currentMediaFile=file; currentMediaUrl=URL.createObjectURL(file); updateDropzonePreview(currentMediaUrl, file.type.startsWith('video/')); };
+            window.handlePasteUrl=function(){ const url=document.getElementById('pasteUrlInput').value.trim(); if(!url)return; currentMediaFile=null; currentMediaUrl=url; updateDropzonePreview(url, /\.(mp4|webm|mov)/i.test(url)); };
+            function updateDropzonePreview(src,isVideo){ const dz=document.getElementById('dropzone'); dz.classList.add('has-preview'); dz.innerHTML=`${isVideo?`<video src="${esc(src)}" controls class="preview-img"></video>`:`<img src="${esc(src)}" class="preview-img" onerror="this.style.display='none'">`}<button class="remove-preview" onclick="event.stopPropagation();clearMediaPreview()">✕</button><input type="file" id="crMediaFile" accept="image/*,video/*" onchange="handleMediaSelect(this)" style="display:none;">`; dz.onclick=function(){ document.getElementById('crMediaFile').click(); }; }
+            window.clearMediaPreview=function(){ currentMediaFile=null; currentMediaUrl=''; const dz=document.getElementById('dropzone'); dz.classList.remove('has-preview'); dz.innerHTML=`<div class="dz-placeholder"><i class="fa-solid fa-cloud-arrow-up dz-icon"></i><div class="dz-text">Drag & drop or tap to upload</div><div class="dz-hint">Images, videos, or paste a URL below</div><div class="paste-url-row" onclick="event.stopPropagation()"><input type="text" id="pasteUrlInput" placeholder="Paste image/video URL..."><button class="btn btn-accent" style="padding:5px 10px;font-size:0.7rem;" onclick="handlePasteUrl()">Add</button></div></div><input type="file" id="crMediaFile" accept="image/*,video/*" onchange="handleMediaSelect(this)">`; dz.onclick=function(){ document.getElementById('crMediaFile').click(); }; };
+            window.toggleAdvanced=function(){ const p=document.getElementById('advPanel'); const t=document.getElementById('advToggle'); p.classList.toggle('open'); t.classList.toggle('open'); };
+            window.addOptRow=function(){ const c=document.getElementById('optContainer'); const i=c.children.length; const r=document.createElement('div'); r.className='option-row'; r.innerHTML=`<input type="color" class="opt-color-input opt-color" value="${COLORS[i%COLORS.length]}"><input class="form-input opt-text-input opt-text" placeholder="Option ${i+1}"><button class="btn btn-red opt-remove" onclick="this.parentElement.remove()">×</button>`; c.appendChild(r); };
+
+            window.publishPoll=function(){
+                const pwrData=getPwr(); if(pwrData.balance<10) return toast('Insufficient PWR. Need 10 PWR.');
+                const q=document.getElementById('crQ').value.trim(); if(!q)return toast('Enter a question.');
+                const exp=document.getElementById('crExp').value; if(!exp||new Date(exp)<=new Date())return toast('Set a future expiration.');
+                const opts=[],cols=[]; document.querySelectorAll('#optContainer .option-row').forEach(r=>{ const t=r.querySelector('.opt-text-input').value.trim(); if(t){opts.push(t);cols.push(r.querySelector('.opt-color-input').value);} });
+                if(opts.length<1)return toast('Add at least one option.');
+                const pwrCost=parseFloat(document.getElementById('crPwr').value)||1;
+                let finalMedia=currentMediaUrl; if(currentMediaFile) finalMedia=URL.createObjectURL(currentMediaFile);
+                if(!spendPwr(10))return toast('Failed to spend PWR.');
+                const defaultVis = document.getElementById('crVis').value;
+                const sid=shortId(); db.ref('polls').push({title:q,description:'',expiration:new Date(exp).toISOString(),mediaUrl:finalMedia,options:opts,optionColors:cols,pwrCost,defaultVis,defaultVmark:document.getElementById('crVmark').classList.contains('on'),createdAt:firebase.database.ServerValue.TIMESTAMP,counts:{},shortId:sid}).then(()=>{ closeModal(); toast('Poll published!'); }).catch(e=>toast('Error'));
+            };
+
+            window.castVote=function(pollId,opt,pwrCost){ if(!spendPwr(pwrCost))return toast(`Need ${pwrCost.toFixed(4)} PWR.`); openVoteModal(pollId,opt,pwrCost); };
+            window.commentOnly=function(pollId){ openVoteModal(pollId,null,0); };
+            function openVoteModal(pollId,opt,pwrCost){
+                const cap=genCaptcha(); const poll=allPolls.find(p=>p.id===pollId||p.shortId===pollId); const defVis=poll?.defaultVis||''; const defVmark=poll?.defaultVmark!==false;
+                const visOptions = !defVis ? `<div class="form-group"><label>Visibility</label><select class="form-input" id="sigVis"><option value="public">🌐 Public</option><option value="private">🔒 Private</option><option value="postpoll">👥 Public Post-Poll</option></select></div>` : `<p style="font-size:0.75rem;color:var(--text-muted);margin-top:8px;">Visibility: <strong>${defVis}</strong></p>`;
+                openModal(`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="modal-header"><h3>${opt?'Vote: '+esc(opt):'Comment'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body"><textarea class="form-input" id="sigText" rows="2" placeholder="Share your thoughts..."></textarea><input class="form-input" id="sigMedia" placeholder="Media URL"><input type="file" id="sigFile" accept="image/*,video/*">${visOptions}${defVis?'':`<div class="toggle-row"><div class="toggle-switch${defVmark?' on':''}" id="sigVmark"></div> Show vote</div>`}<div class="captcha-box">🔐 ${cap} = ? <input type="number" id="capInput"></div><button class="btn btn-green" onclick="submitVote('${pollId}','${opt||''}',${pwrCost},'${defVis}')">Submit</button></div></div></div>`);
+            }
+            window.submitVote=function(pollId,opt,pwrCost,defVis){
+                if(!checkCaptcha(document.getElementById('capInput').value))return toast('Wrong CAPTCHA.');
+                const text=document.getElementById('sigText').value.trim(); let media=document.getElementById('sigMedia').value.trim(); const file=document.getElementById('sigFile')?.files?.[0]; if(file)media=URL.createObjectURL(file);
+                const vis = defVis || document.getElementById('sigVis')?.value || 'public';
+                const vmark = defVis ? true : (document.getElementById('sigVmark')?.classList.contains('on')??true);
+                db.ref('polls/'+pollId).transaction(data=>{ if(!data||new Date(data.expiration)<new Date())return; if(data.voterChoices?.[userId])return; if(!data.counts)data.counts={}; if(!data.voterChoices)data.voterChoices={}; if(opt){ data.counts[opt]=(data.counts[opt]||0)+1; data.voterChoices[userId]={choice:opt,textSignature:text,mediaSignature:media,visibility:vis,showVote:vmark,timestamp:firebase.database.ServerValue.TIMESTAMP}; } else{ if(!data.comments)data.comments={}; const cid=db.ref('polls/'+pollId+'/comments').push().key; data.comments[cid]={userId,text,mediaUrl:media,timestamp:firebase.database.ServerValue.TIMESTAMP,likes:{},dislikes:{}}; } return data; },(err,committed)=>{ closeModal(); if(err)toast('Error'); else if(!committed)toast(opt?'Voted!':'Comment added!'); });
+            };
+            window.toggleLike=function(pollId,commentId,type){ db.ref(`polls/${pollId}/comments/${commentId}`).transaction(data=>{ if(!data)return; if(!data.likes)data.likes={}; if(!data.dislikes)data.dislikes={}; const other=type==='like'?'dislikes':'likes'; const curr=type==='like'?'likes':'dislikes'; if(data[curr][userId]){delete data[curr][userId];}else{data[curr][userId]=true;if(data[other][userId])delete data[other][userId];} return data; }); };
+
+            function renderPollCard(poll){ const opts=poll.options||[], cols=poll.optionColors||[], cnts=poll.counts||{}, total=Object.values(cnts).reduce((a,b)=>a+b,0); const expired=new Date(poll.expiration)<new Date(), vd=poll.voterChoices?.[userId], hasVoted=!!vd; let mh=''; if(poll.mediaUrl){ const isVideo=/\.(mp4|webm|mov)/i.test(poll.mediaUrl); mh=isVideo?`<video src="${esc(poll.mediaUrl)}" controls style="max-width:100%;max-height:300px;border-radius:12px;"></video>`:`<img src="${esc(poll.mediaUrl)}" style="max-width:100%;max-height:300px;border-radius:12px;" onerror="this.style.display='none'">`; } const btns=opts.map((o,i)=>`<button class="vote-btn" style="border-color:${cols[i]||COLORS[i%COLORS.length]};color:${cols[i]||COLORS[i%COLORS.length]};" onclick="castVote('${poll.id}','${esc(o)}',${poll.pwrCost||1})" ${expired||hasVoted?'disabled':''}>${esc(o)}</button>`).join(''); const bars=opts.map((o,i)=>{ const cnt=cnts[o]||0, pct=total?Math.round(cnt/total*100):0; const col=cols[i]||COLORS[i%COLORS.length]; return`<div class="result-row"><span class="result-name" style="color:${col};">${esc(o)}</span><div class="result-track"><div class="result-fill" style="width:${pct}%;background:${col};"></div></div><span class="result-pct" style="color:${col};">${pct}%</span></div>`; }).join(''); const cmts=[]; if(poll.comments) Object.entries(poll.comments).forEach(([id,d])=>cmts.push({id,...d})); cmts.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)); let ch=cmts.map(c=>{ const lc=Object.keys(c.likes||{}).length, dc=Object.keys(c.dislikes||{}).length; return`<div class="comment-item"><div class="comment-meta"><span>${(c.userId||'').slice(0,10)}</span><span>${ts(c.timestamp)}</span><span><button class="like-btn${c.likes?.[userId]?' active-like':''}" onclick="toggleLike('${poll.id}','${c.id}','like')">👍 ${lc}</button><button class="like-btn${c.dislikes?.[userId]?' active-dislike':''}" onclick="toggleLike('${poll.id}','${c.id}','dislike')">👎 ${dc}</button></span></div>${c.text?`<div>${esc(c.text)}</div>`:''}${c.mediaUrl?`<a href="${esc(c.mediaUrl)}" target="_blank">📎</a>`:''}</div>`; }).join(''); return`<div class="poll-card"><div class="poll-meta"><span class="badge ${expired?'badge-ended':'badge-live'}">${expired?'ENDED':'LIVE'}</span></div><div class="info-pills"><span class="info-pill time">⏳ ${expired?ts(poll.expiration):countdown(poll.expiration)}</span><span class="info-pill date">📅 ${ts(poll.createdAt)}</span><span class="info-pill pwr">⚡ ${(poll.pwrCost||1).toFixed(4)} PWR</span><span class="info-pill time">🕐 ${dur(poll.createdAt,new Date(poll.expiration))}</span></div><div class="poll-title">${esc(poll.title)}</div>${mh?`<div class="poll-media">${mh}</div>`:''}<div class="vote-grid">${btns}<button class="vote-btn" style="border-color:var(--text-muted);color:var(--text-muted);" onclick="commentOnly('${poll.id}')">💬 Comment</button></div>${total>0?`<div class="results">${bars}</div>`:'<div style="font-size:0.8rem;color:var(--text-muted);">No votes yet.</div>'}${hasVoted?`<div style="font-size:0.75rem;color:var(--text-muted);margin-top:6px;">✅ You voted ${esc(vd.choice)}</div>`:''}<button class="btn" style="margin-top:8px;" onclick="document.getElementById('comments-${poll.id}').style.display=document.getElementById('comments-${poll.id}').style.display==='none'?'block':'none'">💬 Comments (${cmts.length})</button><div id="comments-${poll.id}" style="display:none;margin-top:8px;">${ch||'None'}</div></div>`; }
+
+            function renderFeed(){
+                const feed=document.getElementById('pollFeed');
+                if(loading){ feed.innerHTML='<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>'; return; }
+                let filtered = allPolls.slice();
+                // Global search overrides category filter
+                const query = searchQuery.trim().toLowerCase();
+                if (query) {
+                    filtered = filtered.filter(p => p.title.toLowerCase().includes(query));
+                    // Clear active tab visual (all tabs inactive)
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                } else {
+                    // Apply status filter
+                    if (activeFilter === 'live') {
+                        filtered = filtered.filter(p => new Date(p.expiration) >= new Date());
+                    } else if (activeFilter === 'ended') {
+                        filtered = filtered.filter(p => new Date(p.expiration) < new Date());
+                    } else if (activeFilter === 'votes') {
+                        // Show only polls the user voted in
+                        filtered = filtered.filter(p => p.voterChoices && p.voterChoices[userId]);
                     }
-                });
-                return { options, colors };
+                    // else 'all' shows everything
+                }
+                // Sort
+                const durFn = p => new Date(p.expiration) - new Date(p.createdAt);
+                if (sortBy === 'recent') filtered.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+                else if (sortBy === 'oldest') filtered.sort((a,b) => (a.createdAt||0) - (b.createdAt||0));
+                else if (sortBy === 'mostvoted') filtered.sort((a,b) => (Object.values(b.counts||{}).reduce((x,y)=>x+y,0)) - (Object.values(a.counts||{}).reduce((x,y)=>x+y,0)));
+                else if (sortBy === 'shortest') filtered.sort((a,b) => durFn(a) - durFn(b));
+                else if (sortBy === 'longest') filtered.sort((a,b) => durFn(b) - durFn(a));
+
+                feed.innerHTML = filtered.map(p => {
+                    const total = Object.values(p.counts||{}).reduce((a,b)=>a+b,0);
+                    const opts=p.options||[], cols=p.optionColors||[], cnts=p.counts||{};
+                    const pm = opts.map((o,i)=>({name:o,color:cols[i]||COLORS[i%COLORS.length],pct:total?Math.round((cnts[o]||0)/total*100):0})).sort((a,b)=>b.pct-a.pct);
+                    const top3 = pm.slice(0,3); const cc = Object.keys(p.comments||{}).length;
+                    return `<div class="history-item" onclick="viewPoll('${p.shortId||p.id}')">
+                        <div class="hi-circle">${dur(p.createdAt,new Date(p.expiration))}</div>
+                        <div class="hi-main"><div class="hi-title">${esc(p.title)}</div><div class="hi-sub">${ts(p.createdAt)} · ${total} votes · ${cc} comments</div></div>
+                        <div class="hi-top3">${top3.map(o=>`<span style="color:${o.color};"><span class="hi-dot" style="background:${o.color};"></span> ${o.name} ${o.pct}%</span>`).join(' ')}</div>
+                    </div>`;
+                }).join('');
             }
 
-            function showToast(msg) {
-                const t = document.createElement('div'); t.textContent=msg;
-                t.style.cssText='padding:10px 18px;border-radius:20px;font-weight:600;background:rgba(16,185,129,0.9);color:#fff;';
-                document.getElementById('toastContainer').appendChild(t);
-                setTimeout(()=>t.remove(), 2500);
+            function renderAll(){
+                renderFeed();
+                const liveCount = allPolls.filter(p=>new Date(p.expiration)>=new Date()).length;
+                document.getElementById('liveCount').textContent = liveCount;
+                document.getElementById('endedCount').textContent = allPolls.length - liveCount;
+                document.getElementById('totalVotesCount').textContent = allPolls.reduce((s,p)=>s+Object.values(p.counts||{}).reduce((a,b)=>a+b,0),0);
+                updatePwrUI();
+                // Banner: show only if there is a poll with >5 votes and not dismissed
+                if (!localStorage.getItem('banner_dismissed')) {
+                    const hotPoll = allPolls.find(p => Object.values(p.counts||{}).reduce((a,b)=>a+b,0) > 5);
+                    if (hotPoll) {
+                        document.getElementById('bannerContent').innerHTML = renderPollCard(hotPoll);
+                        document.getElementById('bannerCard').style.display = 'block';
+                    } else {
+                        document.getElementById('bannerCard').style.display = 'none';
+                    }
+                }
             }
 
-            window.toggleCreateForm = () => {
-                const form = document.getElementById('createForm');
-                if (form.style.display === 'block') closeCreateForm();
-                else {
-                    form.style.display = 'block';
-                    initOptions();
-                    document.getElementById('pollQuestion').focus();
-                    const exp = document.getElementById('pollExpiration');
-                    if (!exp.value) exp.value = new Date(Date.now()+86400000).toISOString().slice(0,16);
-                }
+            window.dismissBanner = function() {
+                document.getElementById('bannerCard').style.display = 'none';
+                localStorage.setItem('banner_dismissed', '1');
             };
-            window.closeCreateForm = () => {
-                document.getElementById('createForm').style.display = 'none';
-                document.getElementById('pollQuestion').value = '';
-                document.getElementById('pollContext').value = '';
-                document.getElementById('pollMedia').value = '';
-            };
+            window.viewPoll = function(id) { activePollId=id; updateUrl(id); const poll=allPolls.find(p=>p.shortId===activePollId||p.id===activePollId); if(poll) document.getElementById('pollFeed').innerHTML=renderPollCard(poll); };
+            window.goHome = function() { activePollId=null; clearUrl(); renderAll(); };
+            function updateUrl(id){ history.replaceState({},'',`?p=${id}`); }
+            function clearUrl(){ history.replaceState({},'',location.pathname); }
 
-            window.createPoll = function() {
-                const q = document.getElementById('pollQuestion').value.trim();
-                const expVal = document.getElementById('pollExpiration').value;
-                if (!q || !expVal) return showToast('Fill required fields.');
-                const expDate = new Date(expVal);
-                if (expDate <= new Date()) return showToast('Expiration must be in the future.');
-                const { options, colors } = getOptionsData();
-                if (options.length === 0) return showToast('Add at least one option.');
-
-                let mediaType=null, mediaUrl=null;
-                const media = document.getElementById('pollMedia').value.trim();
-                if (media) {
-                    const yt = media.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
-                    if (yt) { mediaType='youtube'; mediaUrl='https://www.youtube.com/embed/'+yt[1]; }
-                    else if (/\.(jpg|jpeg|png|gif|webp)$/i.test(media)) { mediaType='image'; mediaUrl=media; }
-                }
-
-                const ref = db.ref('polls').push();
-                ref.set({
-                    title: q, description: document.getElementById('pollContext').value.trim(),
-                    expiration: expDate.toISOString(), mediaType, mediaUrl,
-                    options, optionColors: colors,
-                    createdAt: firebase.database.ServerValue.TIMESTAMP, counts: {}
-                }).then(() => {
-                    selectedPollId = ref.key;
-                    updateUrl(ref.key);
-                    closeCreateForm();
-                    showToast('Poll published!');
-                }).catch(e => showToast('Error: '+e.message));
-            };
-
-            // ---- Voting & signatures ----
-            window.openSignatureModal = function(pollId, optionName) {
-                pendingVote = { pollId, option: optionName };
-                document.getElementById('sigOptionName').textContent = optionName;
-                document.getElementById('sigText').value = '';
-                document.getElementById('sigMedia').value = '';
-                currentVisibility = 'public';
-                currentShowVote = true;
-                document.querySelectorAll('.vis-toggle').forEach(btn => {
-                    btn.classList.remove('active');
-                    if (btn.dataset.vis === 'public') btn.classList.add('active');
+            // Tab & stat card event handlers
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    activeFilter = this.dataset.tab;
+                    searchQuery = ''; // clear search when changing tabs
+                    document.getElementById('searchInput').value = '';
+                    applyFilter();
                 });
-                document.getElementById('vmarkBtn').classList.add('active');
-                document.getElementById('signatureModal').style.display = 'flex';
-            };
-            window.closeSignatureModal = () => {
-                document.getElementById('signatureModal').style.display = 'none';
-                pendingVote = {};
-            };
-            window.toggleVmark = () => {
-                currentShowVote = !currentShowVote;
-                document.getElementById('vmarkBtn').classList.toggle('active', currentShowVote);
-            };
-            // Visibility toggle listeners
-            document.querySelectorAll('.vis-toggle').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.vis-toggle').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    currentVisibility = btn.dataset.vis;
+            });
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    document.querySelectorAll('.stat-card').forEach(s => s.classList.remove('active'));
+                    this.classList.add('active');
+                    const filter = this.dataset.filter;
+                    if (filter === 'votes') {
+                        activeFilter = 'votes';
+                        // deactivate all tabs
+                        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    } else {
+                        activeFilter = filter;
+                        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                        const tab = document.querySelector(`.tab[data-tab="${activeFilter}"]`);
+                        if (tab) tab.classList.add('active');
+                    }
+                    searchQuery = '';
+                    document.getElementById('searchInput').value = '';
+                    applyFilter();
                 });
             });
 
-            window.submitSignatureVote = function() {
-                const text = document.getElementById('sigText').value.trim();
-                const media = document.getElementById('sigMedia').value.trim();
-                finalizeVote(pendingVote.pollId, pendingVote.option, text, media, currentVisibility, currentShowVote);
-                closeSignatureModal();
-            };
-
-            function finalizeVote(pollId, optionName, textSig, mediaSig, visibility, showVote) {
-                const ref = db.ref('polls/'+pollId);
-                ref.transaction(data => {
-                    if (!data || new Date(data.expiration) < new Date()) return;
-                    if (data.voterChoices && data.voterChoices[voterId]) return;
-                    if (!data.counts) data.counts = {};
-                    if (!data.voterChoices) data.voterChoices = {};
-                    data.counts[optionName] = (data.counts[optionName]||0) + 1;
-                    data.voterChoices[voterId] = {
-                        choice: optionName,
-                        textSignature: textSig,
-                        mediaSignature: mediaSig,
-                        visibility: visibility,
-                        showVote: showVote,
-                        timestamp: firebase.database.ServerValue.TIMESTAMP
-                    };
-                    return data;
-                }, (err, committed) => {
-                    if (err) showToast('Vote failed.');
-                    else if (!committed) showToast('Already voted or poll ended.');
-                    else showToast('Vote recorded!');
-                });
-            }
-
-            window.castVote = function(pollId, optionName) {
-                const poll = allPolls.find(p=>p.id===pollId);
-                if (!poll || new Date(poll.expiration) < new Date()) return showToast('Poll ended.');
-                if (poll.voterChoices && poll.voterChoices[voterId]) return showToast('Already voted.');
-                openSignatureModal(pollId, optionName);
-            };
-
-            // ---- Share & navigation ----
-            window.copyShareLink = (pollId) => {
-                const url = new URL(window.location);
-                url.searchParams.set('poll', pollId);
-                navigator.clipboard.writeText(url.href).then(()=>showToast('🔗 Link copied!'));
-            };
-            window.goHome = () => { selectedPollId = null; clearUrl(); renderAll(); };
-            function updateUrl(id) { const u = new URL(window.location); u.searchParams.set('poll', id); history.replaceState({}, '', u); }
-            function clearUrl() { const u = new URL(window.location); u.searchParams.delete('poll'); history.replaceState({}, '', u); }
-
-            // ---- Filters ----
-            window.setFilterTab = (tab) => {
-                filterTab = tab;
-                document.getElementById('tabLive').classList.toggle('active', tab==='live');
-                document.getElementById('tabEnded').classList.toggle('active', tab==='ended');
+            document.getElementById('searchInput').addEventListener('input', function() {
+                searchQuery = this.value;
                 applyFilter();
-            };
-            window.applyFilter = () => {
-                sortBy = document.getElementById('sortSelect').value;
-                searchQuery = document.getElementById('searchInput').value.toLowerCase();
-                renderHistory();
-            };
+            });
+            document.getElementById('sortSelect').addEventListener('change', function() {
+                sortBy = this.value;
+                applyFilter();
+            });
 
-            function getFilteredPolls() {
-                let filtered = allPolls.filter(p => {
-                    const live = new Date(p.expiration) >= new Date();
-                    if (filterTab==='live' && !live) return false;
-                    if (filterTab==='ended' && live) return false;
-                    if (searchQuery && !p.title.toLowerCase().includes(searchQuery)) return false;
-                    return true;
-                });
-                const dur = p => new Date(p.expiration) - new Date(p.createdAt);
-                if (sortBy==='recent') filtered.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-                else if (sortBy==='oldest') filtered.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
-                else if (sortBy==='shortest') filtered.sort((a,b)=>dur(a)-dur(b));
-                else if (sortBy==='longest') filtered.sort((a,b)=>dur(b)-dur(a));
-                return filtered;
-            }
-
-            function getElapsed(ts) {
-                if (!ts) return '';
-                const diff = Date.now() - ts, s=Math.floor(diff/1000), m=Math.floor(s/60), h=Math.floor(m/60), d=Math.floor(h/24);
-                if (s<60) return 'just now';
-                if (m<60) return m+'m ago';
-                if (h<24) return h+'h ago';
-                if (d<7) return d+'d ago';
-                if (d<30) return Math.floor(d/7)+'w ago';
-                if (d<365) return Math.floor(d/30)+'mo ago';
-                return Math.floor(d/365)+'y ago';
-            }
-            function getDurationShort(p) {
-                const sec = (new Date(p.expiration) - new Date(p.createdAt))/1000;
-                if (sec<60) return Math.round(sec)+'s';
-                if (sec<3600) return Math.round(sec/60)+'m';
-                if (sec<86400) return Math.round(sec/3600)+'h';
-                if (sec<604800) return Math.round(sec/86400)+'d';
-                if (sec<2592000) return Math.round(sec/604800)+'w';
-                if (sec<31536000) return Math.round(sec/2592000)+'mo';
-                return Math.round(sec/31536000)+'y';
-            }
-
-            function renderMainView() {
-                const container = document.getElementById('mainView');
-                if (selectedPollId) {
-                    const poll = allPolls.find(p=>p.id===selectedPollId);
-                    if (!poll) { container.innerHTML='<div class="welcome-card">Poll not found.</div>'; return; }
-                    const options = poll.options||[], colors = poll.optionColors||[], counts = poll.counts||{};
-                    const total = Object.values(counts).reduce((a,b)=>a+b,0);
-                    const expired = new Date(poll.expiration) < new Date();
-                    const voterData = poll.voterChoices?.[voterId];
-                    const hasVoted = !!voterData;
-                    const disabled = expired || hasVoted;
-                    let mediaHtml = '';
-                    if (poll.mediaType==='image' && poll.mediaUrl) mediaHtml=`<img src="${escapeHtml(poll.mediaUrl)}" style="max-width:100%; border-radius:12px;">`;
-                    else if (poll.mediaType==='youtube' && poll.mediaUrl) mediaHtml=`<iframe src="${escapeHtml(poll.mediaUrl)}" style="width:100%; height:300px;"></iframe>`;
-
-                    const voteBtns = options.map((opt,i) => {
-                        const color = colors[i] || DEFAULT_COLORS[i % DEFAULT_COLORS.length];
-                        return `<button class="vote-btn" style="border-color:${color}; color:${color};" onclick="castVote('${poll.id}','${escapeHtml(opt)}')" ${disabled?'disabled':''}>
-                            <span class="option-dot" style="background:${color};"></span> ${escapeHtml(opt)}
-                        </button>`;
-                    }).join('');
-
-                    const resultBars = options.map((opt,i) => {
-                        const count = counts[opt]||0, pct = total ? Math.round(count/total*100) : 0;
-                        const color = colors[i] || DEFAULT_COLORS[i % DEFAULT_COLORS.length];
-                        return `<div class="result-row">
-                            <span class="result-label" style="color:${color};"><span class="option-dot" style="background:${color};"></span> ${escapeHtml(opt)}</span>
-                            <div class="result-bar-bg"><div class="result-bar-fill" style="width:${pct}%; --fill-color:${color}; --fill-color-dark:${color};"></div></div>
-                            <span class="result-percent" style="color:${color};">${pct}%</span>
-                        </div>`;
-                    }).join('');
-
-                    const expiryDate = new Date(poll.expiration).toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
-                    const closedText = expired ? `📅 Closed on ${expiryDate}` : '';
-
-                    // Build comments section
-                    const commentsHtml = renderCommentsSection(poll);
-
-                    container.innerHTML = `
-                    <div class="poll-card">
-                        <div class="poll-meta">
-                            <span class="badge ${expired?'badge-ended':'badge-live'}">${expired?'ENDED':'LIVE'}</span>
-                            <span>${expired ? closedText : '⏳ ' + getCountdown(poll.expiration)}</span>
-                            <span style="flex:1;"></span>
-                            <button class="btn-icon" onclick="copyShareLink('${poll.id}')">🔗 Share</button>
-                        </div>
-                        <h2>${escapeHtml(poll.title)}</h2>
-                        ${poll.description ? `<p style="color:var(--text-secondary);">${escapeHtml(poll.description)}</p>` : ''}
-                        ${mediaHtml ? `<div style="margin:12px 0;">${mediaHtml}</div>` : ''}
-                        <div style="display:flex; gap:8px; flex-wrap:wrap; margin:16px 0;">${voteBtns}</div>
-                        ${total>0 ? `<div class="results-area">${resultBars}</div>` : '<div style="color:var(--text-muted);">No votes yet.</div>'}
-                        ${hasVoted ? `<div style="margin-top:8px;">✅ You voted <strong>${escapeHtml(voterData.choice)}</strong></div>` : ''}
-                        ${commentsHtml}
-                    </div>`;
-                    if (!expired) startCountdown(poll.expiration);
-                } else {
-                    const liveC = allPolls.filter(p=>new Date(p.expiration)>=new Date()).length;
-                    container.innerHTML = `
-                    <div class="welcome-card">
-                        <h1>📊 Sentix</h1>
-                        <p>Create custom polls with any options you want. Vote, share, and see live results.</p>
-                        <div style="display:flex; gap:20px; justify-content:center; margin:20px 0;">
-                            <div><strong>${liveC}</strong> live</div><div><strong>${allPolls.length-liveC}</strong> ended</div>
-                            <div><strong>${allPolls.reduce((s,p)=>s+Object.values(p.counts||{}).reduce((a,b)=>a+b,0),0)}</strong> votes</div>
-                        </div>
-                        <button class="btn-explore" onclick="setFilterTab('live');document.getElementById('historyList').scrollIntoView({behavior:'smooth'});">Explore Live Polls</button>
-                    </div>`;
-                }
-            }
-
-            function renderCommentsSection(poll) {
-                const comments = [];
-                if (poll.voterChoices) {
-                    const isExpired = new Date(poll.expiration) < new Date();
-                    Object.entries(poll.voterChoices).forEach(([vid, data]) => {
-                        if (vid === voterId || data.visibility === 'public' || (data.visibility === 'postpoll' && isExpired)) {
-                            comments.push({ ...data, voterId: vid });
-                        }
-                    });
-                }
-                comments.sort((a,b) => (b.timestamp||0) - (a.timestamp||0));
-                let commentsList = '';
-                comments.forEach(c => {
-                    const shortId = c.voterId.slice(0,10);
-                    const absTime = c.timestamp ? new Date(c.timestamp).toLocaleString() : '';
-                    const relTime = c.timestamp ? getElapsed(c.timestamp) : '';
-                    const showChoice = c.showVote && (c.visibility !== 'private');
-                    let choiceHtml = '';
-                    if (showChoice) {
-                        const color = poll.optionColors?.[poll.options?.indexOf(c.choice)] || DEFAULT_COLORS[0];
-                        choiceHtml = `<span class="comment-vote-badge" style="border:1px solid ${color}; color:${color};"><span class="option-dot" style="background:${color};"></span> ${escapeHtml(c.choice)}</span>`;
-                    }
-                    commentsList += `
-                    <div class="comment-entry">
-                        <div class="comment-header">
-                            <span>${shortId}</span>
-                            <div class="comment-time-box green">${absTime}</div>
-                            <div class="comment-time-box blue">${relTime}</div>
-                            ${choiceHtml}
-                        </div>
-                        ${c.textSignature ? `<div class="comment-body">💬 ${escapeHtml(c.textSignature)}</div>` : ''}
-                        ${c.mediaSignature ? `<div class="comment-body">🖼️ <a href="${escapeHtml(c.mediaSignature)}" target="_blank" style="color:var(--accent);">View media</a></div>` : ''}
-                    </div>`;
-                });
-                const count = comments.length;
-                return `
-                <button class="comments-toggle-btn" onclick="toggleComments('${poll.id}')">💬 Comments (${count})</button>
-                <div class="comments-section" id="comments-${poll.id}" style="display:none;">
-                    ${commentsList || '<div style="color:var(--text-muted);">No public comments yet.</div>'}
-                </div>`;
-            }
-
-            window.toggleComments = function(pollId) {
-                const el = document.getElementById('comments-'+pollId);
-                if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
-            };
-
-            function renderHistory() {
-                const list = document.getElementById('historyList');
-                const filtered = getFilteredPolls();
-                if (!filtered.length) { list.innerHTML='<div style="text-align:center;padding:20px;">No polls.</div>'; return; }
-                list.innerHTML = filtered.map(p => {
-                    const options = p.options||[], colors = p.optionColors||[], counts = p.counts||{};
-                    const total = Object.values(counts).reduce((a,b)=>a+b,0);
-                    const percentMap = options.map((opt,i) => ({
-                        name: opt, color: colors[i] || DEFAULT_COLORS[i % DEFAULT_COLORS.length],
-                        pct: total ? Math.round((counts[opt]||0)/total*100) : 0
-                    })).sort((a,b)=>b.pct - a.pct);
-                    const top2 = percentMap.slice(0,2);
-                    return `
-                    <div class="history-item" onclick="viewPoll('${p.id}')">
-                        <div class="hi-left">
-                            <span class="hi-title">${escapeHtml(p.title)}</span>
-                            <span class="hi-time" data-timestamp="${p.createdAt}">${getElapsed(p.createdAt)}</span>
-                        </div>
-                        <div class="hi-duration-badge">${getDurationShort(p)}</div>
-                        <div class="hi-sentiments">
-                            ${top2.map(o => `
-                                <div class="sentiment-badge">
-                                    <span class="sentiment-dot" style="background:${o.color};"></span>
-                                    <span style="color:${o.color};">${o.name} ${o.pct}%</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>`;
-                }).join('');
-                document.querySelectorAll('.hi-time').forEach(el => {
-                    const ts = parseInt(el.dataset.timestamp);
-                    if (ts) el.textContent = getElapsed(ts);
-                });
-            }
-
-            window.viewPoll = (id) => { selectedPollId = id; updateUrl(id); renderAll(); document.getElementById('mainView').scrollIntoView({behavior:'smooth'}); };
-
-            function startCountdown(exp) {
-                clearInterval(countdownInterval);
-                countdownInterval = setInterval(() => {
-                    const badge = document.querySelector('.poll-card .badge-countdown');
-                    if (badge) badge.textContent = '⏳ ' + getCountdown(exp);
-                    if (new Date(exp) < new Date()) { clearInterval(countdownInterval); renderAll(); }
-                }, 1000);
-            }
-
-            function getCountdown(exp) {
-                const d = new Date(exp) - new Date();
-                if (d<=0) return 'Ended';
-                const s=Math.floor(d/1000), m=Math.floor(s/60), h=Math.floor(m/60), days=Math.floor(h/24);
-                if(days) return days+'d '+h%24+'h';
-                if(h) return h+'h '+m%60+'m';
-                if(m) return m+'m '+s%60+'s';
-                return s+'s';
-            }
-
-            function escapeHtml(s) { const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-
-            function renderAll() {
-                renderMainView();
-                renderHistory();
-                const liveC = allPolls.filter(p=>new Date(p.expiration)>=new Date()).length;
-                document.getElementById('liveCount').textContent = liveC;
-                document.getElementById('endedCount').textContent = allPolls.length - liveC;
-                document.getElementById('totalVotesCount').textContent = allPolls.reduce((s,p)=>s+Object.values(p.counts||{}).reduce((a,b)=>a+b,0),0);
-            }
+            function applyFilter() { renderFeed(); }
 
             // Firebase sync
             db.ref('polls').on('value', snap => {
+                loading = false;
                 const data = snap.val();
                 allPolls = [];
                 if (data) Object.keys(data).forEach(k => allPolls.push({id:k, ...data[k]}));
-                allPolls.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-                renderAll();
+                allPolls.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+                if (activePollId) {
+                    const poll = allPolls.find(p => p.shortId===activePollId || p.id===activePollId);
+                    if (poll) document.getElementById('pollFeed').innerHTML = renderPollCard(poll);
+                } else {
+                    renderAll();
+                }
             });
 
-            // URL init
-            const urlPoll = new URLSearchParams(window.location.search).get('poll');
-            selectedPollId = urlPoll || null;
-
-            // Time refresher
-            setInterval(() => {
-                document.querySelectorAll('.hi-time').forEach(el => {
-                    const ts = parseInt(el.dataset.timestamp);
-                    if (ts) el.textContent = getElapsed(ts);
-                });
-            }, 30000);
-
-            initOptions();
+            const urlPoll = new URLSearchParams(location.search).get('p');
+            if (urlPoll) { activePollId = urlPoll; }
+            else { activePollId = null; }
+            updatePwrUI();
+            document.getElementById('pollFeed').innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
         })();
     </script>
 </body>
-    </html>
-
-            
+            </html>
