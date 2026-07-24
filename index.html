@@ -77,6 +77,8 @@
             -webkit-background-clip:text; -webkit-text-fill-color:transparent;
         }
         .header-actions { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+        .back-btn { display:none; background:var(--bg-secondary); border:1px solid var(--border-medium); color:var(--text-secondary); border-radius:50%; width:34px; height:34px; align-items:center; justify-content:center; cursor:pointer; }
+        .back-btn.visible { display:flex; }
         .pwr-wrapper { position:relative; }
         .pwr-badge {
             display:flex; align-items:center; gap:5px; padding:5px 12px;
@@ -128,7 +130,6 @@
         .banner-close { position:absolute; top:8px; right:12px; background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1rem; }
         .banner-close:hover { color:var(--red); }
 
-        /* Global Search Bar */
         .global-search { margin-bottom:12px; }
         .global-search input {
             width:100%; padding:10px 16px; border-radius:var(--radius-lg); font-size:0.88rem;
@@ -184,6 +185,9 @@
         .hi-dot { width:7px; height:7px; border-radius:2px; display:inline-block; }
         .comment-item { padding:10px 12px; background:rgba(128,128,128,0.03); border-radius:var(--radius-sm); margin-bottom:6px; border:1px solid var(--border-subtle); }
         .comment-meta { font-size:0.66rem; color:var(--text-muted); display:flex; gap:8px; align-items:center; flex-wrap:wrap; font-family:'JetBrains Mono', monospace; }
+        .comment-badge { display:inline-block; padding:2px 6px; border-radius:6px; font-size:0.6rem; font-weight:700; }
+        .comment-badge.voted { background:rgba(16,185,129,0.2); color:#10b981; }
+        .comment-badge.opinion { background:rgba(245,158,11,0.2); color:#f59e0b; }
         .like-btn { background:none; border:none; cursor:pointer; padding:3px 7px; border-radius:6px; font-size:0.82rem; color:var(--text-muted); transition:all 0.15s; }
         .like-btn:hover { background:rgba(128,128,128,0.1); }
         .like-btn.active-like { color:var(--green); background:rgba(16,185,129,0.1); }
@@ -211,7 +215,7 @@
         .exp-chip:hover { border-color:var(--border-active); color:var(--text-primary); }
         .exp-chip.active { background:var(--accent); color:#fff; border-color:var(--accent); }
 
-        .dropzone { border:2px dashed var(--border-medium); border-radius:var(--radius-md); padding:24px 16px; text-align:center; cursor:pointer; transition:all 0.25s; background:rgba(255,255,255,0.01); }
+        .dropzone { border:2px dashed var(--border-medium); border-radius:var(--radius-md); padding:24px 16px; text-align:center; cursor:pointer; transition:all 0.25s; background:rgba(255,255,255,0.01); position:relative; }
         .dropzone:hover { border-color:var(--accent); background:rgba(56,189,248,0.04); }
         .dropzone.has-preview { padding:8px; }
         .dropzone .dz-icon { font-size:1.8rem; color:var(--text-muted); }
@@ -249,7 +253,10 @@
 
     <div class="app-container">
         <div class="compact-header">
-            <div class="logo" onclick="goHome()"><i class="fa-solid fa-chart-line"></i><span>Sentix</span></div>
+            <div style="display:flex;align-items:center;gap:10px;">
+                <button class="back-btn" id="backBtn" onclick="goHome()"><i class="fa-solid fa-arrow-left"></i></button>
+                <div class="logo" onclick="goHome()"><i class="fa-solid fa-chart-line"></i><span>Sentix</span></div>
+            </div>
             <div class="header-actions">
                 <div class="pwr-wrapper">
                     <span class="pwr-badge" onclick="openPwrPanel()" id="pwrDisplay">⚡ 0.0000</span>
@@ -272,12 +279,10 @@
             <div id="bannerContent"></div>
         </div>
 
-        <!-- Global Search -->
         <div class="global-search">
             <input type="search" id="searchInput" placeholder="Search polls across all categories..." oninput="applyFilter()">
         </div>
 
-        <!-- Filter Tabs & Sort -->
         <div class="filter-bar">
             <button class="tab active" data-tab="live">Live</button>
             <button class="tab" data-tab="ended">Ended</button>
@@ -314,8 +319,10 @@
             const db = firebase.database();
 
             const COLORS = ['#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899','#06b6d4','#f97316','#84cc16','#14b8a6','#6366f1','#000000','#ffd700','#c0c0c0','#ff6b6b','#4ecdc4','#45b7d1','#bb8fce','#f7dc6f','#e84393','#00b894'];
-            let allPolls=[], activeFilter='live', sortBy='recent', searchQuery='', loading=true, activePollId=null, showOnlyVoted=false;
+            let allPolls=[], activeFilter='live', sortBy='recent', searchQuery='', loading=true, activePollId=null;
             let currentMediaFile=null, currentMediaUrl='';
+            let selectedPreset = null;
+            const MAX_FILE_SIZE_MB = 2;
             const userId = (()=>{ let id=localStorage.getItem('sx_uid'); if(!id){id='u'+Date.now().toString(36)+Math.random().toString(36).substr(2,6);localStorage.setItem('sx_uid',id);} return id; })();
 
             function getPwr(){ return JSON.parse(localStorage.getItem('sx_pwr')||'{"balance":1000,"lastClaim":0,"history":[]}'); }
@@ -326,7 +333,7 @@
 
             function toast(msg){ const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.getElementById('toastRoot').appendChild(t); setTimeout(()=>t.remove(),2400); }
             function esc(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
-            function ts(d){ if(!d)return''; const diff=Date.now()-d,s=Math.floor(diff/1000),m=Math.floor(s/60),h=Math.floor(m/60),dd=Math.floor(h/24); if(s<60)return'just now'; if(m<60)return m+'m ago'; if(h<24)return h+'h ago'; if(dd<7)return dd+'d ago'; if(dd<30)return Math.floor(dd/7)+'w ago'; if(dd<365)return Math.floor(dd/30)+'mo ago'; return Math.floor(dd/365)+'y ago'; }
+            function safeTs(d){ if(!d) return ''; const t = new Date(d).getTime(); if(isNaN(t)) return 'Invalid date'; const diff=Date.now()-t; const s=Math.floor(diff/1000),m=Math.floor(s/60),h=Math.floor(m/60),dd=Math.floor(h/24); if(s<60)return'just now'; if(m<60)return m+'m ago'; if(h<24)return h+'h ago'; if(dd<7)return dd+'d ago'; if(dd<30)return Math.floor(dd/7)+'w ago'; if(dd<365)return Math.floor(dd/30)+'mo ago'; return Math.floor(dd/365)+'y ago'; }
             function dur(a,b){ const s=(b-a)/1000; if(s<60)return Math.round(s)+'s'; if(s<3600)return Math.round(s/60)+'m'; if(s<86400)return Math.round(s/3600)+'h'; if(s<604800)return Math.round(s/86400)+'d'; if(s<2592000)return Math.round(s/604800)+'w'; if(s<31536000)return Math.round(s/2592000)+'mo'; return Math.round(s/31536000)+'y'; }
             function countdown(exp){ const d=new Date(exp)-new Date(); if(d<=0)return'Ended'; const s=Math.floor(d/1000),m=Math.floor(s/60),h=Math.floor(m/60),dd=Math.floor(h/24); if(dd>0)return dd+'d '+h%24+'h'; if(h>0)return h+'h '+m%60+'m'; return m+'m '+s%60+'s'; }
             function shortId(){ const c='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'; let s=''; for(let i=0;i<8;i++)s+=c[Math.floor(Math.random()*62)]; return s; }
@@ -337,194 +344,351 @@
             window.closeModal=function(){ document.getElementById('modalRoot').innerHTML=''; };
             window.toggleTheme=function(){ const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme',t); document.getElementById('themeBtn').textContent=t==='dark'?'🌙':'☀️'; };
 
+            // Back button visibility
+            function updateBackButton() { const btn=document.getElementById('backBtn'); if(activePollId) btn.classList.add('visible'); else btn.classList.remove('visible'); }
+
             window.openPwrPanel=function(){ const d=getPwr(); const hist=d.history.slice(-15).reverse().map(h=>`<div style="font-size:0.7rem;color:var(--text-secondary);">${new Date(h.time).toLocaleString()} — ${h.amount>0?'+':''}${h.amount.toFixed(4)} PWR (${h.method})</div>`).join('');
                 openModal(`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="modal-header"><h3>⚡ Power</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body"><p style="font-size:1.4rem;font-weight:800;">${d.balance.toFixed(4)} PWR</p><button class="btn btn-green" onclick="claimPwr()">Claim Daily +1</button><div style="margin-top:10px;max-height:200px;overflow-y:auto;">${hist||'No history.'}</div></div></div></div>`); };
-            window.openProfile=function(){ const p=JSON.parse(localStorage.getItem('sx_profile')||'{}');
-                openModal(`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="modal-header"><h3>👤 Profile</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body"><div class="form-group"><label>Your ID</label><input class="form-input" value="${userId}" readonly></div><div class="form-group"><label>Wallet / Contact</label><input class="form-input" id="profInput" value="${esc(p.info||'')}" placeholder="Wallet address, email, etc."></div><div class="form-group"><label>Display Name</label><input class="form-input" id="profName" value="${esc(p.name||'')}" placeholder="Optional name"></div><button class="btn btn-accent" onclick="saveProfile()">Save</button></div></div></div>`); };
-            window.saveProfile=function(){ localStorage.setItem('sx_profile',JSON.stringify({info:document.getElementById('profInput').value.trim(),name:document.getElementById('profName').value.trim()})); toast('Saved!'); closeModal(); };
-
-            // Creation form (unchanged)
-            window.openCreateForm=function(){
-                currentMediaFile=null; currentMediaUrl='';
-                const pwrData=getPwr(); const balanceOk=pwrData.balance>=10;
-                const expDate=new Date(Date.now()+86400000);
-                let optHtml=''; for(let i=0;i<3;i++) optHtml+=`<div class="option-row"><input type="color" class="opt-color-input opt-color" value="${COLORS[i]}"><input class="form-input opt-text-input opt-text" value="${['Bullish','Bearish','Neutral'][i]}"><button class="btn btn-red opt-remove" onclick="this.parentElement.remove()">×</button></div>`;
-                openModal(`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="modal-header"><h3>📝 Create New Poll</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body"><div class="fee-bar ${balanceOk?'':'warning'}"><span>⚡ Creation Fee: <strong class="fee-amount">10 PWR</strong></span><span>Balance: <strong id="createBal">${pwrData.balance.toFixed(4)}</strong> PWR ${balanceOk?'✅':'⚠️ Low'}</span></div><div class="form-group"><label>Question *</label><input class="form-input" id="crQ" placeholder="What would you like to ask the community?"></div><div class="form-group"><label>Poll Options *</label><div id="optContainer">${optHtml}</div><button class="btn" onclick="addOptRow()">+ Add Option</button></div><div class="form-group"><label>Expiration</label><div class="exp-chips" id="expChips"><button class="exp-chip active" data-minutes="5">5 min</button><button class="exp-chip" data-hours="1">1 hr</button><button class="exp-chip" data-hours="4">4 hr</button><button class="exp-chip" data-hours="24">24 hr</button><button class="exp-chip" data-hours="24" data-days="1">1 day</button><button class="exp-chip" data-hours="168">1 Week</button><button class="exp-chip" data-custom="true">📅 Custom</button></div><input class="form-input" type="datetime-local" id="crExp" value="${expDate.toISOString().slice(0,16)}"></div><div class="form-group"><label>Media (optional)</label><div class="dropzone" id="dropzone" onclick="document.getElementById('crMediaFile').click()"><div class="dz-placeholder"><i class="fa-solid fa-cloud-arrow-up dz-icon"></i><div class="dz-text">Drag & drop or tap to upload</div><div class="dz-hint">Images, videos, or paste a URL below</div><div class="paste-url-row" onclick="event.stopPropagation()"><input type="text" id="pasteUrlInput" placeholder="Paste image/video URL..."><button class="btn btn-accent" style="padding:5px 10px;font-size:0.7rem;" onclick="handlePasteUrl()">Add</button></div></div><input type="file" id="crMediaFile" accept="image/*,video/*" onchange="handleMediaSelect(this)"></div></div><div class="advanced-toggle" id="advToggle" onclick="toggleAdvanced()"><i class="fa-solid fa-chevron-down"></i> Advanced Settings</div><div class="advanced-panel" id="advPanel"><div class="form-group"><label>PWR Cost Per Vote</label><input class="form-input" type="number" id="crPwr" value="1" min="0.0001" step="0.0001"></div><div class="form-group"><label>Default Visibility</label><select class="form-input" id="crVis"><option value="">🌐 Voters choose</option><option value="public">🌐 Public</option><option value="private">🔒 Private</option><option value="postpoll">👥 Public Post-Poll</option></select></div><div class="toggle-row" onclick="document.getElementById('crVmark').classList.toggle('on')"><div class="toggle-switch" id="crVmark"></div> Default Vmark</div></div></div><div class="modal-footer"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-green" onclick="publishPoll()">🚀 Publish</button></div></div></div>`);
-                document.querySelectorAll('.exp-chip').forEach(chip=>{ chip.addEventListener('click', function(){ document.querySelectorAll('.exp-chip').forEach(c=>c.classList.remove('active')); this.classList.add('active'); const minutes=this.dataset.minutes?parseInt(this.dataset.minutes):0; const hours=this.dataset.hours?parseInt(this.dataset.hours):0; const days=this.dataset.days?parseInt(this.dataset.days):0; const expInput=document.getElementById('crExp'); if(!this.dataset.custom&&(minutes||hours||days)){ const ms=((days*24+hours)*60+minutes)*60000; const d=new Date(Date.now()+ms); expInput.value=d.toISOString().slice(0,16); } }); });
+            window.openProfile=function(){
+                const p=JSON.parse(localStorage.getItem('sx_profile')||'{}');
+                openModal(`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="modal-header"><h3>👤 Profile</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body">
+                    <div class="form-group"><label>Your ID</label><div style="display:flex;gap:8px;"><input class="form-input" value="${userId}" readonly><button class="btn" onclick="copyUserId()">📋 Copy</button></div></div>
+                    <div class="form-group"><label>Display Name</label><input class="form-input" id="profName" value="${esc(p.name||'')}" placeholder="Enter display name"></div>
+                    <div class="form-group"><label>Wallet Address (optional)</label><input class="form-input" id="profWallet" value="${esc(p.wallet||'')}" placeholder="0x..."></div>
+                    <div class="form-group"><label>Contact Email (optional)</label><input class="form-input" id="profEmail" value="${esc(p.email||'')}" placeholder="email@example.com"></div>
+                    <button class="btn btn-accent" onclick="saveProfile()">💾 Save</button>
+                </div></div></div>`);
             };
-            window.handleMediaSelect=function(input){ const file=input.files[0]; if(!file)return; currentMediaFile=file; currentMediaUrl=URL.createObjectURL(file); updateDropzonePreview(currentMediaUrl, file.type.startsWith('video/')); };
-            window.handlePasteUrl=function(){ const url=document.getElementById('pasteUrlInput').value.trim(); if(!url)return; currentMediaFile=null; currentMediaUrl=url; updateDropzonePreview(url, /\.(mp4|webm|mov)/i.test(url)); };
-            function updateDropzonePreview(src,isVideo){ const dz=document.getElementById('dropzone'); dz.classList.add('has-preview'); dz.innerHTML=`${isVideo?`<video src="${esc(src)}" controls class="preview-img"></video>`:`<img src="${esc(src)}" class="preview-img" onerror="this.style.display='none'">`}<button class="remove-preview" onclick="event.stopPropagation();clearMediaPreview()">✕</button><input type="file" id="crMediaFile" accept="image/*,video/*" onchange="handleMediaSelect(this)" style="display:none;">`; dz.onclick=function(){ document.getElementById('crMediaFile').click(); }; }
-            window.clearMediaPreview=function(){ currentMediaFile=null; currentMediaUrl=''; const dz=document.getElementById('dropzone'); dz.classList.remove('has-preview'); dz.innerHTML=`<div class="dz-placeholder"><i class="fa-solid fa-cloud-arrow-up dz-icon"></i><div class="dz-text">Drag & drop or tap to upload</div><div class="dz-hint">Images, videos, or paste a URL below</div><div class="paste-url-row" onclick="event.stopPropagation()"><input type="text" id="pasteUrlInput" placeholder="Paste image/video URL..."><button class="btn btn-accent" style="padding:5px 10px;font-size:0.7rem;" onclick="handlePasteUrl()">Add</button></div></div><input type="file" id="crMediaFile" accept="image/*,video/*" onchange="handleMediaSelect(this)">`; dz.onclick=function(){ document.getElementById('crMediaFile').click(); }; };
-            window.toggleAdvanced=function(){ const p=document.getElementById('advPanel'); const t=document.getElementById('advToggle'); p.classList.toggle('open'); t.classList.toggle('open'); };
-            window.addOptRow=function(){ const c=document.getElementById('optContainer'); const i=c.children.length; const r=document.createElement('div'); r.className='option-row'; r.innerHTML=`<input type="color" class="opt-color-input opt-color" value="${COLORS[i%COLORS.length]}"><input class="form-input opt-text-input opt-text" placeholder="Option ${i+1}"><button class="btn btn-red opt-remove" onclick="this.parentElement.remove()">×</button>`; c.appendChild(r); };
+            window.copyUserId = function() { navigator.clipboard.writeText(userId).then(()=>toast('User ID copied!')); };
+            window.saveProfile = function() {
+                const profile = {
+                    name: document.getElementById('profName').value.trim(),
+                    wallet: document.getElementById('profWallet').value.trim(),
+                    email: document.getElementById('profEmail').value.trim()
+                };
+                localStorage.setItem('sx_profile', JSON.stringify(profile));
+                toast('Profile saved!');
+                closeModal();
+            };
 
-            window.publishPoll=function(){
-                const pwrData=getPwr(); if(pwrData.balance<10) return toast('Insufficient PWR. Need 10 PWR.');
+            // ========== POLL CREATION (with fixes) ==========
+            window.openCreateForm = function(){
+                currentMediaFile=null; currentMediaUrl=''; selectedPreset = null;
+                const pwrData=getPwr(); const expDate=new Date(Date.now()+86400000);
+                let optHtml=''; for(let i=0;i<3;i++) optHtml+=`<div class="option-row"><input type="color" class="opt-color-input opt-color" value="${COLORS[i]}"><input class="form-input opt-text-input opt-text" value="${['Bullish','Bearish','Neutral'][i]}"><button class="btn btn-red opt-remove" onclick="this.parentElement.remove()">×</button></div>`;
+
+                openModal(`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="modal-header"><h3>📝 Create New Poll</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body">
+                    <div class="fee-bar" id="feeBar"><span>⚡ Creation Fee: <strong class="fee-amount" id="feeAmount">10 PWR</strong></span><span>Balance: <strong id="createBal">${pwrData.balance.toFixed(4)}</strong> PWR</span></div>
+                    <div class="form-group"><label>Question *</label><input class="form-input" id="crQ" placeholder="What would you like to ask?"></div>
+                    <div class="form-group"><label>Poll Options *</label><div id="optContainer">${optHtml}</div><button class="btn" onclick="addOptRow()">+ Add Option</button></div>
+                    <div class="form-group"><label>Expiration</label>
+                        <div class="exp-chips" id="expChips">
+                            <button class="exp-chip" data-minutes="5">5 min</button>
+                            <button class="exp-chip" data-hours="1">1 hr</button>
+                            <button class="exp-chip" data-hours="4">4 hr</button>
+                            <button class="exp-chip" data-hours="24">24 hr</button>
+                            <button class="exp-chip" data-hours="24" data-days="1">1 day</button>
+                            <button class="exp-chip" data-hours="168">1 Week</button>
+                            <button class="exp-chip" data-custom="true">📅 Custom</button>
+                        </div>
+                        <input class="form-input" type="datetime-local" id="crExp" value="${expDate.toISOString().slice(0,16)}" oninput="handleCustomExpInput()">
+                    </div>
+                    <div class="form-group"><label>Media (optional)</label>
+                        <div class="dropzone" id="dropzone" onclick="document.getElementById('crMediaFile').click()">
+                            <div class="dz-placeholder"><i class="fa-solid fa-cloud-arrow-up dz-icon"></i><div class="dz-text">Drag & drop or tap to upload</div><div class="dz-hint">Images/videos (max 2MB) or paste URL below</div>
+                                <div class="paste-url-row" onclick="event.stopPropagation()"><input type="text" id="pasteUrlInput" placeholder="Paste URL..."><button class="btn btn-accent" style="padding:5px 10px;font-size:0.7rem;" onclick="handlePasteUrl()">Add</button></div>
+                            </div>
+                            <input type="file" id="crMediaFile" accept="image/*,video/*" onchange="handleMediaSelect(this)">
+                        </div>
+                    </div>
+                    <div class="advanced-toggle" id="advToggle" onclick="toggleAdvanced()"><i class="fa-solid fa-chevron-down"></i> Advanced Settings</div>
+                    <div class="advanced-panel" id="advPanel">
+                        <div class="form-group"><label>PWR Cost Per Vote</label><input class="form-input" type="number" id="crPwr" value="1" min="0.0001" step="0.0001" oninput="updateCreationFee()"></div>
+                        <div class="form-group"><label>Default Visibility</label><select class="form-input" id="crVis">
+                            <option value="">🌐 Voters choose</option>
+                            <option value="public">🌐 Public</option>
+                            <option value="private">🔒 Private</option>
+                            <option value="postpoll">👥 Public Post-Poll</option>
+                        </select></div>
+                        <div class="toggle-row" onclick="document.getElementById('crVmark').classList.toggle('on')"><div class="toggle-switch" id="crVmark"></div> Default Vmark (show vote with comment)</div>
+                    </div>
+                </div><div class="modal-footer"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-green" onclick="publishPoll()">🚀 Publish</button></div></div></div>`);
+
+                document.querySelectorAll('.exp-chip').forEach(chip=>{ chip.addEventListener('click', function(){
+                    document.querySelectorAll('.exp-chip').forEach(c=>c.classList.remove('active'));
+                    this.classList.add('active');
+                    const minutes=this.dataset.minutes?parseInt(this.dataset.minutes):0;
+                    const hours=this.dataset.hours?parseInt(this.dataset.hours):0;
+                    const days=this.dataset.days?parseInt(this.dataset.days):0;
+                    if(!this.dataset.custom && (minutes||hours||days)){
+                        const ms=((days*24+hours)*60+minutes)*60000;
+                        const d=new Date(Date.now()+ms);
+                        document.getElementById('crExp').value=d.toISOString().slice(0,16);
+                        selectedPreset = minutes||hours||days;
+                    } else if(this.dataset.custom) {
+                        selectedPreset = null;
+                    }
+                }); });
+                updateCreationFee();
+            };
+
+            window.handleCustomExpInput = function() { selectedPreset = null; document.querySelectorAll('.exp-chip').forEach(c=>c.classList.remove('active')); };
+            window.updateCreationFee = function() {
+                const pwrCost = parseFloat(document.getElementById('crPwr').value)||0;
+                const fee = 10 + pwrCost * 5;
+                document.getElementById('feeAmount').textContent = fee.toFixed(0) + ' PWR';
+                const bal = getPwr().balance;
+                const bar = document.getElementById('feeBar');
+                if(bal < fee) bar.classList.add('warning'); else bar.classList.remove('warning');
+            };
+
+            window.handleMediaSelect = function(input) {
+                const file=input.files[0]; if(!file)return;
+                if(file.size > MAX_FILE_SIZE_MB * 1024 * 1024) { toast('File too large (max 2MB).'); return; }
+                currentMediaFile=file; currentMediaUrl=URL.createObjectURL(file);
+                updateDropzonePreview(currentMediaUrl, file.type.startsWith('video/'));
+            };
+            window.handlePasteUrl = function() {
+                const url=document.getElementById('pasteUrlInput').value.trim(); if(!url)return;
+                currentMediaFile=null; currentMediaUrl=url;
+                updateDropzonePreview(url, /\.(mp4|webm|mov)/i.test(url));
+            };
+            function updateDropzonePreview(src, isVideo) {
+                const dz=document.getElementById('dropzone'); dz.classList.add('has-preview');
+                dz.innerHTML=`${isVideo?`<video src="${esc(src)}" controls class="preview-img"></video>`:`<img src="${esc(src)}" class="preview-img" onerror="this.style.display='none'">`}<button class="remove-preview" onclick="event.stopPropagation();clearMediaPreview()">✕</button><input type="file" id="crMediaFile" accept="image/*,video/*" onchange="handleMediaSelect(this)" style="display:none;">`;
+                dz.onclick=function(){ document.getElementById('crMediaFile').click(); };
+            }
+            window.clearMediaPreview = function(){ currentMediaFile=null; currentMediaUrl=''; const dz=document.getElementById('dropzone'); dz.classList.remove('has-preview'); dz.innerHTML=`<div class="dz-placeholder"><i class="fa-solid fa-cloud-arrow-up dz-icon"></i><div class="dz-text">Drag & drop or tap to upload</div><div class="dz-hint">Images/videos (max 2MB) or paste URL below</div><div class="paste-url-row" onclick="event.stopPropagation()"><input type="text" id="pasteUrlInput" placeholder="Paste URL..."><button class="btn btn-accent" style="padding:5px 10px;font-size:0.7rem;" onclick="handlePasteUrl()">Add</button></div></div><input type="file" id="crMediaFile" accept="image/*,video/*" onchange="handleMediaSelect(this)">`; dz.onclick=function(){ document.getElementById('crMediaFile').click(); }; };
+            window.toggleAdvanced = function(){ const p=document.getElementById('advPanel'); const t=document.getElementById('advToggle'); p.classList.toggle('open'); t.classList.toggle('open'); };
+            window.addOptRow = function(){ const c=document.getElementById('optContainer'); const i=c.children.length; const r=document.createElement('div'); r.className='option-row'; r.innerHTML=`<input type="color" class="opt-color-input opt-color" value="${COLORS[i%COLORS.length]}"><input class="form-input opt-text-input opt-text" placeholder="Option ${i+1}"><button class="btn btn-red opt-remove" onclick="this.parentElement.remove()">×</button>`; c.appendChild(r); };
+
+            window.publishPoll = async function() {
+                const pwrData=getPwr(); const pwrCost=parseFloat(document.getElementById('crPwr').value)||0;
+                const fee = 10 + pwrCost * 5;
+                if(pwrData.balance < fee) return toast(`Insufficient PWR. Need ${fee.toFixed(0)} PWR.`);
                 const q=document.getElementById('crQ').value.trim(); if(!q)return toast('Enter a question.');
                 const exp=document.getElementById('crExp').value; if(!exp||new Date(exp)<=new Date())return toast('Set a future expiration.');
                 const opts=[],cols=[]; document.querySelectorAll('#optContainer .option-row').forEach(r=>{ const t=r.querySelector('.opt-text-input').value.trim(); if(t){opts.push(t);cols.push(r.querySelector('.opt-color-input').value);} });
                 if(opts.length<1)return toast('Add at least one option.');
-                const pwrCost=parseFloat(document.getElementById('crPwr').value)||1;
-                let finalMedia=currentMediaUrl; if(currentMediaFile) finalMedia=URL.createObjectURL(currentMediaFile);
-                if(!spendPwr(10))return toast('Failed to spend PWR.');
+                if(!spendPwr(fee)) return toast('Failed to spend PWR.');
+                let finalMedia = currentMediaUrl;
+                if(currentMediaFile) finalMedia = currentMediaUrl; // use object URL for local file
                 const defaultVis = document.getElementById('crVis').value;
-                const sid=shortId(); db.ref('polls').push({title:q,description:'',expiration:new Date(exp).toISOString(),mediaUrl:finalMedia,options:opts,optionColors:cols,pwrCost,defaultVis,defaultVmark:document.getElementById('crVmark').classList.contains('on'),createdAt:firebase.database.ServerValue.TIMESTAMP,counts:{},shortId:sid}).then(()=>{ closeModal(); toast('Poll published!'); }).catch(e=>toast('Error'));
+                const defaultVmark = document.getElementById('crVmark').classList.contains('on');
+                const sid=shortId();
+                const pollRef = db.ref('polls').push();
+                await pollRef.set({
+                    title:q, description:'', expiration: new Date(exp).toISOString(), mediaUrl: finalMedia,
+                    options:opts, optionColors:cols, pwrCost, defaultVis, defaultVmark,
+                    createdAt: firebase.database.ServerValue.TIMESTAMP, counts:{}, shortId:sid,
+                    commentOnlyUsers: {}, voterChoices: {}
+                });
+                closeModal();
+                toast('Poll published!');
+                // Force immediate feed update by adding poll locally
+                const newPoll = { id: pollRef.key, shortId: sid, title:q, expiration: new Date(exp).toISOString(), mediaUrl:finalMedia, options:opts, optionColors:cols, pwrCost, defaultVis, defaultVmark, createdAt: Date.now(), counts:{}, commentOnlyUsers:{}, voterChoices:{} };
+                allPolls.unshift(newPoll);
+                renderAll();
             };
 
-            window.castVote=function(pollId,opt,pwrCost){ if(!spendPwr(pwrCost))return toast(`Need ${pwrCost.toFixed(4)} PWR.`); openVoteModal(pollId,opt,pwrCost); };
-            window.commentOnly=function(pollId){ openVoteModal(pollId,null,0); };
-            function openVoteModal(pollId,opt,pwrCost){
-                const cap=genCaptcha(); const poll=allPolls.find(p=>p.id===pollId||p.shortId===pollId); const defVis=poll?.defaultVis||''; const defVmark=poll?.defaultVmark!==false;
-                const visOptions = !defVis ? `<div class="form-group"><label>Visibility</label><select class="form-input" id="sigVis"><option value="public">🌐 Public</option><option value="private">🔒 Private</option><option value="postpoll">👥 Public Post-Poll</option></select></div>` : `<p style="font-size:0.75rem;color:var(--text-muted);margin-top:8px;">Visibility: <strong>${defVis}</strong></p>`;
-                openModal(`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="modal-header"><h3>${opt?'Vote: '+esc(opt):'Comment'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body"><textarea class="form-input" id="sigText" rows="2" placeholder="Share your thoughts..."></textarea><input class="form-input" id="sigMedia" placeholder="Media URL"><input type="file" id="sigFile" accept="image/*,video/*">${visOptions}${defVis?'':`<div class="toggle-row"><div class="toggle-switch${defVmark?' on':''}" id="sigVmark"></div> Show vote</div>`}<div class="captcha-box">🔐 ${cap} = ? <input type="number" id="capInput"></div><button class="btn btn-green" onclick="submitVote('${pollId}','${opt||''}',${pwrCost},'${defVis}')">Submit</button></div></div></div>`);
+            // ========== VOTING & COMMENTS (fixed integrity) ==========
+            window.castVote = function(pollId, opt, pwrCost) {
+                const poll = allPolls.find(p=>p.id===pollId||p.shortId===pollId);
+                if(!poll) return;
+                if(poll.voterChoices?.[userId] || poll.commentOnlyUsers?.[userId]) return toast('Already participated.');
+                if(!spendPwr(pwrCost)) return toast(`Need ${pwrCost.toFixed(4)} PWR.`);
+                openVoteModal(pollId, opt, pwrCost);
+            };
+            window.commentOnly = function(pollId) {
+                const poll = allPolls.find(p=>p.id===pollId||p.shortId===pollId);
+                if(!poll) return;
+                if(poll.voterChoices?.[userId] || poll.commentOnlyUsers?.[userId]) return toast('Already participated.');
+                openVoteModal(pollId, null, 0);
+            };
+
+            function openVoteModal(pollId, opt, pwrCost) {
+                const cap=genCaptcha(); const poll=allPolls.find(p=>p.id===pollId||p.shortId===pollId);
+                const defVis=poll?.defaultVis||''; const defVmark=poll?.defaultVmark!==false;
+                const visLocked = defVis !== '';
+                const visHtml = visLocked ? `<p style="font-size:0.75rem;color:var(--text-muted);margin-top:8px;">Visibility: <strong>${defVis}</strong></p>` :
+                    `<div class="form-group" style="margin-top:8px;"><label>Visibility</label><select class="form-input" id="sigVis"><option value="public">🌐 Public</option><option value="private">🔒 Private</option><option value="postpoll">👥 Public Post-Poll</option></select></div>`;
+                const vmarkHtml = `<div class="toggle-row"><div class="toggle-switch${defVmark?' on':''}" id="sigVmark"></div> Show vote with comment</div>`;
+
+                openModal(`<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal-box"><div class="modal-header"><h3>${opt?'Vote: '+esc(opt):'Comment'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div><div class="modal-body">
+                    <textarea class="form-input" id="sigText" rows="2" placeholder="Share your thoughts..."></textarea>
+                    <input class="form-input" id="sigMedia" placeholder="Media URL"><input type="file" id="sigFile" accept="image/*,video/*" style="margin-top:6px;">
+                    ${visHtml} ${vmarkHtml}
+                    <div class="captcha-box">🔐 ${cap} = ? <input type="number" id="capInput"></div>
+                    <button class="btn btn-green" onclick="submitVote('${pollId}','${opt||''}',${pwrCost},'${defVis}',${visLocked})">Submit</button>
+                </div></div></div>`);
             }
-            window.submitVote=function(pollId,opt,pwrCost,defVis){
-                if(!checkCaptcha(document.getElementById('capInput').value))return toast('Wrong CAPTCHA.');
-                const text=document.getElementById('sigText').value.trim(); let media=document.getElementById('sigMedia').value.trim(); const file=document.getElementById('sigFile')?.files?.[0]; if(file)media=URL.createObjectURL(file);
-                const vis = defVis || document.getElementById('sigVis')?.value || 'public';
-                const vmark = defVis ? true : (document.getElementById('sigVmark')?.classList.contains('on')??true);
-                db.ref('polls/'+pollId).transaction(data=>{ if(!data||new Date(data.expiration)<new Date())return; if(data.voterChoices?.[userId])return; if(!data.counts)data.counts={}; if(!data.voterChoices)data.voterChoices={}; if(opt){ data.counts[opt]=(data.counts[opt]||0)+1; data.voterChoices[userId]={choice:opt,textSignature:text,mediaSignature:media,visibility:vis,showVote:vmark,timestamp:firebase.database.ServerValue.TIMESTAMP}; } else{ if(!data.comments)data.comments={}; const cid=db.ref('polls/'+pollId+'/comments').push().key; data.comments[cid]={userId,text,mediaUrl:media,timestamp:firebase.database.ServerValue.TIMESTAMP,likes:{},dislikes:{}}; } return data; },(err,committed)=>{ closeModal(); if(err)toast('Error'); else if(!committed)toast(opt?'Voted!':'Comment added!'); });
-            };
-            window.toggleLike=function(pollId,commentId,type){ db.ref(`polls/${pollId}/comments/${commentId}`).transaction(data=>{ if(!data)return; if(!data.likes)data.likes={}; if(!data.dislikes)data.dislikes={}; const other=type==='like'?'dislikes':'likes'; const curr=type==='like'?'likes':'dislikes'; if(data[curr][userId]){delete data[curr][userId];}else{data[curr][userId]=true;if(data[other][userId])delete data[other][userId];} return data; }); };
 
-            function renderPollCard(poll){ const opts=poll.options||[], cols=poll.optionColors||[], cnts=poll.counts||{}, total=Object.values(cnts).reduce((a,b)=>a+b,0); const expired=new Date(poll.expiration)<new Date(), vd=poll.voterChoices?.[userId], hasVoted=!!vd; let mh=''; if(poll.mediaUrl){ const isVideo=/\.(mp4|webm|mov)/i.test(poll.mediaUrl); mh=isVideo?`<video src="${esc(poll.mediaUrl)}" controls style="max-width:100%;max-height:300px;border-radius:12px;"></video>`:`<img src="${esc(poll.mediaUrl)}" style="max-width:100%;max-height:300px;border-radius:12px;" onerror="this.style.display='none'">`; } const btns=opts.map((o,i)=>`<button class="vote-btn" style="border-color:${cols[i]||COLORS[i%COLORS.length]};color:${cols[i]||COLORS[i%COLORS.length]};" onclick="castVote('${poll.id}','${esc(o)}',${poll.pwrCost||1})" ${expired||hasVoted?'disabled':''}>${esc(o)}</button>`).join(''); const bars=opts.map((o,i)=>{ const cnt=cnts[o]||0, pct=total?Math.round(cnt/total*100):0; const col=cols[i]||COLORS[i%COLORS.length]; return`<div class="result-row"><span class="result-name" style="color:${col};">${esc(o)}</span><div class="result-track"><div class="result-fill" style="width:${pct}%;background:${col};"></div></div><span class="result-pct" style="color:${col};">${pct}%</span></div>`; }).join(''); const cmts=[]; if(poll.comments) Object.entries(poll.comments).forEach(([id,d])=>cmts.push({id,...d})); cmts.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0)); let ch=cmts.map(c=>{ const lc=Object.keys(c.likes||{}).length, dc=Object.keys(c.dislikes||{}).length; return`<div class="comment-item"><div class="comment-meta"><span>${(c.userId||'').slice(0,10)}</span><span>${ts(c.timestamp)}</span><span><button class="like-btn${c.likes?.[userId]?' active-like':''}" onclick="toggleLike('${poll.id}','${c.id}','like')">👍 ${lc}</button><button class="like-btn${c.dislikes?.[userId]?' active-dislike':''}" onclick="toggleLike('${poll.id}','${c.id}','dislike')">👎 ${dc}</button></span></div>${c.text?`<div>${esc(c.text)}</div>`:''}${c.mediaUrl?`<a href="${esc(c.mediaUrl)}" target="_blank">📎</a>`:''}</div>`; }).join(''); return`<div class="poll-card"><div class="poll-meta"><span class="badge ${expired?'badge-ended':'badge-live'}">${expired?'ENDED':'LIVE'}</span></div><div class="info-pills"><span class="info-pill time">⏳ ${expired?ts(poll.expiration):countdown(poll.expiration)}</span><span class="info-pill date">📅 ${ts(poll.createdAt)}</span><span class="info-pill pwr">⚡ ${(poll.pwrCost||1).toFixed(4)} PWR</span><span class="info-pill time">🕐 ${dur(poll.createdAt,new Date(poll.expiration))}</span></div><div class="poll-title">${esc(poll.title)}</div>${mh?`<div class="poll-media">${mh}</div>`:''}<div class="vote-grid">${btns}<button class="vote-btn" style="border-color:var(--text-muted);color:var(--text-muted);" onclick="commentOnly('${poll.id}')">💬 Comment</button></div>${total>0?`<div class="results">${bars}</div>`:'<div style="font-size:0.8rem;color:var(--text-muted);">No votes yet.</div>'}${hasVoted?`<div style="font-size:0.75rem;color:var(--text-muted);margin-top:6px;">✅ You voted ${esc(vd.choice)}</div>`:''}<button class="btn" style="margin-top:8px;" onclick="document.getElementById('comments-${poll.id}').style.display=document.getElementById('comments-${poll.id}').style.display==='none'?'block':'none'">💬 Comments (${cmts.length})</button><div id="comments-${poll.id}" style="display:none;margin-top:8px;">${ch||'None'}</div></div>`; }
+            window.submitVote = function(pollId, opt, pwrCost, defVis, visLocked) {
+                if(!checkCaptcha(document.getElementById('capInput').value)) return toast('Wrong CAPTCHA.');
+                const text=document.getElementById('sigText').value.trim();
+                let media=document.getElementById('sigMedia').value.trim();
+                const file=document.getElementById('sigFile')?.files?.[0]; if(file) media=URL.createObjectURL(file);
+                const vis = visLocked ? defVis : document.getElementById('sigVis')?.value || 'public';
+                const vmark = document.getElementById('sigVmark')?.classList.contains('on') ?? true;
 
-            function renderFeed(){
-                const feed=document.getElementById('pollFeed');
-                if(loading){ feed.innerHTML='<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>'; return; }
-                let filtered = allPolls.slice();
-                // Global search overrides category filter
-                const query = searchQuery.trim().toLowerCase();
-                if (query) {
-                    filtered = filtered.filter(p => p.title.toLowerCase().includes(query));
-                    // Clear active tab visual (all tabs inactive)
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                } else {
-                    // Apply status filter
-                    if (activeFilter === 'live') {
-                        filtered = filtered.filter(p => new Date(p.expiration) >= new Date());
-                    } else if (activeFilter === 'ended') {
-                        filtered = filtered.filter(p => new Date(p.expiration) < new Date());
-                    } else if (activeFilter === 'votes') {
-                        // Show only polls the user voted in
-                        filtered = filtered.filter(p => p.voterChoices && p.voterChoices[userId]);
+                const ref = db.ref('polls/'+pollId);
+                ref.transaction(data => {
+                    if(!data) return;
+                    if(new Date(data.expiration) < new Date()) return;
+                    if(data.voterChoices?.[userId] || data.commentOnlyUsers?.[userId]) return;
+                    if(!data.counts) data.counts = {};
+                    if(!data.voterChoices) data.voterChoices = {};
+                    if(!data.commentOnlyUsers) data.commentOnlyUsers = {};
+                    if(opt) {
+                        data.counts[opt] = (data.counts[opt]||0) + 1;
+                        data.voterChoices[userId] = { choice:opt, textSignature:text, mediaSignature:media, visibility:vis, showVote:vmark, timestamp: firebase.database.ServerValue.TIMESTAMP };
+                    } else {
+                        data.commentOnlyUsers[userId] = true;
+                        if(!data.comments) data.comments = {};
+                        const cid = db.ref('polls/'+pollId+'/comments').push().key;
+                        data.comments[cid] = { userId, text, mediaUrl:media, timestamp: firebase.database.ServerValue.TIMESTAMP, likes:{}, dislikes:{}, type:'opinion' };
                     }
-                    // else 'all' shows everything
-                }
-                // Sort
-                const durFn = p => new Date(p.expiration) - new Date(p.createdAt);
-                if (sortBy === 'recent') filtered.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-                else if (sortBy === 'oldest') filtered.sort((a,b) => (a.createdAt||0) - (b.createdAt||0));
-                else if (sortBy === 'mostvoted') filtered.sort((a,b) => (Object.values(b.counts||{}).reduce((x,y)=>x+y,0)) - (Object.values(a.counts||{}).reduce((x,y)=>x+y,0)));
-                else if (sortBy === 'shortest') filtered.sort((a,b) => durFn(a) - durFn(b));
-                else if (sortBy === 'longest') filtered.sort((a,b) => durFn(b) - durFn(a));
+                    return data;
+                }, (err, committed) => {
+                    closeModal();
+                    if(err) toast('Error');
+                    else if(!committed) toast('Already participated or poll ended.');
+                    else toast(opt?'Voted!':'Comment added!');
+                });
+            };
 
+            window.toggleLike = function(pollId, commentId, type) {
+                db.ref(`polls/${pollId}/comments/${commentId}`).transaction(data => {
+                    if(!data) return;
+                    if(!data.likes) data.likes = {};
+                    if(!data.dislikes) data.dislikes = {};
+                    const other = type==='like'?'dislikes':'likes';
+                    const curr = type==='like'?'likes':'dislikes';
+                    if(data[curr][userId]) { delete data[curr][userId]; }
+                    else { data[curr][userId]=true; if(data[other][userId]) delete data[other][userId]; }
+                    return data;
+                });
+            };
+
+            // ========== RENDERING ==========
+            function renderPollCard(poll) {
+                const opts=poll.options||[], cols=poll.optionColors||[], cnts=poll.counts||{}, total=Object.values(cnts).reduce((a,b)=>a+b,0);
+                const expired=new Date(poll.expiration)<new Date(), vd=poll.voterChoices?.[userId], hasVoted=!!vd, hasCommented=poll.commentOnlyUsers?.[userId];
+                let mh=''; if(poll.mediaUrl) { const isVideo=/\.(mp4|webm|mov)/i.test(poll.mediaUrl); mh=isVideo?`<video src="${esc(poll.mediaUrl)}" controls style="max-width:100%;max-height:300px;border-radius:12px;"></video>`:`<img src="${esc(poll.mediaUrl)}" style="max-width:100%;max-height:300px;border-radius:12px;" onerror="this.style.display='none'">`; }
+                const btns=opts.map((o,i)=>`<button class="vote-btn" style="border-color:${cols[i]||COLORS[i%COLORS.length]};color:${cols[i]||COLORS[i%COLORS.length]};" onclick="castVote('${poll.id}','${esc(o)}',${poll.pwrCost||1})" ${expired||hasVoted||hasCommented?'disabled':''}>${esc(o)}</button>`).join('');
+                const bars=opts.map((o,i)=>{ const cnt=cnts[o]||0, pct=total?Math.round(cnt/total*100):0; const col=cols[i]||COLORS[i%COLORS.length]; return`<div class="result-row"><span class="result-name" style="color:${col};">${esc(o)}</span><div class="result-track"><div class="result-fill" style="width:${pct}%;background:${col};"></div></div><span class="result-pct" style="color:${col};">${pct}%</span></div>`; }).join('');
+                const comments = renderComments(poll);
+                const unifiedMeta = `🟢 ${expired?'ENDED':'LIVE'} · Created ${safeTs(poll.createdAt)} · ${expired?`Closed ${safeTs(poll.expiration)}`:`${countdown(poll.expiration)} left`}`;
+                return `<div class="poll-card">
+                    <div class="poll-meta"><span class="badge ${expired?'badge-ended':'badge-live'}">${expired?'ENDED':'LIVE'}</span> <span style="font-size:0.72rem;color:var(--text-muted);">${unifiedMeta}</span></div>
+                    <div class="info-pills"><span class="info-pill pwr">⚡ ${(poll.pwrCost||1).toFixed(4)} PWR/vote</span></div>
+                    <div class="poll-title">${esc(poll.title)}</div>${mh?`<div class="poll-media">${mh}</div>`:''}
+                    <div class="vote-grid">${btns}<button class="vote-btn" style="border-color:var(--text-muted);color:var(--text-muted);" onclick="commentOnly('${poll.id}')" ${expired||hasVoted||hasCommented?'disabled':''}>💬 Comment</button></div>
+                    ${total>0?`<div class="results">${bars}</div>`:'<div style="font-size:0.8rem;color:var(--text-muted);">No votes yet.</div>'}
+                    ${hasVoted?`<div style="font-size:0.75rem;color:var(--text-muted);margin-top:6px;">✅ You voted <strong>${esc(vd.choice)}</strong></div>`:''}
+                    ${comments}
+                </div>`;
+            }
+
+            function renderComments(poll) {
+                const cmts = []; if(poll.comments) Object.entries(poll.comments).forEach(([id,d]) => cmts.push({id,...d}));
+                cmts.sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
+                let h = cmts.map(c => {
+                    const lc = Object.keys(c.likes||{}).length, dc = Object.keys(c.dislikes||{}).length;
+                    const isOpinion = c.type === 'opinion';
+                    const badge = isOpinion ? '<span class="comment-badge opinion">Opinion</span>' : '<span class="comment-badge voted">Voted</span>';
+                    return `<div class="comment-item">
+                        <div class="comment-meta"><span>${(c.userId||'').slice(0,10)}</span> ${badge} <span>${safeTs(c.timestamp)}</span>
+                        <span><button class="like-btn${c.likes?.[userId]?' active-like':''}" onclick="toggleLike('${poll.id}','${c.id}','like')">👍 ${lc}</button><button class="like-btn${c.dislikes?.[userId]?' active-dislike':''}" onclick="toggleLike('${poll.id}','${c.id}','dislike')">👎 ${dc}</button></span></div>
+                        ${c.text?`<div>${esc(c.text)}</div>`:''}${c.mediaUrl?`<a href="${esc(c.mediaUrl)}" target="_blank">📎</a>`:''}
+                    </div>`;
+                }).join('');
+                return `<button class="btn" style="margin-top:8px;" onclick="document.getElementById('comments-${poll.id}').style.display=document.getElementById('comments-${poll.id}').style.display==='none'?'block':'none'">💬 Comments (${cmts.length})</button><div id="comments-${poll.id}" style="display:none;margin-top:8px;">${h||'None'}</div>`;
+            }
+
+            function renderFeed() {
+                const feed=document.getElementById('pollFeed'); if(loading){ feed.innerHTML='<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>'; return; }
+                let filtered = allPolls.slice();
+                const query = searchQuery.trim().toLowerCase();
+                if(query) { filtered = filtered.filter(p => p.title.toLowerCase().includes(query)); document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); }
+                else {
+                    if(activeFilter==='live') filtered = filtered.filter(p => new Date(p.expiration) >= new Date());
+                    else if(activeFilter==='ended') filtered = filtered.filter(p => new Date(p.expiration) < new Date());
+                    else if(activeFilter==='votes') filtered = filtered.filter(p => p.voterChoices && p.voterChoices[userId]);
+                }
+                const durFn = p => new Date(p.expiration) - new Date(p.createdAt);
+                if(sortBy==='recent') filtered.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+                else if(sortBy==='oldest') filtered.sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+                else if(sortBy==='mostvoted') filtered.sort((a,b)=> (Object.values(b.counts||{}).reduce((x,y)=>x+y,0)) - (Object.values(a.counts||{}).reduce((x,y)=>x+y,0)));
+                else if(sortBy==='shortest') filtered.sort((a,b)=> durFn(a) - durFn(b));
+                else if(sortBy==='longest') filtered.sort((a,b)=> durFn(b) - durFn(a));
                 feed.innerHTML = filtered.map(p => {
                     const total = Object.values(p.counts||{}).reduce((a,b)=>a+b,0);
                     const opts=p.options||[], cols=p.optionColors||[], cnts=p.counts||{};
                     const pm = opts.map((o,i)=>({name:o,color:cols[i]||COLORS[i%COLORS.length],pct:total?Math.round((cnts[o]||0)/total*100):0})).sort((a,b)=>b.pct-a.pct);
                     const top3 = pm.slice(0,3); const cc = Object.keys(p.comments||{}).length;
                     return `<div class="history-item" onclick="viewPoll('${p.shortId||p.id}')">
-                        <div class="hi-circle">${dur(p.createdAt,new Date(p.expiration))}</div>
-                        <div class="hi-main"><div class="hi-title">${esc(p.title)}</div><div class="hi-sub">${ts(p.createdAt)} · ${total} votes · ${cc} comments</div></div>
+                        <div class="hi-circle">${dur(p.createdAt, new Date(p.expiration))}</div>
+                        <div class="hi-main"><div class="hi-title">${esc(p.title)}</div><div class="hi-sub">${safeTs(p.createdAt)} · ${total} votes · ${cc} comments</div></div>
                         <div class="hi-top3">${top3.map(o=>`<span style="color:${o.color};"><span class="hi-dot" style="background:${o.color};"></span> ${o.name} ${o.pct}%</span>`).join(' ')}</div>
                     </div>`;
                 }).join('');
             }
 
-            function renderAll(){
+            function renderAll() {
                 renderFeed();
                 const liveCount = allPolls.filter(p=>new Date(p.expiration)>=new Date()).length;
                 document.getElementById('liveCount').textContent = liveCount;
                 document.getElementById('endedCount').textContent = allPolls.length - liveCount;
                 document.getElementById('totalVotesCount').textContent = allPolls.reduce((s,p)=>s+Object.values(p.counts||{}).reduce((a,b)=>a+b,0),0);
                 updatePwrUI();
-                // Banner: show only if there is a poll with >5 votes and not dismissed
-                if (!localStorage.getItem('banner_dismissed')) {
+                updateBackButton();
+                if(!localStorage.getItem('banner_dismissed')) {
                     const hotPoll = allPolls.find(p => Object.values(p.counts||{}).reduce((a,b)=>a+b,0) > 5);
-                    if (hotPoll) {
-                        document.getElementById('bannerContent').innerHTML = renderPollCard(hotPoll);
-                        document.getElementById('bannerCard').style.display = 'block';
-                    } else {
-                        document.getElementById('bannerCard').style.display = 'none';
-                    }
+                    if(hotPoll) { document.getElementById('bannerContent').innerHTML = renderPollCard(hotPoll); document.getElementById('bannerCard').style.display='block'; }
+                    else document.getElementById('bannerCard').style.display='none';
                 }
             }
 
-            window.dismissBanner = function() {
-                document.getElementById('bannerCard').style.display = 'none';
-                localStorage.setItem('banner_dismissed', '1');
-            };
-            window.viewPoll = function(id) { activePollId=id; updateUrl(id); const poll=allPolls.find(p=>p.shortId===activePollId||p.id===activePollId); if(poll) document.getElementById('pollFeed').innerHTML=renderPollCard(poll); };
-            window.goHome = function() { activePollId=null; clearUrl(); renderAll(); };
+            window.dismissBanner = function() { document.getElementById('bannerCard').style.display='none'; localStorage.setItem('banner_dismissed','1'); };
+            window.viewPoll = function(id) { activePollId=id; updateUrl(id); const poll=allPolls.find(p=>p.shortId===activePollId||p.id===activePollId); if(poll) document.getElementById('pollFeed').innerHTML=renderPollCard(poll); updateBackButton(); };
+            window.goHome = function() { activePollId=null; clearUrl(); renderAll(); updateBackButton(); };
             function updateUrl(id){ history.replaceState({},'',`?p=${id}`); }
             function clearUrl(){ history.replaceState({},'',location.pathname); }
 
-            // Tab & stat card event handlers
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.addEventListener('click', function() {
-                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    activeFilter = this.dataset.tab;
-                    searchQuery = ''; // clear search when changing tabs
-                    document.getElementById('searchInput').value = '';
-                    applyFilter();
-                });
-            });
-            document.querySelectorAll('.stat-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    document.querySelectorAll('.stat-card').forEach(s => s.classList.remove('active'));
-                    this.classList.add('active');
-                    const filter = this.dataset.filter;
-                    if (filter === 'votes') {
-                        activeFilter = 'votes';
-                        // deactivate all tabs
-                        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                    } else {
-                        activeFilter = filter;
-                        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                        const tab = document.querySelector(`.tab[data-tab="${activeFilter}"]`);
-                        if (tab) tab.classList.add('active');
-                    }
-                    searchQuery = '';
-                    document.getElementById('searchInput').value = '';
-                    applyFilter();
-                });
-            });
+            // Event listeners
+            document.querySelectorAll('.tab').forEach(tab => tab.addEventListener('click', function(){
+                document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); this.classList.add('active');
+                activeFilter = this.dataset.tab; searchQuery=''; document.getElementById('searchInput').value=''; applyFilter();
+            }));
+            document.querySelectorAll('.stat-card').forEach(card => card.addEventListener('click', function(){
+                document.querySelectorAll('.stat-card').forEach(s=>s.classList.remove('active')); this.classList.add('active');
+                const f = this.dataset.filter;
+                if(f==='votes'){ activeFilter='votes'; document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); }
+                else { activeFilter=f; document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); const tab=document.querySelector(`.tab[data-tab="${activeFilter}"]`); if(tab)tab.classList.add('active'); }
+                searchQuery=''; document.getElementById('searchInput').value=''; applyFilter();
+            }));
+            document.getElementById('searchInput').addEventListener('input', function(){ searchQuery=this.value; applyFilter(); });
+            document.getElementById('sortSelect').addEventListener('change', function(){ sortBy=this.value; applyFilter(); });
+            function applyFilter(){ renderFeed(); }
 
-            document.getElementById('searchInput').addEventListener('input', function() {
-                searchQuery = this.value;
-                applyFilter();
-            });
-            document.getElementById('sortSelect').addEventListener('change', function() {
-                sortBy = this.value;
-                applyFilter();
-            });
-
-            function applyFilter() { renderFeed(); }
+            // Handle background tab visibility
+            document.addEventListener('visibilitychange', () => { if(document.visibilityState==='visible') renderAll(); });
 
             // Firebase sync
             db.ref('polls').on('value', snap => {
-                loading = false;
-                const data = snap.val();
-                allPolls = [];
-                if (data) Object.keys(data).forEach(k => allPolls.push({id:k, ...data[k]}));
-                allPolls.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
-                if (activePollId) {
-                    const poll = allPolls.find(p => p.shortId===activePollId || p.id===activePollId);
-                    if (poll) document.getElementById('pollFeed').innerHTML = renderPollCard(poll);
-                } else {
-                    renderAll();
-                }
+                loading=false;
+                const data = snap.val(); allPolls = []; if(data) Object.keys(data).forEach(k=>allPolls.push({id:k,...data[k]}));
+                allPolls.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+                if(activePollId){ const poll=allPolls.find(p=>p.shortId===activePollId||p.id===activePollId); if(poll) document.getElementById('pollFeed').innerHTML=renderPollCard(poll); else goHome(); }
+                else renderAll();
             });
 
             const urlPoll = new URLSearchParams(location.search).get('p');
-            if (urlPoll) { activePollId = urlPoll; }
-            else { activePollId = null; }
-            updatePwrUI();
-            document.getElementById('pollFeed').innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
+            if(urlPoll){ activePollId=urlPoll; } else { activePollId=null; }
+            updatePwrUI(); updateBackButton();
+            document.getElementById('pollFeed').innerHTML='<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
         })();
     </script>
 </body>
-            </html>
+</html>
