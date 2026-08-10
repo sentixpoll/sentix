@@ -6,6 +6,7 @@
     <title>Sentix</title>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -52,14 +53,14 @@
         .icon-btn.has-notification { position: relative; }
         .icon-btn.has-notification::after { content: ''; position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; border-radius: 50%; background: #ef4444; border: 1px solid var(--bg-card); }
 
-        .btn { padding:5px 12px; border-radius:14px; font-weight:600; font-size:0.68rem; cursor:pointer; border:1px solid var(--border-medium); background:var(--bg-secondary); color:var(--text-primary); transition:all 0.2s; white-space:nowrap; display:inline-flex; align-items:center; gap:4px; }
+        .btn { padding:5px 12px; border-radius:20px; font-weight:600; font-size:0.68rem; cursor:pointer; border:1px solid var(--border-medium); background:var(--bg-secondary); color:var(--text-primary); transition:all 0.2s; white-space:nowrap; display:inline-flex; align-items:center; gap:4px; }
         .btn:hover { border-color:var(--border-active); box-shadow:0 2px 8px rgba(0,0,0,0.2); }
-        .btn-accent { background:linear-gradient(135deg,#10b981,#059669); border:none; color:#fff; font-weight:700; padding:5px 14px; font-size:0.7rem; }
+        .btn-accent { background:linear-gradient(135deg,#10b981,#059669); border:none; color:#fff; font-weight:700; padding:5px 14px; font-size:0.7rem; border-radius:20px; }
         .btn-accent:hover { background:linear-gradient(135deg,#34d399,#10b981); }
-        .btn-green { background:linear-gradient(135deg,#10b981,#059669); border:none; color:#fff; }
+        .btn-green { background:linear-gradient(135deg,#10b981,#059669); border:none; color:#fff; border-radius:20px; }
         .btn-green:disabled { opacity:0.6; cursor:not-allowed; }
-        .btn-red { background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:var(--red); }
-        .btn-sm { padding:4px 10px; font-size:0.65rem; border-radius:12px; }
+        .btn-red { background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:var(--red); border-radius:20px; }
+        .btn-sm { padding:4px 10px; font-size:0.65rem; border-radius:20px; }
 
         .advanced-toggle { display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.75rem; font-weight:600; color:var(--text-secondary); padding:6px 0; }
         .advanced-toggle:hover { color:var(--text-primary); } .advanced-toggle i { transition:transform 0.3s; }
@@ -90,14 +91,14 @@
         .pwr-search-input-popover { flex:1; display:none; background:var(--bg-secondary); border:1px solid var(--border-medium); border-radius:20px; padding:4px 12px; font-size:0.7rem; color:var(--text-primary); outline:none; }
         .pwr-search-input-popover.active { display:block; }
         .pwr-tx-list { max-height:220px; overflow-y:auto; border-top:1px solid rgba(51,65,85,0.3); padding-top:6px; }
-        .pwr-tx-row { display:flex; align-items:flex-start; justify-content:space-between; width:100%; padding:6px 8px; margin:2px 0; border-radius:8px; border:1px solid rgba(51,65,85,0.25); background:rgba(2,6,14,0.4); transition:background 0.2s; }
+        .pwr-tx-row { display:flex; align-items:flex-start; justify-content:space-between; width:100%; padding:6px 8px; margin:2px 0; border-radius:8px; border:1px solid rgba(51,65,85,0.25); background:rgba(2,6,14,0.4); transition:background 0.2s; cursor:pointer; }
         .pwr-tx-row:hover { background:rgba(30,41,59,0.5); }
         .pwr-tx-main { display:flex; align-items:center; gap:6px; flex-shrink:0; }
         .pwr-tx-amount { font-family:'JetBrains Mono',monospace; font-size:0.65rem; font-weight:600; }
         .pwr-tx-label { font-size:0.5rem; font-family:'JetBrains Mono',monospace; color:#64748b; text-transform:uppercase; }
         .pwr-tx-time { font-family:'JetBrains Mono',monospace; font-size:0.55rem; color:#94a3b8; margin-left:auto; flex-shrink:0; white-space:nowrap; }
         .pwr-tx-detail { font-size:0.5rem; color:var(--amber); margin-top:4px; word-break:break-word; width:100%; }
-        .pwr-claim-btn { padding:4px 12px; border-radius:14px; font-weight:600; font-size:0.65rem; cursor:pointer; border:none; background:var(--green); color:#fff; }
+        .pwr-claim-btn { padding:4px 12px; border-radius:20px; font-weight:600; font-size:0.65rem; cursor:pointer; border:none; background:var(--green); color:#fff; }
         .pwr-claim-btn:disabled { background:var(--bg-secondary); color:var(--text-muted); border:1px solid var(--border-medium); cursor:not-allowed; }
         .pwr-search-btn { width:28px; height:28px; border-radius:50%; background:rgba(30,41,59,0.8); border:1px solid var(--border-medium); color:var(--text-secondary); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:0.65rem; }
 
@@ -150,8 +151,8 @@
         .badge-gold { background:rgba(255,215,0,0.2); color:#ffd700; border:1px solid rgba(255,215,0,0.3); }
         .badge-diamond { background:rgba(185,242,255,0.2); color:#b9f2ff; border:1px solid rgba(185,242,255,0.3); }
         .poll-title { font-size:1rem; font-weight:700; margin-bottom:4px; word-break:break-word; }
-        .poll-media { margin:6px 0; border-radius:var(--radius-sm); max-height:300px; overflow-y:auto; display:flex; flex-wrap:wrap; gap:4px; }
-        .poll-media img,.poll-media video { max-width:100%; max-height:200px; object-fit:contain; border-radius:6px; flex:0 0 auto; cursor:pointer; }
+        .poll-media { margin:6px 0; border-radius:var(--radius-sm); max-height:300px; overflow-y:auto; display:grid; grid-template-columns:1fr 1fr; gap:4px; }
+        .poll-media img,.poll-media video { max-width:100%; max-height:200px; object-fit:contain; border-radius:6px; cursor:pointer; }
         .poll-media iframe { width:100%; height:200px; border:none; border-radius:8px; }
         .vote-grid { display:flex; gap:6px; flex-wrap:wrap; margin:8px 0; }
         .vote-btn { flex:1; min-width:70px; padding:8px 6px; border-radius:var(--radius-sm); font-weight:700; font-size:0.72rem; cursor:pointer; border:2px solid; text-align:center; transition:all 0.2s; background:rgba(255,255,255,0.02); display:flex; align-items:center; justify-content:center; gap:4px; }
@@ -179,7 +180,7 @@
         .comment-badge { display:inline-block; padding:1px 5px; border-radius:5px; font-size:0.55rem; font-weight:700; }
         .comment-badge.voted { background:rgba(16,185,129,0.2); color:#10b981; }
         .comment-badge.sidetalk { background:rgba(245,158,11,0.2); color:#f59e0b; }
-        .comment-media-scroll { max-height:120px; overflow-y:auto; display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; }
+        .comment-media-scroll { max-height:120px; overflow-y:auto; display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-top:4px; }
         .comment-media { max-width:100%; max-height:80px; object-fit:contain; border-radius:6px; cursor:pointer; }
         .reaction-btn { padding:4px 10px; border-radius:20px; border:1px solid var(--border-medium); background:var(--bg-secondary); color:var(--text-muted); cursor:pointer; font-size:0.7rem; display:inline-flex; align-items:center; gap:4px; transition:all 0.15s; }
         .reaction-btn.liked { color:var(--green); border-color:var(--green); background:rgba(16,185,129,0.1); }
@@ -241,8 +242,8 @@
         .optional-panel { display:none; } .optional-panel.open { display:block; }
         .locked-field { opacity:0.5; pointer-events:none; }
 
-        .user-avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.75rem; color:#fff; flex-shrink:0; }
-        .user-avatar-lg { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.4rem; color:#fff; flex-shrink:0; }
+        .user-avatar { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.75rem; color:#fff; flex-shrink:0; cursor:pointer; }
+        .user-avatar-lg { width:64px; height:64px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:1.4rem; color:#fff; flex-shrink:0; cursor:pointer; }
         .profile-cover { width:100%; height:80px; border-radius:var(--radius-md) var(--radius-md) 0 0; }
         .user-list-item { display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:8px; cursor:pointer; transition:background 0.15s; border:1px solid rgba(51,65,85,0.2); margin-bottom:4px; }
         .user-list-item:hover { background:rgba(30,41,59,0.5); }
@@ -250,7 +251,8 @@
         .leaderboard-row:hover { background:rgba(30,41,59,0.5); }
         .leaderboard-rank { width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:0.65rem; font-family:'JetBrains Mono',monospace; flex-shrink:0; }
         .listing-card { background:var(--bg-card); border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:10px 12px; margin-bottom:6px; }
-        .escrow-row { display:flex; align-items:center; justify-content:space-between; padding:6px 10px; border-radius:8px; border:1px solid rgba(51,65,85,0.2); margin-bottom:4px; background:rgba(2,6,14,0.3); }
+        .escrow-row { display:flex; align-items:center; justify-content:space-between; padding:6px 10px; border-radius:8px; border:1px solid rgba(51,65,85,0.2); margin-bottom:4px; background:rgba(2,6,14,0.3); cursor:pointer; }
+        .escrow-row:hover { background:rgba(30,41,59,0.5); }
         .badge-row { display:flex; gap:4px; flex-wrap:wrap; margin-top:4px; }
         .input-note { font-size:0.6rem; color:var(--text-muted); margin-top:3px; }
         .search-mini-card { padding:7px 9px; border-radius:8px; border:1px solid rgba(51,65,85,0.2); margin-bottom:3px; cursor:pointer; transition:background 0.15s; font-size:0.68rem; }
@@ -262,6 +264,9 @@
         .msg-card { display:flex; align-items:flex-start; gap:8px; padding:8px; margin-bottom:4px; border-radius:8px; border:1px solid rgba(51,65,85,0.25); background:rgba(2,6,14,0.4); transition:background 0.2s; cursor:pointer; }
         .msg-card:hover { background:rgba(30,41,59,0.5); }
         .msg-card.unread { border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.08); }
+        .clickable-link { font-size:0.7rem; color:#3b82f6; text-decoration:underline; cursor:pointer; }
+        .clickable-mention { font-size:0.6rem; color:#3b82f6; cursor:pointer; font-weight:600; }
+        .clickable-tag { font-size:0.6rem; color:#e83e8c; cursor:pointer; font-weight:600; }
     </style>
 </head>
 <body>
@@ -335,7 +340,7 @@
             <div class="pwr-popover-body">
                 <div style="display:flex;gap:6px;margin-bottom:8px;"><button class="tab active" data-ptab="buy" onclick="switchP2PTab('buy')">Buy PWR</button><button class="tab" data-ptab="sell" onclick="switchP2PTab('sell')">Sell PWR</button><button class="tab" data-ptab="my" onclick="switchP2PTab('my')">My Trades</button></div>
                 <div id="p2pListings" style="max-height:280px;overflow-y:auto;"></div>
-                <button class="btn btn-accent" onclick="openCreateListing()" style="width:100%;justify-content:center;margin-top:8px;">+ Create Listing</button>
+                <button class="btn btn-accent" onclick="openCreateListing()" style="width:auto; justify-content:center; margin-top:8px; align-self:center; padding:6px 16px;">+ Create Listing</button>
             </div>
         </div>
 
@@ -372,7 +377,9 @@
   appId: "1:289213404201:web:51a9e37f2fff18abc0f838",
   measurementId: "G-NJXW4HGQGX"
 };
-            firebase.initializeApp(firebaseConfig); const db = firebase.database();
+            firebase.initializeApp(firebaseConfig);
+            const db = firebase.database();
+
             const COLORS = ['#10b981','#ef4444','#f59e0b','#8b5cf6','#ec4899','#06b6d4','#f97316','#84cc16','#14b8a6','#6366f1','#000000','#ffd700','#c0c0c0','#ff6b6b','#4ecdc4','#45b7d1','#bb8fce','#f7dc6f','#e84393','#00b894'];
             let allPolls=[], activeFilter='live', sortBy='recent', searchQuery='', commentSearchQuery='', loading=true, activePollId=null;
             let currentMediaUrls=[], voterMediaUrls=[];
@@ -384,19 +391,14 @@
             let taglineTimer=null, taglines=['Real‑time polls, real opinions.','Earn PWR. Vote. Share.','Your voice has value.'];
             let morePopoverPosition = { top: '30%', left: '50%', transform: 'translateX(-50%)' };
 
-            // Modal stack for nested modals
             let modalStack = [];
-            function openModal(html) {
-                modalStack.push(html);
-                document.getElementById('modalRoot').innerHTML = html;
-            }
-            window.closeModal = function() {
-                modalStack.pop();
-                if (modalStack.length > 0) {
-                    document.getElementById('modalRoot').innerHTML = modalStack[modalStack.length - 1];
-                } else {
-                    document.getElementById('modalRoot').innerHTML = '';
-                }
+            function openModal(html) { modalStack.push(html); document.getElementById('modalRoot').innerHTML = html; }
+            window.closeModal = function() { modalStack.pop(); if(modalStack.length>0) document.getElementById('modalRoot').innerHTML = modalStack[modalStack.length-1]; else document.getElementById('modalRoot').innerHTML = ''; };
+
+            window._pendingConfirm = null;
+            window.confirmAction = function(title, message, onConfirm) {
+                window._pendingConfirm = onConfirm;
+                openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box" style="max-width:320px;"><div class="modal-header"><h3>${title}</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body" style="text-align:center;padding:20px;"><div style="margin-bottom:16px;font-size:0.85rem;">${message}</div><div style="display:flex;gap:8px;justify-content:center;"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-accent" onclick="closeModal();if(window._pendingConfirm) window._pendingConfirm();">Confirm</button></div></div></div></div>`);
             };
 
             const pwrIconHtml = '<span class="pwr-icon"><i class="fa-solid fa-chart-line"></i></span>';
@@ -404,15 +406,80 @@
             function getInitials(name){ if(!name)return'?'; return name.slice(0,2).toUpperCase(); }
             function getDisplayName(d){ return d.username || d.publicId || (d.uid ? d.uid.slice(0,8)+'...' : 'Anonymous'); }
 
+            function linkify(text) {
+                if (!text) return '';
+                text = esc(text);
+                text = text.replace(/(https?:\/\/[^\s<]+)/g, '<a class="clickable-link" href="$1" target="_blank" rel="noopener">$1</a>');
+                text = text.replace(/(^|\s)(www\.[^\s<]+)/g, '$1<a class="clickable-link" href="https://$2" target="_blank" rel="noopener">$2</a>');
+                text = text.replace(/(^|\s)((?:[a-zA-Z0-9][-a-zA-Z0-9]*\.)+[a-zA-Z]{2,}(?:\/[\S]*)?)/g, '$1<a class="clickable-link" href="https://$2" target="_blank" rel="noopener">$2</a>');
+                text = text.replace(/(^|\s)(#[a-zA-Z0-9_]+)/g, '$1<span class="clickable-tag">$2</span>');
+                text = text.replace(/(^|\s)@([a-zA-Z0-9_]+)/g, '$1<span class="clickable-mention" data-username="$2">@$2</span>');
+                return text;
+            }
+
+            document.addEventListener('click', function(e) {
+                const mention = e.target.closest('.clickable-mention');
+                if (mention) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const username = mention.dataset.username;
+                    if (username) lookupAndViewProfile(username);
+                }
+            });
+
+            async function processMentions(text, sourceType, sourceId, sourceTitle) {
+                if (!text) return;
+                const mentionRegex = /@([a-zA-Z0-9_]+)/g;
+                const mentioned = new Set();
+                let match;
+                while ((match = mentionRegex.exec(text)) !== null) {
+                    const name = match[1].toLowerCase();
+                    if (name === (pwrCache.username||'').toLowerCase()) continue;
+                    mentioned.add(name);
+                }
+                for (const name of mentioned) {
+                    try {
+                        // Lookup by usernames index first
+                        let snap = await db.ref('usernames/'+name).once('value');
+                        let mentionedUserId = snap.exists() ? snap.val() : null;
+                        // Fallback: search all users by username
+                        if (!mentionedUserId) {
+                            const allUsersSnap = await db.ref('users').once('value');
+                            const allUsers = allUsersSnap.val() || {};
+                            for (const [uid, u] of Object.entries(allUsers)) {
+                                if ((u.username||'').toLowerCase() === name) { mentionedUserId = uid; break; }
+                            }
+                        }
+                        if (!mentionedUserId || mentionedUserId === userId) continue;
+                        const msgText = `@${pwrCache.username||'User'} mentioned you in a ${sourceType}: "${(sourceTitle||'untitled').slice(0,60)}"`;
+                        const msgObj = {
+                            from: userId,
+                            fromName: pwrCache.username||'User',
+                            text: msgText,
+                            time: Date.now(),
+                            read: false,
+                            sourceType: sourceType,
+                            sourceId: sourceId,
+                            sourceTitle: sourceTitle
+                        };
+                        await db.ref('users/'+mentionedUserId+'/messages').push(msgObj);
+                    } catch(e) { /* silent */ }
+                }
+            }
+
+            function renderUnifiedStar(pollId,isFav,favCount){ const cd=(favCount!==undefined&&favCount!==null)?favCount:0; const fc=fmtNum(cd); const fullFc=fmtNumFull(cd); return`<div style="display:flex;align-items:center;gap:6px;"><span class="fav-count-badge num-toggle" title="${fullFc} favorites" data-full="${fullFc}" data-abbr="${fc}" onclick="event.stopPropagation();toggleNumDisplay(this)">${fc}</span><button class="unified-star-btn ${isFav?'':'inactive'}" onclick="event.stopPropagation();toggleFav('${pollId}')" title="Favorite Poll"><svg viewBox="0 0 24 24" fill="url(#star-emerald-gradient)"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></button></div>`; }
+
             const userRef = db.ref('users/' + userId);
-            let pwrCache = { balance: 1000, lastClaim: 0, history: [], streakDay: 0, lastClaimDate: '', username: '', showBalance: true, usdtAddress: '', publicId: '', createdAt: 0, contactInfo: [], unreadMessages: 0 };
+            let pwrCache = { balance: 1000, lastClaim: 0, history: [], streakDay: 0, lastClaimDate: '', username: '', showBalance: true, usdtAddress: '', publicId: '', createdAt: 0, contactInfo: [], unreadMessages: 0, referredBy: '', referralBonusClaimed: false, referralsCount: 0 };
             userRef.once('value').then(snap => {
                 const data = snap.val() || {};
                 if (data.pwrBalance === undefined) {
                     pwrCache.balance = 1000; pwrCache.createdAt = Date.now();
-                    pwrCache.history = [{ amount: 1000, time: Date.now(), method: 'Bonus', msg: 'Welcome! Initial 1,000 PWR bonus.', cp: '' }];
+                    pwrCache.history = [{ amount: 1000, time: Date.now(), method: 'Bonus', msg: 'Welcome! Initial 1,000 PWR bonus.', cp: '', txid: 'tx_'+shortId() }];
                     const publicId = shortId();
-                    userRef.set({ pwrBalance: 1000, lastClaim: 0, history: pwrCache.history, streakDay: 0, lastClaimDate: '', username: '', showBalance: true, usdtAddress: '', publicId, createdAt: firebase.database.ServerValue.TIMESTAMP, contactInfo: [], unreadMessages: 0 });
+                    const refParam = new URLSearchParams(location.search).get('ref');
+                    if (refParam) pwrCache.referredBy = refParam;
+                    userRef.set({ pwrBalance: 1000, lastClaim: 0, history: pwrCache.history, streakDay: 0, lastClaimDate: '', username: '', showBalance: true, usdtAddress: '', publicId, createdAt: firebase.database.ServerValue.TIMESTAMP, contactInfo: [], unreadMessages: 0, referredBy: pwrCache.referredBy, referralBonusClaimed: false, referralsCount: 0 });
                     pwrCache.publicId = publicId;
                 } else {
                     pwrCache.balance = data.pwrBalance || 1000; pwrCache.lastClaim = data.lastClaim || 0;
@@ -423,6 +490,9 @@
                     pwrCache.publicId = data.publicId || shortId();
                     pwrCache.contactInfo = Array.isArray(data.contactInfo) ? data.contactInfo : (typeof data.contactInfo === 'string' && data.contactInfo ? [{ label: 'Contact', value: data.contactInfo }] : []);
                     pwrCache.unreadMessages = data.unreadMessages || 0;
+                    pwrCache.referredBy = data.referredBy || '';
+                    pwrCache.referralBonusClaimed = data.referralBonusClaimed || false;
+                    pwrCache.referralsCount = data.referralsCount || 0;
                     if (data.createdAt) { pwrCache.createdAt = data.createdAt; } else { pwrCache.createdAt = Date.now(); userRef.child('createdAt').set(pwrCache.createdAt); }
                     if (!data.publicId) userRef.child('publicId').set(pwrCache.publicId);
                 }
@@ -434,7 +504,7 @@
             function fmtNumFull(n){ return n.toLocaleString(); }
             function fmtPwr(v){ const s=v.toFixed(7); const parts=s.split('.'); return `<span class="pwr-num">${parts[0]}</span>.<span class="pwr-dec">${parts[1]}</span>`; }
             function fmtPwrPlain(v){ return v.toFixed(7); }
-            function fmtPwrExact(v) { if(v === 0) return '0'; let s = v.toFixed(7); s = s.replace(/\.?0+$/,''); return s; }
+            function fmtPwrExact(v) { if(v===0)return'0'; let s = v.toFixed(7); s = s.replace(/\.?0+$/,''); return s; }
             function fmtBalance(v){ if(v===0)return'0'; if(v<1000)return v.toFixed(4).replace(/\.?0+$/,''); if(v<1000000)return (v/1000).toFixed(2).replace(/\.?0+$/,'')+'K'; if(v<1000000000)return (v/1000000).toFixed(2).replace(/\.?0+$/,'')+'M'; return (v/1000000000).toFixed(2).replace(/\.?0+$/,'')+'B'; }
             function fmtPwrShort(v){ if(v===0)return'0'; if(v<1000)return v.toFixed(4).replace(/\.?0+$/,''); return fmtBalance(v); }
             function updatePwrUI(){ const bal = pwrCache.balance; if(bal >= 1000){ document.getElementById('pwrNum').textContent = fmtBalance(bal); } else { document.getElementById('pwrNum').innerHTML = fmtPwr(bal); } document.getElementById('pwrBadge').title = fmtPwrPlain(bal) + ' PWR'; }
@@ -452,20 +522,22 @@
                 }
             }
             function deductPwr(amount, type, msg, counterparty) {
+                const txid = 'tx_'+shortId();
                 return userRef.child('pwrBalance').once('value').then(snap => {
                     const before = snap.val() || 1000; if (before < amount) return false;
                     return userRef.child('pwrBalance').transaction(current => { if (current === null) return 1000 - amount; if (current < amount) return; return current - amount; }).then(() => {
                         return userRef.child('pwrBalance').once('value').then(afterSnap => {
                             const after = afterSnap.val() || 1000;
-                            if (Math.abs(before - after - amount) < 0.000001) { pwrCache.balance = after; pwrCache.history.push({ amount: -amount, time: Date.now(), method: type || 'action', msg: msg || '', cp: counterparty || '' }); updatePwrUI(); userRef.child('history').set(pwrCache.history.slice(-500)); return true; }
+                            if (Math.abs(before - after - amount) < 0.000001) { pwrCache.balance = after; pwrCache.history.push({ amount: -amount, time: Date.now(), method: type || 'action', msg: msg || '', cp: counterparty || '', txid }); updatePwrUI(); userRef.child('history').set(pwrCache.history.slice(-500)); return true; }
                             else { userRef.child('pwrBalance').transaction(current => { if (current !== null) return current + amount; return 1000 + amount; }); pwrCache.balance = after; updatePwrUI(); return false; }
                         });
                     });
                 }).catch(() => false);
             }
             function addPwr(amount, method, msg, counterparty) {
+                const txid = 'tx_'+shortId();
                 return userRef.child('pwrBalance').transaction(current => { if (current === null) return 1000 + amount; return current + amount; }).then(result => {
-                    if (result.committed) { pwrCache.balance = result.snapshot.val(); pwrCache.history.push({ amount: +amount, time: Date.now(), method: method || 'Refund', msg: msg || '', cp: counterparty || '' }); updatePwrUI(); userRef.child('history').set(pwrCache.history.slice(-500)); }
+                    if (result.committed) { pwrCache.balance = result.snapshot.val(); pwrCache.history.push({ amount: +amount, time: Date.now(), method: method || 'Refund', msg: msg || '', cp: counterparty || '', txid }); updatePwrUI(); userRef.child('history').set(pwrCache.history.slice(-500)); }
                 }).catch(() => {});
             }
             function updateHeroClaimButton() {
@@ -486,9 +558,7 @@
                 const todayUTC = Date.UTC(ty, tm-1, td);
                 const daysDiff = Math.floor((todayUTC - lastUTC) / 86400000);
                 let nextDay = 1;
-                if (daysDiff === 1) {
-                    nextDay = (pwrCache.streakDay % 7) + 1;
-                }
+                if (daysDiff === 1) { nextDay = (pwrCache.streakDay % 7) + 1; }
                 return 25 + (Math.min(nextDay - 1, 6) * 5);
             }
             window.claimDailyPwr = function() {
@@ -510,12 +580,27 @@
                     const amount = 25 + (Math.min(nextStreak - 1, 6) * 5);
                     data.pwrBalance = (data.pwrBalance || 1000) + amount; data.lastClaim = now; data.streakDay = nextStreak; data.lastClaimDate = today;
                     if (!data.history) data.history = [];
-                    data.history.push({ amount, time: now, method: 'Reward', msg: 'Daily streak reward', cp: '' });
+                    data.history.push({ amount, time: now, method: 'Reward', msg: 'Daily streak reward', cp: '', txid: 'tx_'+shortId() });
                     if (data.history.length > 500) data.history = data.history.slice(-500);
                     return data;
                 }).then(result => {
-                    if (result.committed) { const d = result.snapshot.val(); pwrCache.balance = d.pwrBalance; pwrCache.lastClaim = d.lastClaim; pwrCache.streakDay = d.streakDay; pwrCache.lastClaimDate = d.lastClaimDate; pwrCache.history = d.history || []; updatePwrUI(); updateHeroClaimButton(); toast(`+${getCurrentStreakAmount()} PWR claimed!`); }
-                    else toast('Already claimed today.');
+                    if (result.committed) {
+                        const d = result.snapshot.val(); pwrCache.balance = d.pwrBalance; pwrCache.lastClaim = d.lastClaim; pwrCache.streakDay = d.streakDay; pwrCache.lastClaimDate = d.lastClaimDate; pwrCache.history = d.history || [];
+                        updatePwrUI(); updateHeroClaimButton(); toast(`+${getCurrentStreakAmount()} PWR claimed!`);
+                        if (pwrCache.referredBy && !pwrCache.referralBonusClaimed) {
+                            db.ref('users/' + pwrCache.referredBy).once('value').then(refSnap => {
+                                if (refSnap.exists()) {
+                                    db.ref('users/' + pwrCache.referredBy + '/pwrBalance').transaction(c => (c||1000)+10);
+                                    db.ref('users/' + pwrCache.referredBy + '/history').once('value').then(hSnap => { const h = hSnap.val()||[]; h.push({ amount:10, time:Date.now(), method:'Referral Bonus', msg:'User joined via your link!', cp: pwrCache.username||'User', txid:'tx_'+shortId() }); db.ref('users/' + pwrCache.referredBy + '/history').set(h.slice(-500)); });
+                                    db.ref('users/' + pwrCache.referredBy + '/messages').push({ from: userId, fromName: 'Sentix', amount: 10, text: `${(refSnap.val()||{}).username||'User'} joined via your referral link!`, time: Date.now(), read: false });
+                                    db.ref('users/' + pwrCache.referredBy + '/referralsCount').transaction(c => (c||0)+1);
+                                    userRef.child('referralBonusClaimed').set(true);
+                                    pwrCache.referralBonusClaimed = true;
+                                    toast('Referral bonus sent!');
+                                }
+                            });
+                        }
+                    } else toast('Already claimed today.');
                     claimInProgress = false; updateHeroClaimButton();
                 }).catch(() => { claimInProgress = false; updateHeroClaimButton(); toast('Claim failed.'); });
             };
@@ -524,10 +609,7 @@
                 let idx = 0;
                 const el = document.getElementById('heroTagline');
                 if(taglineTimer) clearInterval(taglineTimer);
-                taglineTimer = setInterval(()=>{
-                    idx = (idx+1) % taglines.length;
-                    if(el) el.textContent = taglines[idx];
-                }, 4000);
+                taglineTimer = setInterval(()=>{ idx = (idx+1) % taglines.length; if(el) el.textContent = taglines[idx]; }, 4000);
             }
 
             function toast(msg){ const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.getElementById('toastRoot').appendChild(t); setTimeout(()=>t.remove(),2400); }
@@ -550,22 +632,12 @@
             window.toggleMorePopover = function(){
                 const popover = document.getElementById('morePopover');
                 const header = document.getElementById('compactHeader');
-                if (header) {
-                    const rect = header.getBoundingClientRect();
-                    popover.style.top = (rect.bottom + 8) + 'px';
-                } else {
-                    popover.style.top = '30%';
-                }
-                popover.style.left = '50%';
-                popover.style.transform = 'translateX(-50%)';
-                popover.style.right = 'auto';
+                if (header) { const rect = header.getBoundingClientRect(); popover.style.top = (rect.bottom + 8) + 'px'; }
+                else { popover.style.top = '30%'; }
+                popover.style.left = '50%'; popover.style.transform = 'translateX(-50%)'; popover.style.right = 'auto';
                 popover.classList.toggle('show');
                 morePopoverVisible = popover.classList.contains('show');
-                if (morePopoverVisible) {
-                    morePopoverPosition.top = popover.style.top;
-                    morePopoverPosition.left = popover.style.left;
-                    morePopoverPosition.transform = popover.style.transform;
-                }
+                if (morePopoverVisible) { morePopoverPosition.top = popover.style.top; morePopoverPosition.left = popover.style.left; morePopoverPosition.transform = popover.style.transform; }
             };
             window.closeMorePopover = function(){ document.getElementById('morePopover').classList.remove('show'); morePopoverVisible = false; };
             document.addEventListener('click', function(e){ if(morePopoverVisible && !e.target.closest('#morePopover') && !e.target.closest('#moreBtn') && !messagesPopoverVisible && !userSearchVisible && !p2pMarketVisible){ closeMorePopover(); } });
@@ -575,13 +647,24 @@
                 if(method.startsWith('Sent to')) return 'Sent';
                 if(method.startsWith('Received from')) return 'Received';
                 if(method === 'Escrow Lock' || method === 'Escrow Release') return 'Locked';
-                if(method === 'Poll') return 'Poll';
-                if(method === 'Vote') return 'Vote';
-                if(method === 'Reward') return 'Reward';
-                if(method === 'Bonus') return 'Bonus';
-                if(method === 'Refund') return 'Refund';
+                if(method === 'Poll') return 'Poll'; if(method === 'Vote') return 'Vote';
+                if(method === 'Reward') return 'Reward'; if(method === 'Bonus') return 'Bonus'; if(method === 'Refund') return 'Refund';
                 return method;
             }
+
+            window.showTxDetail = function(txid) {
+                const tx = pwrCache.history.find(h => h.txid === txid);
+                if(!tx) return toast('Transaction not found.');
+                const amt = tx.amount; const color = amt > 0 ? '#10b981' : '#f43f5e';
+                openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box" style="max-width:380px;"><div class="modal-header"><h3>🧾 Transaction</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body">
+                    <div class="profile-row"><strong>TXID:</strong> <span style="font-family:'JetBrains Mono',monospace;">${tx.txid}</span> <button class="btn btn-sm" onclick="copyText('${tx.txid}')"><i class="fa-solid fa-copy"></i></button></div>
+                    <div class="profile-row"><strong>Amount:</strong> <span style="color:${color};font-weight:700;">${amt>0?'+':''}${fmtPwrExact(Math.abs(amt))} PWR</span></div>
+                    <div class="profile-row"><strong>Type:</strong> ${getMethodLabel(tx.method)}</div>
+                    <div class="profile-row"><strong>Date:</strong> ${new Date(tx.time).toLocaleString()}</div>
+                    ${tx.cp ? `<div class="profile-row" style="cursor:pointer;" onclick="lookupAndViewProfile('${esc(tx.cp)}')"><strong>Counterparty:</strong> ${esc(tx.cp)}</div>` : ''}
+                    ${tx.msg ? `<div class="profile-row"><strong>Message:</strong> ${esc(tx.msg)}</div>` : ''}
+                </div></div></div>`);
+            };
 
             function refreshPwrPopover(){ const d = pwrCache; const claimable = !d.lastClaim || (Date.now() - d.lastClaim) >= 86400000; const amount = getCurrentStreakAmount(); document.getElementById('pwrPopoverTitle').textContent = 'PWR: ' + fmtPwrPlain(d.balance); const claimBtn = document.getElementById('pwrClaimBtn'); claimBtn.textContent = claimable ? `Claim Daily +${amount} PWR` : 'Claimed Today'; claimBtn.disabled = !claimable || claimInProgress; renderPwrTxList(d.history.slice().reverse()); }
             function renderPwrTxList(items){
@@ -592,8 +675,9 @@
                     const shortAmt = (amt>0?'+':'') + fmtPwrExact(Math.abs(amt));
                     const label = getMethodLabel(h.method);
                     const time = new Date(h.time).toLocaleString();
-                    const secondRow = (h.msg || h.cp) ? `<div class="pwr-tx-detail">${h.cp ? `<span style="cursor:pointer;text-decoration:underline;" onclick="event.stopPropagation();viewPublicProfile('${esc(h.cp)}')">${esc(h.cp)}</span>: ` : ''}${esc(h.msg||'')}</div>` : '';
-                    return `<div class="pwr-tx-row"><div style="display:flex;flex-direction:column;flex:1;min-width:0;"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="display:flex;align-items:center;gap:6px;"><span class="pwr-tx-amount" style="color:${color};" title="${fmtPwrPlain(Math.abs(amt))} PWR">${shortAmt}</span><span class="pwr-tx-label">${label}</span></span><span class="pwr-tx-time">${time}</span></div>${secondRow}</div></div>`;
+                    const secondRow = (h.msg || h.cp) ? `<div class="pwr-tx-detail">${h.cp ? `<span style="cursor:pointer;text-decoration:underline;" onclick="event.stopPropagation();lookupAndViewProfile('${esc(h.cp)}')">${esc(h.cp)}</span>: ` : ''}${esc(h.msg||'')}</div>` : '';
+                    const txidHtml = h.txid ? `<span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:#64748b;text-transform:none;cursor:pointer;" title="TXID" onclick="event.stopPropagation();copyText('${h.txid}')">#${h.txid}</span>` : '';
+                    return `<div class="pwr-tx-row" onclick="event.stopPropagation(); showTxDetail('${h.txid}')"><div style="display:flex;flex-direction:column;flex:1;min-width:0;"><div style="display:flex;align-items:center;justify-content:space-between;"><span style="display:flex;align-items:center;gap:6px;"><span class="pwr-tx-amount" style="color:${color};" title="${fmtPwrPlain(Math.abs(amt))} PWR">${shortAmt}</span><span class="pwr-tx-label">${label}</span></span><span style="display:flex;align-items:center;gap:6px;">${txidHtml}<span class="pwr-tx-time">${time}</span></span></div>${secondRow}</div></div>`;
                 }).join('') || '<div style="font-size:0.6rem;color:var(--text-muted);text-align:center;padding:10px;">No transactions found.</div>';
             }
             window.togglePwrPopover = function(){ const popover = document.getElementById('pwrPopover'); const badge = document.getElementById('pwrBadge'); const rect = badge.getBoundingClientRect(); const popoverWidth = 340; const margin = 16; let left = rect.left; if (left + popoverWidth > window.innerWidth - margin) left = window.innerWidth - popoverWidth - margin; if (left < margin) left = margin; popover.style.left = left + 'px'; popover.style.right = 'auto'; popover.style.top = (rect.bottom + 6) + 'px'; refreshPwrPopover(); popover.classList.add('show'); pwrPopoverVisible = true; document.getElementById('pwrSearchInputPopover').classList.remove('active'); document.getElementById('pwrSearchInputPopover').value = ''; closeUserSearch(); closeP2PMarket(); closeMorePopover(); closeMessages(); };
@@ -602,94 +686,98 @@
             document.addEventListener('click', function(e){ if(pwrPopoverVisible && !e.target.closest('#pwrPopover') && !e.target.closest('#pwrBadge')){ closePwrPopover(); } });
             window.togglePwrPopoverSearch = function(){ const input = document.getElementById('pwrSearchInputPopover'); input.classList.toggle('active'); if(input.classList.contains('active')){input.focus();}else{input.value='';renderPwrTxList(pwrCache.history.slice(-20).reverse());} };
             window.filterPwrTx = function(){
-                const searchTerm = (document.getElementById('pwrSearchInputPopover').value||'').toLowerCase();
+                const rawTerm = document.getElementById('pwrSearchInputPopover').value||'';
+                const searchTerm = rawTerm.trim().toLowerCase();
                 let items = pwrCache.history.slice().reverse();
                 if(searchTerm){
                     items = items.filter(h => {
                         const dateStr = new Date(h.time).toLocaleString().toLowerCase();
-                        return dateStr.includes(searchTerm) || (h.method||'').toLowerCase().includes(searchTerm) || (h.msg||'').toLowerCase().includes(searchTerm) || h.amount.toFixed(7).includes(searchTerm);
+                        if (dateStr.includes(searchTerm)) return true;
+                        if ((h.method||'').toLowerCase().includes(searchTerm)) return true;
+                        if ((h.msg||'').toLowerCase().includes(searchTerm)) return true;
+                        if (h.amount.toFixed(7).includes(searchTerm)) return true;
+                        const txidRaw = h.txid||'';
+                        if (txidRaw.toLowerCase().includes(searchTerm)) return true;
+                        if (('#'+txidRaw).toLowerCase().includes(searchTerm)) return true;
+                        if (txidRaw.toLowerCase().replace('tx_','').includes(searchTerm.replace('tx_','').replace('#',''))) return true;
+                        return false;
                     });
-                } else {
-                    items = items.slice(0,20);
                 }
                 renderPwrTxList(items);
             };
             window.claimPwrFromPopover = function(){ window.claimDailyPwr(); refreshPwrPopover(); };
 
-            // Messages - fixed load & mark-as-read
+            window.lookupAndViewProfile = function(identifier) {
+                db.ref('users').once('value').then(snap => {
+                    const users = snap.val() || {};
+                    let found = null;
+                    Object.entries(users).forEach(([uid, d]) => {
+                        if (d.username === identifier || d.publicId === identifier || uid === identifier) found = uid;
+                    });
+                    if (found) viewPublicProfile(found);
+                    else toast('User not found.');
+                });
+            };
+
+            window.navigateToSource = function(sourceType, sourceId) {
+                if (sourceType === 'poll' || sourceType === 'post') {
+                    viewPoll(sourceId);
+                } else if (sourceType === 'comment') {
+                    const poll = allPolls.find(p => p.id === sourceId || p.shortId === sourceId);
+                    if (poll) viewPoll(poll.shortId || poll.id);
+                } else if (sourceType === 'chat') {
+                    showTradeDetailByEscrow(sourceId);
+                }
+            };
+
             let initialMessagesLoaded = false;
             const messagesRef = db.ref('users/' + userId + '/messages');
             messagesRef.once('value').then(snap => {
                 const msgs = snap.val() || {};
-                const keys = Object.keys(msgs);
-                keys.forEach(key => {
-                    if (!msgs[key].read) {
-                        db.ref('users/' + userId + '/messages/' + key).update({ read: true });
-                    }
-                });
-                userRef.child('unreadMessages').set(0);
-                pwrCache.unreadMessages = 0;
-                updateNotificationDot();
+                Object.keys(msgs).forEach(key => { if (!msgs[key].read) db.ref('users/' + userId + '/messages/' + key).update({ read: true }); });
+                userRef.child('unreadMessages').set(0); pwrCache.unreadMessages = 0; updateNotificationDot();
                 initialMessagesLoaded = true;
                 messagesRef.on('child_added', snap => {
                     if (!initialMessagesLoaded) return;
                     const msg = snap.val();
                     if (msg && !msg.read) {
                         toast(`💬 ${msg.fromName || 'Someone'} sent you ${msg.amount ? fmtPwrExact(msg.amount)+' PWR' : 'a message'}`);
-                        userRef.child('unreadMessages').transaction(c => (c||0)+1).then(()=>{
-                            pwrCache.unreadMessages = (pwrCache.unreadMessages||0)+1;
-                            updateNotificationDot();
-                        });
+                        userRef.child('unreadMessages').transaction(c => (c||0)+1).then(()=>{ pwrCache.unreadMessages = (pwrCache.unreadMessages||0)+1; updateNotificationDot(); });
                     }
                 });
             });
 
             window.openMessages = function(){
                 const popover = document.getElementById('messagesPopover');
-                popover.style.top = morePopoverPosition.top;
-                popover.style.left = morePopoverPosition.left;
-                popover.style.transform = morePopoverPosition.transform;
-                popover.style.right = 'auto';
-                popover.classList.add('show');
-                messagesPopoverVisible = true;
-                closePwrPopover(); closeUserSearch(); closeP2PMarket();
-                renderMessages();
+                popover.style.top = morePopoverPosition.top; popover.style.left = morePopoverPosition.left; popover.style.transform = morePopoverPosition.transform; popover.style.right = 'auto';
+                popover.classList.add('show'); messagesPopoverVisible = true;
+                closePwrPopover(); closeUserSearch(); closeP2PMarket(); renderMessages();
             };
-            window.closeMessages = function(){
-                document.getElementById('messagesPopover').classList.remove('show');
-                messagesPopoverVisible = false;
-            };
+            window.closeMessages = function(){ document.getElementById('messagesPopover').classList.remove('show'); messagesPopoverVisible = false; };
             function renderMessages(){
                 const container = document.getElementById('messagesList');
                 db.ref('users/' + userId + '/messages').once('value').then(snap => {
                     const msgs = snap.val() || {};
                     const arr = Object.keys(msgs).map(key => ({ key, ...msgs[key] }));
                     arr.sort((a,b)=>(b.time||0)-(a.time||0));
-                    if(arr.length === 0){
-                        container.innerHTML = '<div style="font-size:0.65rem;color:var(--text-muted);text-align:center;padding:10px;">No messages yet.</div>';
-                        return;
-                    }
+                    if(arr.length === 0){ container.innerHTML = '<div style="font-size:0.65rem;color:var(--text-muted);text-align:center;padding:10px;">No messages yet.</div>'; return; }
                     container.innerHTML = arr.map(m => {
                         const unreadClass = m.read ? '' : ' unread';
-                        return `<div class="msg-card${unreadClass}" onclick="viewPublicProfile('${m.from}')">
-                            <div class="user-avatar" style="${getUserAvatar(m.from||'')}">${getInitials(m.fromName||'?')}</div>
+                        const isMention = m.text && m.text.includes('mentioned you');
+                        const cardClick = (isMention && m.sourceType && m.sourceId) ? `onclick="navigateToSource('${m.sourceType}','${m.sourceId}')"` : '';
+                        return `<div class="msg-card${unreadClass}" ${cardClick}>
+                            <div class="user-avatar" style="${getUserAvatar(m.from||'')}" onclick="event.stopPropagation();lookupAndViewProfile('${m.from}')">${getInitials(m.fromName||'?')}</div>
                             <div style="flex:1;min-width:0;">
                                 <div style="display:flex;justify-content:space-between;align-items:center;">
                                     <span style="font-weight:600;font-size:0.7rem;">${esc(m.fromName||'User')}</span>
                                     <span style="font-size:0.55rem;color:var(--text-muted);">${safeTs(m.time)}</span>
                                 </div>
                                 ${m.amount ? `<div style="font-size:0.65rem;color:var(--green);font-weight:600;">+${fmtPwrExact(m.amount)} PWR</div>` : ''}
-                                ${m.text ? `<div style="font-size:0.6rem;color:var(--amber);margin-top:2px;word-break:break-word;">${esc(m.text)}</div>` : ''}
-                            </div>
-                        </div>`;
+                                ${m.text ? `<div style="font-size:0.6rem;color:var(--amber);margin-top:2px;word-break:break-word;">${linkify(m.text)}</div>` : ''}
+                            </div></div>`;
                     }).join('');
-                    const msgKeys = Object.keys(msgs);
-                    msgKeys.forEach(key => {
-                        if (!msgs[key].read) db.ref('users/' + userId + '/messages/' + key).update({ read: true });
-                    });
-                    userRef.child('unreadMessages').set(0);
-                    pwrCache.unreadMessages = 0;
-                    updateNotificationDot();
+                    Object.keys(msgs).forEach(key => { if (!msgs[key].read) db.ref('users/' + userId + '/messages/' + key).update({ read: true }); });
+                    userRef.child('unreadMessages').set(0); pwrCache.unreadMessages = 0; updateNotificationDot();
                 });
             }
 
@@ -697,7 +785,7 @@
             window.closeUserSearch = function(){ document.getElementById('userSearchPopover').classList.remove('show'); userSearchVisible = false; };
             window.searchUsers = function(){ const q = document.getElementById('userSearchInputPopover').value.trim().toLowerCase(); const container = document.getElementById('userSearchResults'); if(!q){ container.innerHTML='<div style="font-size:0.65rem;color:var(--text-muted);text-align:center;padding:10px;">Type to search...</div>'; return; }
                 db.ref('users').once('value').then(snap => { const users = snap.val() || {}; const results = []; Object.entries(users).forEach(([uid, d]) => { const uname = (d.username || '').toLowerCase(); if(uname.includes(q)) results.push({ uid, username: d.username || '', balance: d.pwrBalance || 0, showBalance: d.showBalance !== false }); });
-                container.innerHTML = results.length ? results.map(r => `<div class="user-list-item" onclick="viewPublicProfile('${r.uid}')"><div class="user-avatar" style="${getUserAvatar(r.uid)}">${getInitials(r.username||r.uid)}</div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:0.75rem;">${esc(r.username||'Anonymous')}</div><div style="font-size:0.6rem;color:var(--text-muted);" title="${r.showBalance ? fmtPwrPlain(r.balance)+' PWR' : 'Hidden'}">${r.showBalance ? fmtBalance(r.balance)+' PWR' : 'Balance hidden'}</div></div><button class="btn" style="font-size:0.6rem;padding:2px 8px;" onclick="event.stopPropagation();openTipModal('${r.uid}','${esc(r.username||'User')}')">💸 Tip</button></div>`).join('') : '<div style="font-size:0.65rem;color:var(--text-muted);text-align:center;padding:10px;">No users found.</div>'; }); };
+                container.innerHTML = results.length ? results.map(r => `<div class="user-list-item" onclick="viewPublicProfile('${r.uid}')"><div class="user-avatar" style="${getUserAvatar(r.uid)}">${getInitials(r.username||r.uid)}</div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:0.75rem;">${esc(r.username||'Anonymous')}</div><div style="font-size:0.6rem;color:var(--text-muted);" title="${r.showBalance ? fmtPwrPlain(r.balance)+' PWR' : 'Hidden'}">${r.showBalance ? fmtBalance(r.balance)+' PWR' : 'Balance hidden'}</div></div><button class="btn btn-sm" onclick="event.stopPropagation();openTipModal('${r.uid}','${esc(r.username||'User')}')">💸 Tip</button></div>`).join('') : '<div style="font-size:0.65rem;color:var(--text-muted);text-align:center;padding:10px;">No users found.</div>'; }); };
 
             window.toggleP2PMarket = function(){ const popover = document.getElementById('p2pMarketPopover'); popover.style.top = morePopoverPosition.top; popover.style.left = morePopoverPosition.left; popover.style.transform = morePopoverPosition.transform; popover.style.right = 'auto'; popover.classList.toggle('show'); p2pMarketVisible = popover.classList.contains('show'); if(p2pMarketVisible){ closePwrPopover(); closeUserSearch(); closeMessages(); loadP2PListings(); } };
             window.closeP2PMarket = function(){ document.getElementById('p2pMarketPopover').classList.remove('show'); p2pMarketVisible = false; };
@@ -713,59 +801,183 @@
                     Promise.all(sellerIds.map(sid=>db.ref('users/'+sid).once('value'))).then(userSnaps => { const userMap = {}; userSnaps.forEach((snap,i)=>{ userMap[sellerIds[i]] = snap.val() || {}; });
                         container.innerHTML = arr.map(l => { const seller = userMap[l.sellerId] || {}; const sellerName = getDisplayName({...seller, uid: l.sellerId}); const isOwn = l.sellerId === userId;
                             const completedTrades = (seller.history||[]).filter(h=>h.method==='Escrow Release'||h.method==='Received from trade').length;
-                            const actionBtn = isOwn ? `<button class="btn btn-red" style="margin-top:6px;width:100%;justify-content:center;font-size:0.65rem;" onclick="cancelListing('${l.lid}')">Cancel Listing</button>` : `<button class="btn btn-accent" style="margin-top:6px;width:100%;justify-content:center;font-size:0.65rem;" onclick="acceptTrade('${l.lid}')">Trade</button>`;
-                            return `<div class="listing-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div class="user-avatar" style="${getUserAvatar(l.sellerId)}">${getInitials(sellerName)}</div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:0.75rem;">${esc(sellerName)} ${isOwn ? '<span style="color:var(--accent);font-size:0.6rem;">(Yours)</span>' : ''}</div><div style="font-size:0.6rem;color:var(--text-muted);">${completedTrades} trades · ${safeTs(l.createdAt)}</div></div></div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-weight:700;font-size:0.8rem;" title="${fmtPwrPlain(l.pwrAmount)} PWR">${fmtBalance(l.pwrAmount)} PWR</span><span style="font-size:0.8rem;color:var(--gold);font-weight:700;">${l.usdtPrice} USDT</span></div><div style="font-size:0.6rem;color:var(--text-muted);">Expires: ${l.expiresAt ? formatAbsolute(l.expiresAt) : 'N/A'} · ${esc(l.paymentNote||'USDT')}</div>${actionBtn}</div>`; }).join(''); });
+                            const actionBtn = isOwn ? `<button class="btn btn-red btn-sm" style="margin-top:6px;" onclick="cancelListing('${l.lid}')">Cancel</button>` : `<button class="btn btn-accent btn-sm" style="margin-top:6px;" onclick="showTradeDetail('${l.lid}')">Trade</button>`;
+                            return `<div class="listing-card"><div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;"><div class="user-avatar" style="${getUserAvatar(l.sellerId)}" onclick="event.stopPropagation();viewPublicProfile('${l.sellerId}')">${getInitials(sellerName)}</div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:0.75rem;">${esc(sellerName)} ${isOwn ? '<span style="color:var(--accent);font-size:0.6rem;">(Yours)</span>' : ''}</div><div style="font-size:0.6rem;color:var(--text-muted);">${completedTrades} trades · ${safeTs(l.createdAt)}</div></div></div><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-weight:700;font-size:0.8rem;">${fmtPwrExact(l.pwrAmount)} PWR</span><span style="font-size:0.75rem;color:var(--gold);">${l.usdtPrice} USDT/PWR</span></div><div style="font-size:0.6rem;color:var(--text-muted);">Expires: ${l.expiresAt ? formatAbsolute(l.expiresAt) : 'N/A'}</div>${actionBtn}</div>`; }).join(''); });
                 });
                 } else {
                     db.ref('escrows').once('value').then(snap => { const allEscrows = snap.val() || {}; const trades = [];
-                        Object.entries(allEscrows).forEach(([eid, e]) => { if(e.buyerId === userId) trades.push({ eid, ...e, role: 'buyer' }); else if(e.sellerId === userId) trades.push({ eid, ...e, role: 'seller' }); });
+                        Object.entries(allEscrows).forEach(([eid, e]) => { if(e.buyerId === userId || e.sellerId === userId) trades.push({ eid, ...e, role: e.buyerId===userId?'buyer':'seller' }); });
                         trades.sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-                        container.innerHTML = trades.length ? trades.map(t => { const stateColors = { pending_usdt: 'var(--amber)', completed: 'var(--green)', disputed: 'var(--red)', refunded: 'var(--text-muted)' };
-                            return `<div class="escrow-row"><div><div style="font-weight:600;font-size:0.7rem;" title="${fmtPwrPlain(t.pwrAmount)} PWR">${fmtBalance(t.pwrAmount)} PWR</div><div style="font-size:0.55rem;color:var(--text-muted);">${t.role==='buyer'?'Bought from':'Sold to'} ${esc(t.counterpartyName||'...')} · ${safeTs(t.createdAt)}</div></div><div style="text-align:right;"><span class="badge" style="background:${stateColors[t.state]||'var(--bg-secondary)'};color:#fff;font-size:0.55rem;">${t.state}</span>${t.state==='pending_usdt'&&t.role==='seller'?`<button class="btn btn-green" style="font-size:0.55rem;padding:2px 6px;margin-top:4px;" onclick="confirmEscrow('${t.eid}')">Confirm</button>`:''}${t.state==='pending_usdt'&&t.role==='buyer'?`<button class="btn btn-red" style="font-size:0.55rem;padding:2px 6px;margin-top:4px;" onclick="disputeEscrow('${t.eid}')">Dispute</button>`:''}</div></div>`; }).join('') : '<div style="font-size:0.65rem;color:var(--text-muted);text-align:center;padding:10px;">No trades yet.</div>'; });
+                        container.innerHTML = trades.length ? trades.map(t => {
+                            const stateColors = { awaiting_payment: 'var(--amber)', payment_claimed: '#3b82f6', completed: 'var(--green)', disputed: 'var(--red)', cancelled: 'var(--text-muted)' };
+                            const otherPartyId = t.role==='buyer'?t.sellerId:t.buyerId;
+                            const otherPartyName = t.role==='buyer'?t.sellerUsername:t.buyerUsername;
+                            return `<div class="escrow-row" onclick="showTradeDetailByEscrow('${t.eid}')"><div style="display:flex;align-items:center;gap:8px;">
+                                <div class="user-avatar" style="${getUserAvatar(otherPartyId)}" onclick="event.stopPropagation();viewPublicProfile('${otherPartyId}')">${getInitials(otherPartyName||'?')}</div>
+                                <div><div style="font-weight:600;font-size:0.7rem;">${fmtPwrExact(t.pwrAmount)} PWR</div>
+                                <div style="font-size:0.55rem;color:var(--text-muted);">${t.role==='buyer'?'Bought from':'Sold to'} ${esc(otherPartyName||'...')} · ${safeTs(t.createdAt)}</div></div>
+                                </div><div style="text-align:right;"><span class="badge" style="background:${stateColors[t.state]||'var(--bg-secondary)'};color:#fff;font-size:0.55rem;">${t.state}</span></div></div>`;
+                        }).join('') : '<div style="font-size:0.65rem;color:var(--text-muted);text-align:center;padding:10px;">No trades yet.</div>'; });
                 }
             }
+
+            window.showTradeDetail = function(lid){
+                db.ref('p2pListings/'+lid).once('value').then(snap => {
+                    const l = snap.val(); if(!l || !l.active) { toast('Listing no longer available.'); return; }
+                    db.ref('users/'+l.sellerId).once('value').then(snap2 => {
+                        const seller = snap2.val() || {}; const sellerName = getDisplayName({...seller, uid: l.sellerId});
+                        openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>📦 Trade Details</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body">
+                            <div class="profile-row" style="cursor:pointer;" onclick="viewPublicProfile('${l.sellerId}')"><strong>Seller:</strong> ${esc(sellerName)}</div>
+                            <div class="profile-row"><strong>PWR Amount:</strong> ${fmtPwrExact(l.pwrAmount)} PWR</div>
+                            <div class="profile-row"><strong>Price:</strong> ${l.usdtPrice} USDT/PWR</div>
+                            <div class="profile-row"><strong>Total:</strong> ${(l.pwrAmount*l.usdtPrice).toFixed(2)} USDT</div>
+                            <div class="profile-row"><strong>USDT Address:</strong><br><span style="font-family:'JetBrains Mono',monospace;word-break:break-all;font-size:0.7rem;">${esc(l.usdtAddress||'Not provided')}</span> <button class="btn btn-sm" onclick="copyText('${esc(l.usdtAddress||'')}')"><i class="fa-solid fa-copy"></i></button></div>
+                            <button class="btn btn-accent btn-sm" onclick="closeModal();acceptTrade('${lid}')" style="margin-top:12px;">Accept & Pay</button>
+                    </div></div></div>`);
+                    });
+                });
+            };
+
+            window.showTradeDetailByEscrow = function(eid){
+                db.ref('escrows/'+eid).once('value').then(snap => {
+                    const e = snap.val(); if(!e) return;
+                    const isBuyer = e.buyerId === userId; const isSeller = e.sellerId === userId;
+                    const stateColors = { awaiting_payment: 'var(--amber)', payment_claimed: '#3b82f6', completed: 'var(--green)', disputed: 'var(--red)', cancelled: 'var(--text-muted)' };
+                    let actions = '';
+                    if (e.state === 'awaiting_payment' && isBuyer) actions += `<button class="btn btn-accent btn-sm" onclick="markPaymentSent('${eid}')">I have paid</button> `;
+                    if (e.state === 'payment_claimed' && isSeller) actions += `<button class="btn btn-green btn-sm" onclick="window.confirmAction('Confirm Payment','Release PWR to buyer?',()=>confirmPaymentReceived('${eid}'))">Confirm Payment</button> `;
+                    if (e.state === 'awaiting_payment' && isSeller) actions += `<button class="btn btn-red btn-sm" onclick="cancelEscrowTrade('${eid}')">Cancel Trade</button> `;
+                    if (e.state === 'payment_claimed' && isBuyer) actions += `<button class="btn btn-red btn-sm" onclick="disputeEscrow('${eid}')">Dispute</button> `;
+                    const chatHtml = `<div style="margin-top:12px;"><label>Chat</label><div id="escrowChat-${eid}" style="max-height:120px;overflow-y:auto;border:1px solid var(--border-subtle);border-radius:6px;padding:6px;margin-bottom:6px;font-size:0.6rem;">Loading...</div><div style="display:flex;gap:4px;align-items:center;"><textarea class="form-input" id="escrowChatInput-${eid}" placeholder="Type..." style="font-size:0.6rem;padding:4px 8px;flex:1;resize:none;min-height:auto;"></textarea><label class="btn btn-sm" style="cursor:pointer;margin:0;"><i class="fa-solid fa-paperclip"></i><input type="file" accept="image/*,video/*" onchange="handleEscrowMedia('${eid}', this)" style="display:none;"></label><button class="btn btn-sm" onclick="sendEscrowMessage('${eid}')">Send</button></div></div>`;
+                    openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>📦 Trade</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body">
+                        <div class="profile-row"><strong>Status:</strong> <span class="badge" style="background:${stateColors[e.state]||'var(--bg-secondary)'};color:#fff;">${e.state}</span></div>
+                        <div class="profile-row"><strong>PWR Amount:</strong> ${fmtPwrExact(e.pwrAmount)} PWR</div>
+                        <div class="profile-row"><strong>Price:</strong> ${e.usdtPrice} USDT/PWR</div>
+                        <div class="profile-row" style="cursor:pointer;" onclick="viewPublicProfile('${e.sellerId}')"><strong>Seller:</strong> ${esc(e.sellerUsername||'User')}</div>
+                        <div class="profile-row" style="cursor:pointer;" onclick="viewPublicProfile('${e.buyerId}')"><strong>Buyer:</strong> ${esc(e.buyerUsername||'User')}</div>
+                        <div class="profile-row"><strong>USDT Address:</strong><br><span style="font-family:'JetBrains Mono',monospace;word-break:break-all;font-size:0.7rem;">${esc(e.usdtAddress||'Not provided')}</span> <button class="btn btn-sm" onclick="copyText('${esc(e.usdtAddress||'')}')"><i class="fa-solid fa-copy"></i></button></div>
+                        ${actions ? `<div style="display:flex;gap:6px;margin:12px 0;">${actions}</div>` : ''}
+                        ${chatHtml}
+                </div></div></div>`);
+                    setTimeout(()=> loadEscrowChat(eid), 200);
+                });
+            };
+
+            function loadEscrowChat(eid) {
+                const chatDiv = document.getElementById('escrowChat-'+eid);
+                if(!chatDiv) return;
+                db.ref('escrows/'+eid+'/messages').off();
+                db.ref('escrows/'+eid+'/messages').on('value', snap => {
+                    const msgs = snap.val() || {};
+                    const arr = Object.keys(msgs).map(k=>({...msgs[k]}));
+                    arr.sort((a,b)=>(a.timestamp||0)-(b.timestamp||0));
+                    chatDiv.innerHTML = arr.map(m => {
+                        let textPart = '';
+                        let mediaPart = '';
+                        if (m.text) textPart = `<div style="font-size:0.6rem;word-break:break-word;margin-bottom:${m.mediaUrl?'4px':'0'};">${linkify(m.text)}</div>`;
+                        if (m.mediaUrl) {
+                            const isVideo = m.mediaUrl.startsWith('data:video') || /\.(mp4|webm|mov)/i.test(m.mediaUrl);
+                            if (isVideo) {
+                                mediaPart = `<video src="${esc(m.mediaUrl)}" controls style="max-width:120px;max-height:80px;border-radius:4px;cursor:pointer;" onclick="event.stopPropagation();openMediaViewer('${esc(m.mediaUrl)}','video')"></video>`;
+                            } else {
+                                mediaPart = `<img src="${esc(m.mediaUrl)}" style="max-width:120px;max-height:80px;border-radius:4px;cursor:pointer;margin-top:2px;" onclick="event.stopPropagation();openMediaViewer('${esc(m.mediaUrl)}','image')">`;
+                            }
+                        }
+                        return `<div style="margin:2px 0;"><strong style="font-size:0.55rem;">${esc(m.senderName||'?')}:</strong> ${textPart}${mediaPart} <span style="font-size:0.45rem;color:var(--text-muted);">${safeTs(m.timestamp)}</span></div>`;
+                    }).join('') || '<span style="font-size:0.55rem;">No messages</span>';
+                });
+            }
+            window.sendEscrowMessage = function(eid){
+                const input = document.getElementById('escrowChatInput-'+eid);
+                const text = input.value.trim();
+                const mediaUrl = window._escrowMediaToSend;
+                if(!text && !mediaUrl) return;
+                const msg = { senderId: userId, senderName: pwrCache.username||'You', timestamp: firebase.database.ServerValue.TIMESTAMP };
+                if (text) msg.text = text;
+                if (mediaUrl) msg.mediaUrl = mediaUrl;
+                db.ref('escrows/'+eid+'/messages').push(msg);
+                input.value = '';
+                if (mediaUrl) {
+                    window._escrowMediaToSend = null;
+                    const fileInput = document.querySelector(`#escrowChatInput-${eid}`).parentElement.querySelector('input[type="file"]');
+                    if(fileInput) fileInput.value = '';
+                }
+                if (text) processMentions(text, 'chat', eid, 'Trade chat');
+            };
+            window.handleEscrowMedia = async function(eid, input) {
+                const file = input.files[0];
+                if(!file) return;
+                if(file.size > MAX_FILE_SIZE_MB * 1024 * 1024) { toast('File too large.'); return; }
+                if(file.type.startsWith('image/')) {
+                    const dataUrl = await resizeImageIfImage(file);
+                    window._escrowMediaToSend = dataUrl;
+                } else if(file.type.startsWith('video/')) {
+                    const reader = new FileReader();
+                    reader.onload = e => { window._escrowMediaToSend = e.target.result; };
+                    reader.readAsDataURL(file);
+                } else { toast('Unsupported file type.'); return; }
+                toast('Media attached. Send your message.');
+            };
+            window.markPaymentSent = function(eid){ db.ref('escrows/'+eid).update({state:'payment_claimed'}); toast('Payment marked as sent.'); closeModal(); };
+            window.confirmPaymentReceived = function(eid){
+                db.ref('escrows/'+eid).once('value').then(snap => {
+                    const e = snap.val(); if(!e || e.state !== 'payment_claimed') return;
+                    db.ref('escrows/'+eid).update({state:'completed',completedAt:firebase.database.ServerValue.TIMESTAMP});
+                    addPwr(e.pwrAmount, 'Escrow Release', 'P2P trade completed', e.buyerUsername||'');
+                    db.ref('users/'+e.buyerId).child('pwrBalance').transaction(c=>(c||1000)+e.pwrAmount).then(()=>{
+                        db.ref('users/'+e.buyerId).child('history').once('value').then(hSnap=>{ const h=hSnap.val()||[]; h.push({amount:e.pwrAmount,time:Date.now(),method:'Escrow Release',msg:'P2P trade completed',cp:e.sellerUsername||'',txid:'tx_'+shortId()}); db.ref('users/'+e.buyerId).child('history').set(h.slice(-500)); });
+                    });
+                    toast('Trade completed!'); closeModal(); loadP2PListings();
+                });
+            };
+            window.cancelEscrowTrade = function(eid){
+                db.ref('escrows/'+eid).once('value').then(snap => {
+                    const e = snap.val(); if(!e || e.state !== 'awaiting_payment') return;
+                    db.ref('escrows/'+eid).update({state:'cancelled'});
+                    addPwr(e.pwrAmount, 'Refund', 'Trade cancelled'); toast('Trade cancelled and PWR refunded.'); closeModal(); loadP2PListings();
+                });
+            };
 
             window.openCreateListing = function(){ const expDate = new Date(Date.now()+86400000*2);
                 openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>📝 Create P2P Listing</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body">
                     <div class="form-group"><label>Listing Type</label><div style="display:flex;gap:6px;"><button class="exp-chip active" id="listTypeSell" onclick="document.getElementById('listTypeBuy').classList.remove('active');this.classList.add('active');">Sell PWR</button><button class="exp-chip" id="listTypeBuy" onclick="document.getElementById('listTypeSell').classList.remove('active');this.classList.add('active');">Buy PWR</button></div></div>
                     <div class="form-group"><label>PWR Amount</label><input class="form-input" type="number" id="listPwrAmount" min="0.0001" step="0.0001" value="10"></div>
-                    <div class="form-group"><label>Price (USDT)</label><input class="form-input" type="number" id="listUsdtPrice" min="0.01" step="0.01" value="1"></div>
-                    <div class="form-group"><label>Payment Note</label><input class="form-input" id="listPaymentNote" placeholder="e.g. USDT on BEP20 to 0x..." value="${esc(pwrCache.usdtAddress||'')}"></div>
+                    <div class="form-group"><label>Price (USDT per PWR)</label><input class="form-input" type="number" id="listUsdtPrice" min="0.01" step="0.01" value="1"></div>
+                    <div class="form-group"><label>USDT Address</label><input class="form-input" id="listUsdtAddress" value="${esc(pwrCache.usdtAddress||'')}" placeholder="0x... (visible to buyer after trade)"></div>
                     <div class="form-group"><label>Expiration</label><input class="form-input" type="datetime-local" id="listExp" value="${new Date(expDate.getTime()-expDate.getTimezoneOffset()*60000).toISOString().slice(0,16)}"></div>
-                    <button class="btn btn-green" id="createListingBtn" onclick="createP2PListing()" style="width:100%;justify-content:center;">📝 Create Listing</button>
+                    <button class="btn btn-green btn-sm" id="createListingBtn" onclick="createP2PListing()" style="width:auto; margin-top:8px;">📝 Create Listing</button>
                 </div></div></div>`); };
-            window.createP2PListing = function(){ const btn = document.getElementById('createListingBtn'); if(!btn) return; btn.disabled = true; btn.textContent = '⏳ Creating...';
+            window.createP2PListing = function(){ const btn = document.getElementById('createListingBtn'); if(!btn) return; btn.disabled = true; btn.textContent = '⏳...';
                 const type = document.getElementById('listTypeBuy').classList.contains('active') ? 'buy' : 'sell';
                 const pwrAmount = parseFloat(document.getElementById('listPwrAmount').value) || 0;
                 const usdtPrice = parseFloat(document.getElementById('listUsdtPrice').value) || 0;
-                const paymentNote = document.getElementById('listPaymentNote').value.trim();
+                const usdtAddress = document.getElementById('listUsdtAddress').value.trim();
                 const expVal = document.getElementById('listExp').value;
                 const expiresAt = expVal ? new Date(expVal).getTime() : Date.now() + 172800000;
                 if(pwrAmount <= 0 || usdtPrice <= 0){ toast('Enter valid amounts.'); btn.disabled = false; btn.textContent = '📝 Create Listing'; return; }
                 if(type === 'sell' && pwrCache.balance < pwrAmount){ toast('Insufficient PWR balance.'); btn.disabled = false; btn.textContent = '📝 Create Listing'; return; }
-                const listingData = { type, pwrAmount, usdtPrice, paymentNote, sellerId: userId, sellerUsername: pwrCache.username || '', active: true, createdAt: firebase.database.ServerValue.TIMESTAMP, expiresAt };
+                const listingData = { type, pwrAmount, usdtPrice, usdtAddress, sellerId: userId, sellerUsername: pwrCache.username || '', active: true, createdAt: firebase.database.ServerValue.TIMESTAMP, expiresAt };
                 const writeOp = db.ref('p2pListings').push(listingData);
                 if(type === 'sell'){ deductPwr(pwrAmount, 'Escrow Lock', 'P2P Sell Listing', '').then(ok => { if(!ok){ toast('PWR deduction failed.'); btn.disabled = false; btn.textContent = '📝 Create Listing'; return; }
                     writeOp.then(()=>{ closeModal(); p2pActiveTab = type; loadP2PListings(); toast('Listing created! PWR locked.'); }).catch(()=>{ toast('Failed to save listing.'); btn.disabled = false; btn.textContent = '📝 Create Listing'; }); }); }
                 else { writeOp.then(()=>{ closeModal(); p2pActiveTab = type; loadP2PListings(); toast('Listing created!'); }).catch(()=>{ toast('Failed to save listing.'); btn.disabled = false; btn.textContent = '📝 Create Listing'; }); }
             };
-            window.acceptTrade = function(lid){ db.ref('p2pListings/'+lid).once('value').then(snap => { const l = snap.val(); if(!l || !l.active){ toast('Listing no longer available.'); return; } if(l.sellerId === userId){ toast('Cannot trade with yourself.'); return; } if(l.type === 'sell' && pwrCache.balance < l.pwrAmount){ toast('Insufficient PWR.'); return; }
-                const escrowData = { pwrAmount: l.pwrAmount, usdtPrice: l.usdtPrice, paymentNote: l.paymentNote, sellerId: l.sellerId, sellerUsername: l.sellerUsername, buyerId: userId, buyerUsername: pwrCache.username || '', counterpartyName: l.sellerUsername || 'User', state: 'pending_usdt', createdAt: firebase.database.ServerValue.TIMESTAMP };
-                if(l.type === 'sell'){ deductPwr(l.pwrAmount, 'Escrow Lock', 'P2P Trade Escrow', l.sellerUsername).then(ok => { if(ok){ db.ref('p2pListings/'+lid).update({active:false}); db.ref('escrows').push(escrowData).then(()=>{ toast('PWR locked. Send USDT to seller.'); loadP2PListings(); }); } else toast('PWR deduction failed.'); }); }
-                else { db.ref('p2pListings/'+lid).update({active:false}); db.ref('escrows').push({...escrowData, sellerId: userId, buyerId: l.sellerId, counterpartyName: l.sellerUsername||'User', sellerUsername: pwrCache.username||'', buyerUsername: l.sellerUsername||''}).then(()=>{ toast('Trade escrow created!'); loadP2PListings(); }); }
+            window.acceptTrade = function(lid){ db.ref('p2pListings/'+lid).once('value').then(snap => { const l = snap.val(); if(!l || !l.active){ toast('Listing no longer available.'); return; } if(l.sellerId === userId){ toast('Cannot trade with yourself.'); return; }
+                const escrowData = { pwrAmount: l.pwrAmount, usdtPrice: l.usdtPrice, usdtAddress: l.usdtAddress||'', sellerId: l.sellerId, sellerUsername: l.sellerUsername, buyerId: userId, buyerUsername: pwrCache.username || '', counterpartyName: l.sellerUsername || 'User', state: 'awaiting_payment', createdAt: firebase.database.ServerValue.TIMESTAMP };
+                if(l.type === 'sell'){ deductPwr(l.pwrAmount, 'Escrow Lock', 'P2P Trade Escrow', l.sellerUsername).then(ok => { if(ok){ db.ref('p2pListings/'+lid).update({active:false}); db.ref('escrows').push(escrowData).then(()=>{ toast('Trade accepted. Pay USDT and mark as paid.'); loadP2PListings(); }); } else toast('PWR deduction failed.'); }); }
             }); };
             window.cancelListing = function(lid){ db.ref('p2pListings/'+lid).once('value').then(snap => { const l = snap.val(); if(!l || !l.active || l.sellerId !== userId) return; db.ref('p2pListings/'+lid).update({active:false}).then(()=>{ if(l.type === 'sell') addPwr(l.pwrAmount, 'Refund', 'Listing cancelled'); toast('Listing cancelled and PWR refunded.'); loadP2PListings(); }); }); };
-            window.confirmEscrow = function(eid){ db.ref('escrows/'+eid).once('value').then(snap => { const e = snap.val(); if(!e || e.state !== 'pending_usdt') return; db.ref('escrows/'+eid).update({state:'completed',completedAt:firebase.database.ServerValue.TIMESTAMP}); addPwr(e.pwrAmount, 'Escrow Release', 'P2P trade completed', e.buyerUsername||''); db.ref('users/'+e.buyerId).child('pwrBalance').transaction(c=>(c||1000)+e.pwrAmount).then(()=>{ db.ref('users/'+e.buyerId).child('history').once('value').then(hSnap=>{ const h=hSnap.val()||[]; h.push({amount:e.pwrAmount,time:Date.now(),method:'Escrow Release',msg:'P2P trade completed',cp:e.sellerUsername||''}); db.ref('users/'+e.buyerId).child('history').set(h.slice(-500)); }); }); toast('Trade completed!'); loadP2PListings(); }); };
-            window.disputeEscrow = function(eid){ db.ref('escrows/'+eid).update({state:'disputed'}); toast('Trade disputed. Admin will review.'); loadP2PListings(); };
+            window.disputeEscrow = function(eid){ db.ref('escrows/'+eid).update({state:'disputed'}); toast('Trade disputed. Please resolve via chat.'); loadP2PListings(); };
 
-            window.openTipModal = function(recipientId, recipientName){ openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>💸 Send PWR</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body">
+            window.openTipModal = function(recipientId, recipientName){
+                openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>💸 Send PWR</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body">
                     <div style="text-align:center;margin-bottom:12px;"><div class="user-avatar-lg" style="${getUserAvatar(recipientId)};margin:0 auto 6px;">${getInitials(recipientName)}</div><div style="font-weight:700;">${esc(recipientName)}</div></div>
                     <div class="form-group"><label>Amount (PWR)</label><input class="form-input" type="number" id="tipAmount" min="0.0001" step="0.0001" value="1"></div>
                     <div class="form-group"><label>Message</label><input class="form-input" id="tipMessage" placeholder="Add a note..."></div>
-                    <button class="btn btn-green" onclick="sendTip('${recipientId}','${esc(recipientName)}')" style="width:100%;justify-content:center;">💸 Send PWR</button>
-            </div></div></div>`); };
+                    <button class="btn btn-accent btn-sm" onclick="window.confirmAction('Confirm Send','Send PWR to ${esc(recipientName)}?',()=>sendTip('${recipientId}','${esc(recipientName).replace(/'/g,"\\'")}'))" style="width:auto; margin-top:8px;">💸 Send PWR</button>
+            </div></div></div>`);
+            };
             window.sendTip = function(recipientId, recipientName){
-                if(recipientId === userId){ toast('Cannot send PWR to yourself.'); return; }
                 const amount = parseFloat(document.getElementById('tipAmount').value) || 0;
                 const message = document.getElementById('tipMessage').value.trim();
                 if(amount <= 0){ toast('Enter valid amount.'); return; }
@@ -773,23 +985,15 @@
                 deductPwr(amount, `Sent to ${recipientName}`, message, recipientName).then(ok => {
                     if(!ok){ toast('Transfer failed.'); return; }
                     db.ref('users/'+recipientId).child('pwrBalance').transaction(c=>(c||1000)+amount).then(()=>{
-                        db.ref('users/'+recipientId).child('history').once('value').then(hSnap=>{ const h=hSnap.val()||[]; h.push({amount,time:Date.now(),method:`Received from ${pwrCache.username||'User'}`,msg:message,cp:pwrCache.username||''}); db.ref('users/'+recipientId).child('history').set(h.slice(-500)); });
+                        db.ref('users/'+recipientId).child('history').once('value').then(hSnap=>{ const h=hSnap.val()||[]; h.push({amount,time:Date.now(),method:`Received from ${pwrCache.username||'User'}`,msg:message,cp:pwrCache.username||'',txid:'tx_'+shortId()}); db.ref('users/'+recipientId).child('history').set(h.slice(-500)); });
                     });
-                    const msgObj = {
-                        from: userId,
-                        fromName: pwrCache.username || 'User',
-                        amount: amount,
-                        text: message,
-                        time: Date.now(),
-                        read: false
-                    };
-                    db.ref('users/'+recipientId+'/messages').push(msgObj);
+                    db.ref('users/'+recipientId+'/messages').push({ from: userId, fromName: pwrCache.username||'User', amount, text: message, time: Date.now(), read: false });
                     closeModal(); toast(`Sent ${amount.toFixed(7)} PWR!`);
+                    if (message) processMentions(message, 'tip', recipientId, 'Tip message');
                 });
             };
 
-            window.openLeaderboard = function(){ db.ref('users').once('value').then(snap => { const users = snap.val() || {}; const arr = []; Object.entries(users).forEach(([uid, d]) => { if(d.pwrBalance > 0) arr.push({ uid, username: d.username || '', balance: d.pwrBalance, showBalance: d.showBalance !== false }); }); arr.sort((a,b)=>b.balance-a.balance);
-                const topList = arr.slice(3).map((u, i) => ({ ...u, rank: i + 1 }));
+            window.openLeaderboard = function(){ db.ref('users').once('value').then(snap => { const users = snap.val() || {}; const arr = []; Object.entries(users).forEach(([uid, d]) => { if(d.pwrBalance > 0) arr.push({ uid, username: d.username || '', balance: d.pwrBalance, showBalance: d.showBalance !== false }); }); arr.sort((a,b)=>b.balance-a.balance); const topList = arr.slice(3).map((u,i)=>({...u,rank:i+1}));
                 openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>🏆 PWR Leaderboard</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body">
                     ${topList.map(u=>`<div class="leaderboard-row" onclick="viewPublicProfile('${u.uid}')"><div class="leaderboard-rank" style="background:var(--bg-secondary);">${u.rank}</div><div class="user-avatar" style="${getUserAvatar(u.uid)}">${getInitials(u.username||u.uid)}</div><div style="flex:1;min-width:0;"><div style="font-weight:600;font-size:0.75rem;">${esc(u.username||'Anonymous')}</div></div><div style="font-weight:700;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--gold);" title="${fmtPwrPlain(u.balance)} PWR">${fmtBalance(u.balance)} PWR</div></div>`).join('')}
             </div></div></div>`); }); };
@@ -797,103 +1001,29 @@
             window.openContactManage = function(){
                 const contacts = pwrCache.contactInfo;
                 let rowsHtml = '';
-                contacts.forEach((c,i)=>{
-                    rowsHtml += `<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
-                        <button class="option-delete-btn" onclick="removeContactRowModal(${i})">×</button>
-                        <input class="form-input" id="cl_${i}" value="${esc(c.label||'')}" placeholder="Label" style="flex:0.4;">
-                        <span>:</span>
-                        <input class="form-input" id="cv_${i}" value="${esc(c.value||'')}" placeholder="Info" style="flex:1;">
-                    </div>`;
-                });
-                openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>📋 Manage Contact Info</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body">
-                    <div id="contactRowsContainer">${rowsHtml||'<div style="font-size:0.7rem;color:var(--text-muted);padding:8px;">No contact info yet.</div>'}</div>
-                    <button class="btn" onclick="addContactRowModal()" style="width:100%;justify-content:center;margin-top:8px;">+ Add info</button>
-                </div><div class="modal-footer"><button class="btn btn-accent" onclick="saveContactFromModal()">Save</button></div></div></div>`);
+                contacts.forEach((c,i)=>{ rowsHtml += `<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;"><button class="option-delete-btn" onclick="removeContactRowModal(${i})">×</button><input class="form-input" id="cl_${i}" value="${esc(c.label||'')}" placeholder="Label" style="flex:0.4;"><span>:</span><input class="form-input" id="cv_${i}" value="${esc(c.value||'')}" placeholder="Info" style="flex:1;"></div>`; });
+                openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>📋 Manage Contact Info</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body"><div id="contactRowsContainer">${rowsHtml||'<div style="font-size:0.7rem;color:var(--text-muted);padding:8px;">No contact info yet.</div>'}</div><button class="btn btn-sm" onclick="addContactRowModal()" style="margin-top:8px;">+ Add info</button></div><div class="modal-footer"><button class="btn btn-accent btn-sm" onclick="saveContactFromModal()">Save</button></div></div></div>`);
                 window._contactModalContacts = contacts.map(c=>({label:c.label||'',value:c.value||''}));
             };
-            window.addContactRowModal = function(){
-                const contacts = window._contactModalContacts || [];
-                contacts.push({label:'',value:''});
-                window._contactModalContacts = contacts;
-                const container = document.getElementById('contactRowsContainer');
-                let html = '';
-                contacts.forEach((c,i)=>{
-                    html += `<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
-                        <button class="option-delete-btn" onclick="removeContactRowModal(${i})">×</button>
-                        <input class="form-input" id="cl_${i}" value="${esc(c.label||'')}" placeholder="Label" style="flex:0.4;">
-                        <span>:</span>
-                        <input class="form-input" id="cv_${i}" value="${esc(c.value||'')}" placeholder="Info" style="flex:1;">
-                    </div>`;
-                });
-                container.innerHTML = html || '<div style="font-size:0.7rem;color:var(--text-muted);padding:8px;">No contact info yet.</div>';
-            };
-            window.removeContactRowModal = function(index){
-                const contacts = window._contactModalContacts || [];
-                contacts.splice(index,1);
-                window._contactModalContacts = contacts;
-                const container = document.getElementById('contactRowsContainer');
-                let html = '';
-                contacts.forEach((c,i)=>{
-                    html += `<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;">
-                        <button class="option-delete-btn" onclick="removeContactRowModal(${i})">×</button>
-                        <input class="form-input" id="cl_${i}" value="${esc(c.label||'')}" placeholder="Label" style="flex:0.4;">
-                        <span>:</span>
-                        <input class="form-input" id="cv_${i}" value="${esc(c.value||'')}" placeholder="Info" style="flex:1;">
-                    </div>`;
-                });
-                container.innerHTML = html || '<div style="font-size:0.7rem;color:var(--text-muted);padding:8px;">No contact info yet.</div>';
-            };
-            window.saveContactFromModal = function(){
-                const contacts = window._contactModalContacts || [];
-                const newContacts = [];
-                contacts.forEach((c,i)=>{
-                    const labelEl = document.getElementById('cl_'+i);
-                    const valueEl = document.getElementById('cv_'+i);
-                    const label = labelEl ? labelEl.value.trim() : '';
-                    const value = valueEl ? valueEl.value.trim() : '';
-                    if(label||value) newContacts.push({label, value});
-                });
-                userRef.child('contactInfo').set(newContacts).then(()=>{
-                    pwrCache.contactInfo = newContacts;
-                    toast('Contact info saved!');
-                    closeModal();
-                }).catch(()=>toast('Failed to save.'));
-            };
+            window.addContactRowModal = function(){ const contacts = window._contactModalContacts || []; contacts.push({label:'',value:''}); window._contactModalContacts = contacts; const container = document.getElementById('contactRowsContainer'); let html = ''; contacts.forEach((c,i)=>{ html += `<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;"><button class="option-delete-btn" onclick="removeContactRowModal(${i})">×</button><input class="form-input" id="cl_${i}" value="${esc(c.label||'')}" placeholder="Label" style="flex:0.4;"><span>:</span><input class="form-input" id="cv_${i}" value="${esc(c.value||'')}" placeholder="Info" style="flex:1;"></div>`; }); container.innerHTML = html || '<div style="font-size:0.7rem;color:var(--text-muted);padding:8px;">No contact info yet.</div>'; };
+            window.removeContactRowModal = function(index){ const contacts = window._contactModalContacts || []; contacts.splice(index,1); window._contactModalContacts = contacts; const container = document.getElementById('contactRowsContainer'); let html = ''; contacts.forEach((c,i)=>{ html += `<div style="display:flex;gap:6px;align-items:center;margin-bottom:6px;"><button class="option-delete-btn" onclick="removeContactRowModal(${i})">×</button><input class="form-input" id="cl_${i}" value="${esc(c.label||'')}" placeholder="Label" style="flex:0.4;"><span>:</span><input class="form-input" id="cv_${i}" value="${esc(c.value||'')}" placeholder="Info" style="flex:1;"></div>`; }); container.innerHTML = html || '<div style="font-size:0.7rem;color:var(--text-muted);padding:8px;">No contact info yet.</div>'; };
+            window.saveContactFromModal = function(){ const contacts = window._contactModalContacts || []; const newContacts = []; contacts.forEach((c,i)=>{ const labelEl = document.getElementById('cl_'+i); const valueEl = document.getElementById('cv_'+i); const label = labelEl ? labelEl.value.trim() : ''; const value = valueEl ? valueEl.value.trim() : ''; if(label||value) newContacts.push({label, value}); }); userRef.child('contactInfo').set(newContacts).then(()=>{ pwrCache.contactInfo = newContacts; toast('Contact info saved!'); closeModal(); }).catch(()=>toast('Failed to save.')); };
 
             window.viewContactInfo = function(uid){
-                db.ref('users/'+uid).once('value').then(snap => {
-                    const d = snap.val() || {};
-                    const contacts = Array.isArray(d.contactInfo) ? d.contactInfo : (typeof d.contactInfo === 'string' && d.contactInfo ? [{label:'Contact',value:d.contactInfo}] : []);
-                    let rowsHtml = '';
-                    contacts.forEach(c => {
-                        rowsHtml += `<div class="contact-card">
-                            <span style="font-weight:600;min-width:60px;">${esc(c.label||'Contact')}:</span>
-                            <span style="flex:1;word-break:break-all;">${esc(c.value||'')}</span>
-                            <button class="btn btn-sm" onclick="copyText('${esc(c.value||'').replace(/'/g,"\\'")}')"><i class="fa-solid fa-copy"></i></button>
-                        </div>`;
-                    });
-                    openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>📋 Contact Info</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body">${rowsHtml||'<div style="font-size:0.7rem;color:var(--text-muted);padding:8px;">No contact info available.</div>'}</div></div></div>`);
-                });
+                db.ref('users/'+uid).once('value').then(snap => { const d = snap.val() || {}; const contacts = Array.isArray(d.contactInfo) ? d.contactInfo : (typeof d.contactInfo === 'string' && d.contactInfo ? [{label:'Contact',value:d.contactInfo}] : []); let rowsHtml = ''; contacts.forEach(c => { rowsHtml += `<div class="contact-card"><span style="font-weight:600;min-width:60px;">${esc(c.label||'Contact')}:</span><span style="flex:1;word-break:break-all;">${esc(c.value||'')}</span><button class="btn btn-sm" onclick="copyText('${esc(c.value||'').replace(/'/g,"\\'")}')"><i class="fa-solid fa-copy"></i></button></div>`; });
+                openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>📋 Contact Info</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body">${rowsHtml||'<div style="font-size:0.7rem;color:var(--text-muted);padding:8px;">No contact info available.</div>'}</div></div></div>`); });
             };
 
             window.viewPublicProfile = function(uid){ db.ref('users/'+uid).once('value').then(snap => { const d = snap.val() || {}; const uname = d.username || 'User'; const publicId = d.publicId || uid; const badges = []; if(d.streakDay>=7) badges.push({label:'Streak Master',cls:'badge-gold'}); if(d.pwrBalance>=5000) badges.push({label:'High Roller',cls:'badge-diamond'});
-                const joined = d.createdAt ? formatAbsolute(d.createdAt) : safeTs(Date.now());
-                const contactArr = Array.isArray(d.contactInfo) ? d.contactInfo : (typeof d.contactInfo === 'string' && d.contactInfo ? [{ label: 'Contact', value: d.contactInfo }] : []);
-                closeUserSearch();
+                const joined = d.createdAt ? formatAbsolute(d.createdAt) : safeTs(Date.now()); closeUserSearch();
                 const profileLink = `${location.origin}${location.pathname}?u=${publicId}`;
-                const hasContact = contactArr.some(c => c.label || c.value);
+                const hasContact = (Array.isArray(d.contactInfo)?d.contactInfo:[]).some(c=>c.label||c.value);
                 openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box" style="max-width:420px;">
                     <div class="modal-header"><h3>👤 Profile</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div>
                     <div class="profile-cover" style="background:linear-gradient(135deg, hsl(${uid.split('').reduce((a,c)=>a+c.charCodeAt(0),0)%360},60%,40%), hsl(${(uid.split('').reduce((a,c)=>a+c.charCodeAt(0),0)+40)%360},60%,30%));"></div>
                     <div style="text-align:center;margin-top:-32px;position:relative;z-index:2;"><div class="user-avatar-lg" style="${getUserAvatar(uid)};border:3px solid var(--bg-card);">${getInitials(uname)}</div></div>
                     <div class="profile-info-block">
-                        <div class="profile-row" style="justify-content:space-between;">
-                            <span><strong>Username:</strong> ${esc(uname)}</span>
-                            <div style="display:flex;gap:6px;">
-                                <button class="btn btn-sm" onclick="copyText('${esc(uname).replace(/'/g,"\\'")}')"><i class="fa-solid fa-copy"></i></button>
-                                <button class="btn btn-sm" onclick="shareWithCopy('${profileLink.replace(/'/g,"\\'")}','Sentix - ${esc(uname).replace(/'/g,"\\'")}')"><i class="fa-solid fa-copy"></i> Share profile</button>
-                            </div>
-                        </div>
+                        <div class="profile-row" style="justify-content:space-between;"><span><strong>Username:</strong> ${esc(uname)}</span><div style="display:flex;gap:6px;"><button class="btn btn-sm" onclick="copyText('${esc(uname).replace(/'/g,"\\'")}')"><i class="fa-solid fa-copy"></i></button><button class="btn btn-sm" onclick="shareWithCopy('${profileLink.replace(/'/g,"\\'")}','Sentix - ${esc(uname).replace(/'/g,"\\'")}')"><i class="fa-solid fa-copy"></i> Share profile</button></div></div>
                         ${hasContact ? `<div class="profile-row" style="justify-content:space-between;"><span><strong>Contact:</strong></span><button class="btn btn-sm" onclick="viewContactInfo('${uid}')">📋 View Contact</button></div>` : ''}
                         ${d.showBalance !== false ? `<div class="profile-row" style="justify-content:space-between;font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--gold);cursor:pointer;" title="${fmtPwrPlain(d.pwrBalance||0)} PWR" onclick="this.textContent=this.title;setTimeout(()=>this.textContent='${fmtBalance(d.pwrBalance||0)} PWR',2000)"><span>Balance:</span> ${fmtBalance(d.pwrBalance||0)} PWR</div>` : '<div class="profile-row" style="justify-content:space-between;color:var(--text-muted);"><span>Balance:</span> Hidden</div>'}
                         ${badges.length ? `<div class="badge-row">${badges.map(b=>`<span class="badge ${b.cls}">${b.label}</span>`).join('')}</div>` : ''}
@@ -921,6 +1051,9 @@
                 const saveBtn = (type !== 'youtube') ? `<button style="margin-top:10px;color:var(--accent);font-size:0.8rem;background:none;border:1px solid var(--accent);padding:4px 12px;border-radius:16px;cursor:pointer;" onclick="event.stopPropagation();downloadMedia('${src.replace(/'/g,"\\'")}','${type}')">💾 Save</button>` : '';
                 openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}" style="background:rgba(0,0,0,0.9); backdrop-filter:blur(12px);"><div style="position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;"><button style="position:absolute;top:16px;right:16px;background:rgba(255,255,255,0.1);border:none;color:#fff;font-size:1.5rem;width:36px;height:36px;border-radius:50%;cursor:pointer;z-index:10;" onclick="event.stopPropagation();closeModal()">✕</button>${content}${saveBtn}</div></div>`);
             }
+            window.openMediaViewer = openMediaViewer;
+            window.downloadMedia = downloadMedia;
+
             document.addEventListener('click', function(e) {
                 const target = e.target.closest('img, video, iframe'); if (!target) return;
                 if (target.closest('.dropzone') || target.closest('.file-preview-item')) return;
@@ -931,22 +1064,43 @@
                 else if (target.tagName === 'VIDEO') openMediaViewer(target.src, 'video');
             });
 
-            function renderUnifiedStar(pollId,isFav,favCount){ const cd=(favCount!==undefined&&favCount!==null)?favCount:0; const fc=fmtNum(cd); const fullFc=fmtNumFull(cd); return`<div style="display:flex;align-items:center;gap:6px;"><span class="fav-count-badge num-toggle" title="${fullFc} favorites" data-full="${fullFc}" data-abbr="${fc}" onclick="event.stopPropagation();toggleNumDisplay(this)">${fc}</span><button class="unified-star-btn ${isFav?'':'inactive'}" onclick="event.stopPropagation();toggleFav('${pollId}')" title="Favorite Poll"><svg viewBox="0 0 24 24" fill="url(#star-emerald-gradient)"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg></button></div>`; }
-            window.toggleFav=function(pollId){ if(activePollId&&cachedDetailPoll&&(cachedDetailPoll.id===pollId||cachedDetailPoll.shortId===pollId)){ const cur=cachedDetailPoll.favoritedBy?.[userId]; if(!cachedDetailPoll.favoritedBy)cachedDetailPoll.favoritedBy={}; if(cur){delete cachedDetailPoll.favoritedBy[userId];}else{cachedDetailPoll.favoritedBy[userId]=true;} const sc=document.querySelector('.poll-card .unified-star-btn'); if(sc){const isFav=!cur;const fc=Object.keys(cachedDetailPoll.favoritedBy).length; sc.classList.toggle('inactive',!isFav); const b=sc.parentElement?.querySelector('.fav-count-badge'); if(b){const fcc=fmtNum(fc); b.textContent = fcc; b.setAttribute('data-full',fmtNumFull(fc)); b.setAttribute('data-abbr',fcc);}}} db.ref(`polls/${pollId}/favoritedBy/${userId}`).transaction(c=>c?null:true); };
-            window.toggleFavFilter=function(){ showFavoritesOnly=!showFavoritesOnly; const b=document.getElementById('favFilterBtn'); if(showFavoritesOnly)b.classList.add('active-star'); else b.classList.remove('active-star'); applyFilter(); };
+            function generateProfileCard(){
+                const cardId = 'profileCardCanvas';
+                const existing = document.getElementById(cardId);
+                if(existing) existing.remove();
+                const card = document.createElement('div');
+                card.id = cardId;
+                card.style.cssText = 'position:fixed;left:-9999px;top:0;width:320px;background:#0f1729;border-radius:14px;border:1px solid rgba(255,255,255,0.1);padding:20px;text-align:center;font-family:Inter,sans-serif;color:#e8ecf2;';
+                card.innerHTML = `<div style="background:linear-gradient(135deg, hsl(${userId.split('').reduce((a,c)=>a+c.charCodeAt(0),0)%360},60%,40%), hsl(${(userId.split('').reduce((a,c)=>a+c.charCodeAt(0),0)+40)%360},60%,30%));height:60px;border-radius:10px 10px 0 0;margin:-20px -20px 0;"></div>
+                <div class="user-avatar-lg" style="${getUserAvatar(userId)};border:3px solid #0f1729;margin:-30px auto 10px;">${getInitials(pwrCache.username||'User')}</div>
+                <div style="font-weight:700;font-size:1rem;">${esc(pwrCache.username||'User')}</div>
+                <div style="font-family:JetBrains Mono,monospace;font-size:0.65rem;color:#9aa4b8;margin:4px 0;">ID: ${pwrCache.publicId}</div>
+                <div style="font-weight:700;color:#fbbf24;">${fmtBalance(pwrCache.balance)} PWR</div>
+                <div style="font-size:0.6rem;color:#5f6b80;margin-top:8px;">Sentix Profile</div>`;
+                document.body.appendChild(card);
+                html2canvas(card, { scale: 2, backgroundColor: null }).then(canvas => {
+                    card.remove();
+                    const imgData = canvas.toDataURL('image/png');
+                    openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>📸 Profile Card</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body" style="text-align:center;"><img src="${imgData}" style="max-width:100%;border-radius:12px;"><br><button class="btn btn-accent btn-sm" style="margin-top:12px;" onclick="downloadCard('${imgData}')">⬇ Download PNG</button></div></div></div>`);
+                });
+            }
+            window.downloadCard = function(dataUrl) { const a = document.createElement('a'); a.href = dataUrl; a.download = 'sentix-profile.png'; a.click(); };
+            window.generateProfileCard = generateProfileCard;
 
             window.openProfile=function(){ const hasUsername = !!pwrCache.username;
-                const bal = pwrCache.balance;
-                const balDisplay = bal >= 1000 ? fmtBalance(bal) : fmtPwrPlain(bal);
-                const balFull = fmtPwrPlain(bal);
+                const bal = pwrCache.balance; const balDisplay = bal >= 1000 ? fmtBalance(bal) : fmtPwrPlain(bal); const balFull = fmtPwrPlain(bal);
+                const refLink = `${location.origin}${location.pathname}?ref=${pwrCache.publicId}`;
                 openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>👤 User Profile</h3><div style="display:flex;gap:6px;"><button class="btn btn-sm" onclick="shareProfile()"><i class="fa-solid fa-copy"></i> Share profile</button><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div></div><div class="profile-info-block">
                     <div class="profile-row"><strong>ID:</strong> <span style="font-family:'JetBrains Mono',monospace;">${userId.slice(0,12)}...</span><button class="btn btn-sm" onclick="copyUserId()"><i class="fa-solid fa-copy"></i></button></div>
                     <div class="profile-row"><strong>Username:</strong> ${hasUsername ? `<span>${esc(pwrCache.username)}</span><button class="btn btn-sm" onclick="copyText('${esc(pwrCache.username).replace(/'/g,"\\'")}')"><i class="fa-solid fa-copy"></i></button>` : `<input class="form-input" id="profUsername" placeholder="Choose a unique username" style="flex:1;"><div class="input-note">Cannot be changed later.</div>`}</div>
                     <div class="profile-row" style="justify-content:space-between;"><span style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--gold);cursor:pointer;" id="profBalDisplay" title="${balFull} PWR">${balDisplay} PWR</span><button class="btn btn-accent btn-sm" onclick="closeModal();toggleUserSearch();">💸 Send</button></div>
                     <div class="profile-row"><strong>USDT Wallet:</strong> <input class="form-input" id="profUsdt" value="${esc(pwrCache.usdtAddress||'')}" placeholder="0x... (for P2P)" style="flex:1;font-size:0.7rem;"><button class="btn btn-sm" onclick="copyText('${esc(pwrCache.usdtAddress||'').replace(/'/g,"\\'")}')"><i class="fa-solid fa-copy"></i></button></div>
+                    <div class="profile-row"><strong>Referral Link:</strong> <span style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;flex:1;word-break:break-all;">${refLink}</span><button class="btn btn-sm" onclick="copyText('${refLink.replace(/'/g,"\\'")}')"><i class="fa-solid fa-copy"></i></button></div>
+                    <div class="profile-row"><strong>Referred Users:</strong> ${pwrCache.referralsCount||0}</div>
                     <div class="profile-row" style="justify-content:space-between;"><span><strong>Show balance publicly:</strong></span><div class="toggle-switch ${pwrCache.showBalance!==false?'on':''}" id="profShowBalance" onclick="this.classList.toggle('on')"></div></div>
-                    <div class="profile-row"><button class="btn" id="profContactBtn" onclick="openContactManage()">📋 Manage Contact Info</button></div>
-                    <div style="display:flex;justify-content:flex-start;margin-top:8px;"><button class="btn btn-accent btn-sm" onclick="saveProfile()">💾 Save</button></div>
+                    <div class="profile-row"><button class="btn btn-sm" id="profContactBtn" onclick="openContactManage()">📋 Manage Contact Info</button></div>
+                    <div class="profile-row"><button class="btn btn-sm" onclick="generateProfileCard()">📸 Share Card</button></div>
+                    <div style="display:flex;justify-content:flex-end;margin-top:8px;"><button class="btn btn-accent btn-sm" onclick="saveProfile()">💾 Save</button></div>
             </div></div></div>`);
                 setTimeout(()=>{ const el=document.getElementById('profBalDisplay'); if(el){ el.setAttribute('data-abbr',el.textContent); el.onclick=function(){ this.textContent = this.textContent===this.title ? this.getAttribute('data-abbr') : this.title; }; } },100);
             };
@@ -957,6 +1111,9 @@
                 if(showBalance !== (pwrCache.showBalance!==false)){ userRef.child('showBalance').set(showBalance); pwrCache.showBalance = showBalance; changed = true; }
                 if(!changed && !uname){ toast('No changes made.'); } else if(changed){ toast('Profile saved!'); } closeModal(); };
 
+            window.toggleFav=function(pollId){ if(activePollId&&cachedDetailPoll&&(cachedDetailPoll.id===pollId||cachedDetailPoll.shortId===pollId)){ const cur=cachedDetailPoll.favoritedBy?.[userId]; if(!cachedDetailPoll.favoritedBy)cachedDetailPoll.favoritedBy={}; if(cur){delete cachedDetailPoll.favoritedBy[userId];}else{cachedDetailPoll.favoritedBy[userId]=true;} const sc=document.querySelector('.poll-card .unified-star-btn'); if(sc){const isFav=!cur;const fc=Object.keys(cachedDetailPoll.favoritedBy).length; sc.classList.toggle('inactive',!isFav); const b=sc.parentElement?.querySelector('.fav-count-badge'); if(b){const fcc=fmtNum(fc); b.textContent = fcc; b.setAttribute('data-full',fmtNumFull(fc)); b.setAttribute('data-abbr',fcc);}}} db.ref(`polls/${pollId}/favoritedBy/${userId}`).transaction(c=>c?null:true); };
+            window.toggleFavFilter=function(){ showFavoritesOnly=!showFavoritesOnly; const b=document.getElementById('favFilterBtn'); if(showFavoritesOnly)b.classList.add('active-star'); else b.classList.remove('active-star'); applyFilter(); };
+
             document.addEventListener('click',function(e){ const sb=e.target.closest('.share-btn'); if(!sb)return; e.stopPropagation(); const pid=sb.getAttribute('data-pollid'); if(!pid)return; shareWithCopy(`${location.origin}${location.pathname}?p=${pid}`, 'Sentix Poll'); });
 
             window.showSearchPopover = function(){ const popover=document.getElementById('searchPopover'); const row=document.getElementById('headerSearchRow'); if(!row.classList.contains('active')) return; const rect=row.getBoundingClientRect(); popover.style.left=Math.max(8,rect.left)+'px'; popover.style.top=(rect.bottom+4)+'px'; popover.style.width=Math.min(rect.width,window.innerWidth-16)+'px'; popover.classList.add('show'); searchPopoverVisible=true; syncSearch(); };
@@ -966,7 +1123,7 @@
             document.getElementById('headerSearchInput').addEventListener('blur',function(){ hideSearchPopover(); });
             window.toggleHeaderSearch = function(){ const row=document.getElementById('headerSearchRow'); row.classList.toggle('active'); if(row.classList.contains('active')){ document.getElementById('headerSearchInput').focus(); } else { document.getElementById('headerSearchInput').value=''; closeSearchPopover(); } };
             window.syncSearch = function(){ const q=document.getElementById('headerSearchInput').value.trim().toLowerCase(); if(!searchPopoverVisible) return; const body=document.getElementById('searchPopoverBody'); if(!q){ body.innerHTML='<div style="font-size:0.65rem;color:var(--text-muted);text-align:center;padding:10px;">Type to search...</div>'; return; } let filtered=allPolls.filter(p=>p.title.toLowerCase().includes(q)); if(filtered.length===0){ body.innerHTML='<div style="font-size:0.65rem;color:var(--text-muted);text-align:center;padding:10px;">No results.</div>'; return; }
-                body.innerHTML = filtered.map(p => { const total=Object.values(p.counts||{}).reduce((a,b)=>a+b,0); const hasOptions=(p.options||[]).length>0; const sub=[safeTs(p.createdAt)]; if(hasOptions) sub.push(fmtNum(total)+' votes'); sub.push(fmtNum(Object.keys(p.comments||{}).length)+' comments'); return `<div class="search-mini-card" onclick="viewPoll('${p.shortId||p.id}');closeSearchPopover();"><div style="font-weight:600;font-size:0.72rem;">${esc(p.title)}</div><div style="font-size:0.6rem;color:var(--text-muted);">${sub.join(' · ')}</div></div>`; }).join(''); };
+                body.innerHTML = filtered.map(p => { const total=Object.values(p.counts||{}).reduce((a,b)=>a+b,0); const sub=[safeTs(p.createdAt)]; if((p.options||[]).length>0) sub.push(fmtNum(total)+' votes'); sub.push(fmtNum(Object.keys(p.comments||{}).length)+' comments'); return `<div class="search-mini-card" onclick="viewPoll('${p.shortId||p.id}');closeSearchPopover();"><div style="font-weight:600;font-size:0.72rem;">${linkify(p.title)}</div><div style="font-size:0.6rem;color:var(--text-muted);">${sub.join(' · ')}</div></div>`; }).join(''); };
 
             function initCustomSelect(triggerSelector, optionsContainerSelector, optionSelector, setValueCallback) { const trigger=document.querySelector(triggerSelector);const container=document.querySelector(optionsContainerSelector); if(!trigger||!container)return;trigger.addEventListener('click',(e)=>{e.stopPropagation();container.classList.toggle('show');}); container.querySelectorAll(optionSelector).forEach(opt=>{opt.addEventListener('click',(e)=>{e.stopPropagation();container.querySelectorAll(optionSelector).forEach(o=>o.classList.remove('active'));opt.classList.add('active');trigger.querySelector('span').textContent=opt.textContent.trim();container.classList.remove('show');if(setValueCallback)setValueCallback(opt.dataset.value);});}); document.addEventListener('click',()=>{container.classList.remove('show');}); }
 
@@ -974,8 +1131,8 @@
 
             window.openCreateForm=function(){ currentMediaUrls=[]; const expDate=new Date(Date.now()+86400000);
                 openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>📝 Create Post/Poll</h3><span style="display:flex;align-items:center;gap:6px;background:rgba(30,41,59,0.8);border:1px solid rgba(245,158,11,0.2);padding:3px 10px;border-radius:9999px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#f59e0b;">${pwrIconHtml} <span style="color:#f59e0b;" title="${fmtPwrPlain(pwrCache.balance)} PWR">${fmtBalance(pwrCache.balance)}</span></span><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body">
-                    <div class="form-group"><label>Post/Poll Text</label><input class="form-input" id="crQ" placeholder="What would you like to ask or say?"></div>
-                    <button class="btn" id="addOptionBtn" onclick="addOptRow()" style="margin-bottom:8px;">+ Add Option</button>
+                    <div class="form-group"><label>Post/Poll Text</label><textarea class="form-input" id="crQ" rows="2" placeholder="What would you like to ask or say?"></textarea></div>
+                    <button class="btn btn-sm" id="addOptionBtn" onclick="addOptRow()" style="margin-bottom:8px;">+ Add Option</button>
                     <div class="form-group" id="optionsGroup" style="display:none;"><label>Options</label><div id="optContainer"></div><div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px;"><span style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:rgba(245,158,11,0.9);display:none;" id="feeLabel">Fee: ${pwrIconHtml} <span id="feeAmount" title="10.0000000 PWR">10.0000000</span></span></div></div>
                     <div class="form-group" id="pwrCostGroup" style="display:none;"><label>PWR Cost Per Vote</label><input class="form-input" type="number" id="crPwr" value="1" min="0.0001" step="0.0001" oninput="updateCreationFee()"></div>
                     <div class="form-group"><label>Duration / Expiration</label><div class="exp-chips" style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;"><button class="exp-chip" data-hours="4">4 hr</button><button class="exp-chip" data-hours="8">8 hr</button><button class="exp-chip active" data-hours="24">1d</button><button class="exp-chip" data-custom="true">📅 Custom</button></div><input class="form-input" type="datetime-local" id="crExp" value="${new Date(expDate.getTime()-expDate.getTimezoneOffset()*60000).toISOString().slice(0,16)}" oninput="handleCustomExpInput()"></div>
@@ -983,9 +1140,9 @@
                     <div class="advanced-panel" id="advPanel" style="display:none;margin-top:8px;">
                         <div class="form-group"><label>Comment Visibility</label><div class="custom-select" id="crVisSelect"><div class="custom-select-trigger"><span>Users Choose</span><i class="fa-solid fa-chevron-down"></i></div><div class="custom-select-options"><div class="custom-select-option active" data-value="choice">Users Choose</div><div class="custom-select-option" data-value="public">Public</div><div class="custom-select-option" data-value="private">Private</div><div class="custom-select-option" data-value="post_poll">Public Post-Expiry</div></div></div></div>
                         <div class="form-group" id="voteSettingGroup" style="display:none;"><label>Vote Setting</label><div class="custom-select" id="crVoteSettingSelect"><div class="custom-select-trigger"><span>Voters Choose</span><i class="fa-solid fa-chevron-down"></i></div><div class="custom-select-options"><div class="custom-select-option active" data-value="voters_choose">Voters Choose</div><div class="custom-select-option" data-value="hide_vote">Hide Vote</div><div class="custom-select-option" data-value="show_vote">Show Vote</div></div></div></div>
-                        <div class="form-group"><label>Media Attachment (Optional, max ${MAX_FILE_SIZE_MB}MB each)</label><div class="dropzone" id="dropzone" onclick="document.getElementById('crMediaFile').click()"><div class="dz-placeholder"><div class="dz-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><div class="dz-text">Drag & drop or click to upload<br>Images/Videos (Max ${MAX_FILE_SIZE_MB}MB each) or paste URL</div><div class="paste-row" onclick="event.stopPropagation()"><input type="text" id="pasteUrlInput" placeholder="Paste Image/Video/YouTube URL..."><button class="btn btn-accent" onclick="handlePasteUrl()">Attach</button></div></div><input type="file" id="crMediaFile" accept="image/*,video/*" onchange="handleMediaSelect(this)" multiple style="position:absolute;left:-9999px;"></div></div>
+                        <div class="form-group"><label>Media Attachment (Optional, max ${MAX_FILE_SIZE_MB}MB each)</label><div class="dropzone" id="dropzone" onclick="document.getElementById('crMediaFile').click()"><div class="dz-placeholder"><div class="dz-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><div class="dz-text">Drag & drop or click to upload<br>Images/Videos (Max ${MAX_FILE_SIZE_MB}MB each) or paste URL</div><div class="paste-row" onclick="event.stopPropagation()"><input type="text" id="pasteUrlInput" placeholder="Paste Image/Video/YouTube URL..."><button class="btn btn-accent btn-sm" onclick="handlePasteUrl()">Attach</button></div></div><input type="file" id="crMediaFile" accept="image/*,video/*" onchange="handleMediaSelect(this)" multiple style="position:absolute;left:-9999px;"></div></div>
                     </div>
-                </div><div class="modal-footer"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-green" id="publishBtn" onclick="publishPoll()">🚀 Publish</button></div></div></div>`);
+                </div><div class="modal-footer"><button class="btn btn-sm" onclick="closeModal()">Cancel</button><button class="btn btn-green btn-sm" id="publishBtn" onclick="publishPoll()">🚀 Publish</button></div></div></div>`);
                 initCustomSelect('#crVisSelect .custom-select-trigger','#crVisSelect .custom-select-options','#crVisSelect .custom-select-option',(val)=>{document.getElementById('crVisSelect').setAttribute('data-value',val);}); initCustomSelect('#crVoteSettingSelect .custom-select-trigger','#crVoteSettingSelect .custom-select-options','#crVoteSettingSelect .custom-select-option',(val)=>{document.getElementById('crVoteSettingSelect').setAttribute('data-value',val);});
                 document.querySelectorAll('.exp-chip').forEach(chip=>{chip.addEventListener('click',function(){document.querySelectorAll('.exp-chip').forEach(c=>c.classList.remove('active'));this.classList.add('active');const hours=this.dataset.hours?parseInt(this.dataset.hours):0;if(!this.dataset.custom&&hours){const ms=hours*3600000;const target=new Date(Date.now()+ms);document.getElementById('crExp').value=new Date(target.getTime()-target.getTimezoneOffset()*60000).toISOString().slice(0,16);}});});
                 updateCreationFee(); updatePollModeUI(); };
@@ -1000,28 +1157,28 @@
             window.removeFileItem=function(index){currentMediaUrls.splice(index,1);updateDropzonePreviewAll();};
             window.toggleAdvanced=function(){const panel=document.getElementById('advPanel');const icon=document.querySelector('.advanced-toggle i');if(panel.style.display==='none'||panel.style.display===''){panel.style.display='block';if(icon)icon.style.transform='rotate(180deg)';}else{panel.style.display='none';if(icon)icon.style.transform='rotate(0deg)';}};
 
-            window.publishPoll = async function() { const btn = document.getElementById('publishBtn'); btn.disabled = true; btn.textContent = '⏳ Publishing...'; try { const q = document.getElementById('crQ').value.trim(); if (!q) { toast('Please enter text.'); btn.disabled = false; btn.textContent = '🚀 Publish'; return; } const expVal = document.getElementById('crExp').value; if (!expVal || new Date(expVal) <= new Date()) { toast('Expiration must be in the future.'); btn.disabled = false; btn.textContent = '🚀 Publish'; return; } const expUTC = new Date(expVal).toISOString(); const opts = [], cols = []; const optRows = document.querySelectorAll('#optContainer .option-row-refactored'); optRows.forEach(r => { const t = r.querySelector('.opt-text-input').value.trim(); if (t) { const badge = r.querySelector('.option-color-badge'); const colorInput = badge.querySelector('input[type="color"]'); const col = colorInput ? colorInput.value : badge.style.backgroundColor || badge.style.background; opts.push(t); cols.push(col); } }); const hasOptions = opts.length > 0; let pwrCost = 1, fee = 0; if (hasOptions) { pwrCost = parseFloat(document.getElementById('crPwr').value) || 1; fee = 5 + pwrCost * 5; const deductionOk = await deductPwr(fee, 'Poll', 'Poll creation fee'); if (!deductionOk) { toast(`PWR deduction failed. You need ${fee.toFixed(7)} PWR.`); btn.disabled = false; btn.textContent = '🚀 Publish'; return; } } const visSelect = document.getElementById('crVisSelect'); const voteSetSelect = document.getElementById('crVoteSettingSelect'); const sid = shortId(); const pollData = { title: q, description: '', expiration: expUTC, mediaUrls: currentMediaUrls.length ? [...currentMediaUrls] : [], options: opts, optionColors: cols, commentVisibility: visSelect.dataset.value || visSelect.querySelector('.custom-select-option.active')?.dataset.value, createdAt: firebase.database.ServerValue.TIMESTAMP, counts: {}, shortId: sid, commentOnlyUsers: {}, voterChoices: {}, favoritedBy: {} }; if (hasOptions) { pollData.pwrCost = pwrCost; pollData.voteSetting = voteSetSelect.dataset.value || voteSetSelect.querySelector('.custom-select-option.active')?.dataset.value; } await db.ref('polls').push(pollData); closeModal(); toast(hasOptions ? 'Poll published!' : 'Post published!'); } catch (e) { toast('Error publishing.'); } finally { btn.disabled = false; btn.textContent = '🚀 Publish'; } };
+            window.publishPoll = async function() { const btn = document.getElementById('publishBtn'); btn.disabled = true; btn.textContent = '⏳...'; try { const q = document.getElementById('crQ').value.trim(); if (!q) { toast('Please enter text.'); btn.disabled = false; btn.textContent = '🚀 Publish'; return; } const expVal = document.getElementById('crExp').value; if (!expVal || new Date(expVal) <= new Date()) { toast('Expiration must be in the future.'); btn.disabled = false; btn.textContent = '🚀 Publish'; return; } const expUTC = new Date(expVal).toISOString(); const opts = [], cols = []; const optRows = document.querySelectorAll('#optContainer .option-row-refactored'); optRows.forEach(r => { const t = r.querySelector('.opt-text-input').value.trim(); if (t) { const badge = r.querySelector('.option-color-badge'); const colorInput = badge.querySelector('input[type="color"]'); const col = colorInput ? colorInput.value : badge.style.backgroundColor || badge.style.background; opts.push(t); cols.push(col); } }); const hasOptions = opts.length > 0; let pwrCost = 1, fee = 0; if (hasOptions) { pwrCost = parseFloat(document.getElementById('crPwr').value) || 1; fee = 5 + pwrCost * 5; const deductionOk = await deductPwr(fee, 'Poll', 'Poll creation fee'); if (!deductionOk) { toast(`PWR deduction failed. You need ${fee.toFixed(7)} PWR.`); btn.disabled = false; btn.textContent = '🚀 Publish'; return; } } const visSelect = document.getElementById('crVisSelect'); const voteSetSelect = document.getElementById('crVoteSettingSelect'); const sid = shortId(); const pollData = { title: q, description: '', expiration: expUTC, mediaUrls: currentMediaUrls.length ? [...currentMediaUrls] : [], options: opts, optionColors: cols, commentVisibility: visSelect.dataset.value || visSelect.querySelector('.custom-select-option.active')?.dataset.value, createdAt: firebase.database.ServerValue.TIMESTAMP, counts: {}, shortId: sid, commentOnlyUsers: {}, voterChoices: {}, favoritedBy: {} }; if (hasOptions) { pollData.pwrCost = pwrCost; pollData.voteSetting = voteSetSelect.dataset.value || voteSetSelect.querySelector('.custom-select-option.active')?.dataset.value; } const newPollRef = await db.ref('polls').push(pollData); const newPollId = newPollRef.key; closeModal(); toast(hasOptions ? 'Poll published!' : 'Post published!'); processMentions(q, 'poll', newPollId, q); } catch (e) { toast('Error publishing.'); } finally { btn.disabled = false; btn.textContent = '🚀 Publish'; } };
 
             window.castVote = function(pollId, opt, pwrCost) { const poll = allPolls.find(p => p.id === pollId || p.shortId === pollId); if (!poll) return; if (poll.voterChoices?.[userId] || poll.commentOnlyUsers?.[userId]) return toast('Already participated.'); openVoteModal(pollId, opt, pwrCost); };
             window.commentOnly = function(pollId) { const poll = allPolls.find(p => p.id === pollId || p.shortId === pollId); if (!poll) return; if (poll.voterChoices?.[userId] || poll.commentOnlyUsers?.[userId]) return toast('Already participated.'); openVoteModal(pollId, null, 0); };
             window.toggleVoterOptional = function() { const panel = document.getElementById('optionalPanel'); const icon = document.querySelector('.optional-toggle i'); if (!panel) return; if (panel.style.display === 'none' || panel.style.display === '') { panel.style.display = 'block'; if (icon) icon.style.transform = 'rotate(180deg)'; } else { panel.style.display = 'none'; if (icon) icon.style.transform = 'rotate(0deg)'; } };
 
-            function openVoteModal(pollId, opt, pwrCost) { voterMediaUrls = []; const cap = genCaptcha(); const poll = allPolls.find(p => p.id === pollId || p.shortId === pollId); const isSidetalk = !opt; const hasOptions = poll && (poll.options || []).length > 0; const creatorVis = poll?.commentVisibility || 'choice'; const creatorVoteSetting = poll?.voteSetting || 'voters_choose'; let visSelectHtml = ''; if (creatorVis === 'choice') { visSelectHtml = `<div class="form-group"><label>Comment Visibility</label><div class="custom-select" id="sigVisSelect"><div class="custom-select-trigger"><span>Public</span><i class="fa-solid fa-chevron-down"></i></div><div class="custom-select-options"><div class="custom-select-option active" data-value="public">Public</div><div class="custom-select-option" data-value="private">Private</div><div class="custom-select-option" data-value="post_poll">Public Post-Expiry</div></div></div></div>`; } else { const vl = { 'public': 'Public', 'private': 'Private', 'post_poll': 'Public Post-Expiry' }; visSelectHtml = `<div class="form-group"><label>Comment Visibility</label><input class="form-input" value="${vl[creatorVis] || creatorVis}" readonly></div>`; } let bodyContent = ''; if (isSidetalk && !hasOptions) { bodyContent = `<div class="form-group"><label>Reply</label><textarea class="form-input" id="sigText" rows="3" placeholder="Share your thoughts..."></textarea></div><div class="form-group"><label>Security Check</label><div style="display:flex;align-items:center;gap:8px;font-weight:700;"><span>${cap} =</span><input class="form-input" type="number" id="capInput" style="width:80px;text-align:center;"></div></div>${visSelectHtml}<div class="optional-toggle" onclick="toggleVoterOptional()"><i class="fa-solid fa-chevron-down" style="transition:transform 0.3s;"></i> Attach Media (Optional)</div><div class="optional-panel" id="optionalPanel"><div class="form-group"><div class="dropzone" id="voterDropzone" onclick="document.getElementById('voterMediaFile').click()"><div class="dz-placeholder"><div class="dz-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><div class="dz-text">Drag & drop or click to upload<br>Images/Videos (Max ${MAX_FILE_SIZE_MB}MB each) or paste URL</div><div class="paste-row" onclick="event.stopPropagation()"><input type="text" id="voterPasteUrlInput" placeholder="Paste Image/Video URL..."><button class="btn btn-accent" onclick="handleVoterPasteUrl()">Attach</button></div></div><input type="file" id="voterMediaFile" accept="image/*,video/*" onchange="handleVoterMediaSelect(this)" multiple style="position:absolute;left:-9999px;"></div></div></div>`; } else { let bindVoteHtml = ''; if (!isSidetalk && creatorVoteSetting === 'voters_choose') { bindVoteHtml = `<div class="toggle-row" id="bindVoteGroup" onclick="document.getElementById('sigBindVote').classList.toggle('on')"><div class="toggle-switch on" id="sigBindVote"></div> Bind Vote</div>`; } else if (!isSidetalk && creatorVoteSetting === 'show_vote') { bindVoteHtml = `<div class="toggle-row" id="bindVoteGroup"><div class="toggle-switch on locked-field" id="sigBindVote"></div> Bind Vote (Locked TRUE)</div>`; } else if (!isSidetalk) { bindVoteHtml = `<div class="toggle-row" id="bindVoteGroup"><div class="toggle-switch locked-field" id="sigBindVote"></div> Bind Vote (Locked FALSE)</div>`; } bodyContent = `<div class="form-group"><label>Security Check</label><div style="display:flex;align-items:center;gap:8px;font-weight:700;"><span>${cap} =</span><input class="form-input" type="number" id="capInput" style="width:80px;text-align:center;"></div></div>${bindVoteHtml}<div class="optional-toggle" onclick="toggleVoterOptional()"><i class="fa-solid fa-chevron-down" style="transition:transform 0.3s;"></i> Optional</div><div class="optional-panel" id="optionalPanel"><div class="form-group"><label>Reply</label><textarea class="form-input" id="sigText" rows="2" placeholder="What are your thoughts?"></textarea></div>${visSelectHtml}<div class="form-group"><label>Media Attachment (Optional, max ${MAX_FILE_SIZE_MB}MB each)</label><div class="dropzone" id="voterDropzone" onclick="document.getElementById('voterMediaFile').click()"><div class="dz-placeholder"><div class="dz-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><div class="dz-text">Drag & drop or click to upload<br>Images/Videos (Max ${MAX_FILE_SIZE_MB}MB each) or paste URL</div><div class="paste-row" onclick="event.stopPropagation()"><input type="text" id="voterPasteUrlInput" placeholder="Paste Image/Video URL..."><button class="btn btn-accent" onclick="handleVoterPasteUrl()">Attach</button></div></div><input type="file" id="voterMediaFile" accept="image/*,video/*" onchange="handleVoterMediaSelect(this)" multiple style="position:absolute;left:-9999px;"></div></div></div>`; } openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>${opt ? 'Vote: ' + esc(opt) : 'Add Comment'}</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body">${bodyContent}<button class="btn btn-green" id="submitBtn" onclick="submitVote('${pollId}','${opt || ''}',${pwrCost},'${creatorVis}','${creatorVoteSetting}',${isSidetalk},${hasOptions})" style="width:100%;justify-content:center;margin-top:12px;">Submit</button></div></div></div>`); if (visSelectHtml.indexOf('sigVisSelect') > -1) { initCustomSelect('#sigVisSelect .custom-select-trigger', '#sigVisSelect .custom-select-options', '#sigVisSelect .custom-select-option', (val) => { document.getElementById('sigVisSelect').setAttribute('data-value', val); }); } window.handleVoterMediaSelect = async function(input) { const files = input.files; if (!files || files.length === 0) return; for (const file of files) { if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) { toast(`File too large (max ${MAX_FILE_SIZE_MB}MB).`); continue; } try { const dataUrl = await resizeImageIfImage(file); voterMediaUrls.push(dataUrl); } catch (e) { toast('Failed to read file.'); } } updateVoterDropzonePreviewAll(); }; window.handleVoterPasteUrl = function() { const url = document.getElementById('voterPasteUrlInput').value.trim(); if (!url) return; voterMediaUrls.push(url); updateVoterDropzonePreviewAll(); document.getElementById('voterPasteUrlInput').value = ''; }; window.updateVoterDropzonePreviewAll = function() { const dz = document.getElementById('voterDropzone'); if (!dz) return; let html = ''; voterMediaUrls.forEach((src, i) => { const ytId = getYouTubeId(src); let thumb = ''; if (ytId) { thumb = `<iframe src="https://www.youtube.com/embed/${ytId}" style="width:60px;height:40px;border-radius:4px;border:none;pointer-events:none;"></iframe>`; } else if (/\.(mp4|webm|mov)/i.test(src) || src.startsWith('data:video')) { thumb = `<video src="${esc(src)}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;pointer-events:none;"></video>`; } else { thumb = `<img src="${esc(src)}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'">`; } html += `<div class="file-preview-item">${thumb}<span style="font-size:0.6rem;color:var(--text-muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">File ${i + 1}</span><button class="file-remove" onclick="event.stopPropagation();removeVoterFileItem(${i})">✕</button></div>`; }); dz.innerHTML = `${html}<div style="margin-top:8px;font-size:0.65rem;color:var(--text-muted);cursor:pointer;" onclick="document.getElementById('voterMediaFile').click()">+ Add more files</div><input type="file" id="voterMediaFile" accept="image/*,video/*" onchange="handleVoterMediaSelect(this)" multiple style="position:absolute;left:-9999px;">`; dz.onclick = function(e) { if (e.target === dz || e.target.classList.contains('dz-placeholder') || e.target.closest('.dz-placeholder')) { document.getElementById('voterMediaFile').click(); } }; }; window.removeVoterFileItem = function(index) { voterMediaUrls.splice(index, 1); updateVoterDropzonePreviewAll(); }; }
+            function openVoteModal(pollId, opt, pwrCost) { voterMediaUrls = []; const cap = genCaptcha(); const poll = allPolls.find(p => p.id === pollId || p.shortId === pollId); const isSidetalk = !opt; const hasOptions = poll && (poll.options || []).length > 0; const creatorVis = poll?.commentVisibility || 'choice'; const creatorVoteSetting = poll?.voteSetting || 'voters_choose'; let visSelectHtml = ''; if (creatorVis === 'choice') { visSelectHtml = `<div class="form-group"><label>Comment Visibility</label><div class="custom-select" id="sigVisSelect"><div class="custom-select-trigger"><span>Public</span><i class="fa-solid fa-chevron-down"></i></div><div class="custom-select-options"><div class="custom-select-option active" data-value="public">Public</div><div class="custom-select-option" data-value="private">Private</div><div class="custom-select-option" data-value="post_poll">Public Post-Expiry</div></div></div></div>`; } else { const vl = { 'public': 'Public', 'private': 'Private', 'post_poll': 'Public Post-Expiry' }; visSelectHtml = `<div class="form-group"><label>Comment Visibility</label><input class="form-input" value="${vl[creatorVis] || creatorVis}" readonly></div>`; } let bodyContent = ''; if (isSidetalk && !hasOptions) { bodyContent = `<div class="form-group"><label>Reply</label><textarea class="form-input" id="sigText" rows="3" placeholder="Share your thoughts..."></textarea></div><div class="form-group"><label>Security Check</label><div style="display:flex;align-items:center;gap:8px;font-weight:700;"><span>${cap} =</span><input class="form-input" type="number" id="capInput" style="width:80px;text-align:center;"></div></div>${visSelectHtml}<div class="optional-toggle" onclick="toggleVoterOptional()"><i class="fa-solid fa-chevron-down" style="transition:transform 0.3s;"></i> Attach Media (Optional)</div><div class="optional-panel" id="optionalPanel"><div class="form-group"><div class="dropzone" id="voterDropzone" onclick="document.getElementById('voterMediaFile').click()"><div class="dz-placeholder"><div class="dz-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><div class="dz-text">Drag & drop or click to upload<br>Images/Videos (Max ${MAX_FILE_SIZE_MB}MB each) or paste URL</div><div class="paste-row" onclick="event.stopPropagation()"><input type="text" id="voterPasteUrlInput" placeholder="Paste Image/Video URL..."><button class="btn btn-accent btn-sm" onclick="handleVoterPasteUrl()">Attach</button></div></div><input type="file" id="voterMediaFile" accept="image/*,video/*" onchange="handleVoterMediaSelect(this)" multiple style="position:absolute;left:-9999px;"></div></div></div>`; } else { let bindVoteHtml = ''; if (!isSidetalk && creatorVoteSetting === 'voters_choose') { bindVoteHtml = `<div class="toggle-row" id="bindVoteGroup" onclick="document.getElementById('sigBindVote').classList.toggle('on')"><div class="toggle-switch on" id="sigBindVote"></div> Bind Vote</div>`; } else if (!isSidetalk && creatorVoteSetting === 'show_vote') { bindVoteHtml = `<div class="toggle-row" id="bindVoteGroup"><div class="toggle-switch on locked-field" id="sigBindVote"></div> Bind Vote (Locked TRUE)</div>`; } else if (!isSidetalk) { bindVoteHtml = `<div class="toggle-row" id="bindVoteGroup"><div class="toggle-switch locked-field" id="sigBindVote"></div> Bind Vote (Locked FALSE)</div>`; } bodyContent = `<div class="form-group"><label>Security Check</label><div style="display:flex;align-items:center;gap:8px;font-weight:700;"><span>${cap} =</span><input class="form-input" type="number" id="capInput" style="width:80px;text-align:center;"></div></div>${bindVoteHtml}<div class="optional-toggle" onclick="toggleVoterOptional()"><i class="fa-solid fa-chevron-down" style="transition:transform 0.3s;"></i> Optional</div><div class="optional-panel" id="optionalPanel"><div class="form-group"><label>Reply</label><textarea class="form-input" id="sigText" rows="2" placeholder="What are your thoughts?"></textarea></div>${visSelectHtml}<div class="form-group"><label>Media Attachment (Optional, max ${MAX_FILE_SIZE_MB}MB each)</label><div class="dropzone" id="voterDropzone" onclick="document.getElementById('voterMediaFile').click()"><div class="dz-placeholder"><div class="dz-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div><div class="dz-text">Drag & drop or click to upload<br>Images/Videos (Max ${MAX_FILE_SIZE_MB}MB each) or paste URL</div><div class="paste-row" onclick="event.stopPropagation()"><input type="text" id="voterPasteUrlInput" placeholder="Paste Image/Video URL..."><button class="btn btn-accent btn-sm" onclick="handleVoterPasteUrl()">Attach</button></div></div><input type="file" id="voterMediaFile" accept="image/*,video/*" onchange="handleVoterMediaSelect(this)" multiple style="position:absolute;left:-9999px;"></div></div></div>`; } openModal(`<div class="modal-overlay" onclick="if(event.target===this){event.stopPropagation();closeModal();}"><div class="modal-box"><div class="modal-header"><h3>${opt ? 'Vote: ' + esc(opt) : 'Add Comment'}</h3><button class="modal-close" onclick="event.stopPropagation();closeModal()">✕</button></div><div class="modal-body">${bodyContent}<button class="btn btn-green btn-sm" id="submitBtn" onclick="submitVote('${pollId}','${opt || ''}',${pwrCost},'${creatorVis}','${creatorVoteSetting}',${isSidetalk},${hasOptions})" style="width:auto;margin-top:12px;">Submit</button></div></div></div>`); if (visSelectHtml.indexOf('sigVisSelect') > -1) { initCustomSelect('#sigVisSelect .custom-select-trigger', '#sigVisSelect .custom-select-options', '#sigVisSelect .custom-select-option', (val) => { document.getElementById('sigVisSelect').setAttribute('data-value', val); }); } window.handleVoterMediaSelect = async function(input) { const files = input.files; if (!files || files.length === 0) return; for (const file of files) { if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) { toast(`File too large (max ${MAX_FILE_SIZE_MB}MB).`); continue; } try { const dataUrl = await resizeImageIfImage(file); voterMediaUrls.push(dataUrl); } catch (e) { toast('Failed to read file.'); } } updateVoterDropzonePreviewAll(); }; window.handleVoterPasteUrl = function() { const url = document.getElementById('voterPasteUrlInput').value.trim(); if (!url) return; voterMediaUrls.push(url); updateVoterDropzonePreviewAll(); document.getElementById('voterPasteUrlInput').value = ''; }; window.updateVoterDropzonePreviewAll = function() { const dz = document.getElementById('voterDropzone'); if (!dz) return; let html = ''; voterMediaUrls.forEach((src, i) => { const ytId = getYouTubeId(src); let thumb = ''; if (ytId) { thumb = `<iframe src="https://www.youtube.com/embed/${ytId}" style="width:60px;height:40px;border-radius:4px;border:none;pointer-events:none;"></iframe>`; } else if (/\.(mp4|webm|mov)/i.test(src) || src.startsWith('data:video')) { thumb = `<video src="${esc(src)}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;pointer-events:none;"></video>`; } else { thumb = `<img src="${esc(src)}" style="width:60px;height:40px;object-fit:cover;border-radius:4px;" onerror="this.style.display='none'">`; } html += `<div class="file-preview-item">${thumb}<span style="font-size:0.6rem;color:var(--text-muted);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">File ${i + 1}</span><button class="file-remove" onclick="event.stopPropagation();removeVoterFileItem(${i})">✕</button></div>`; }); dz.innerHTML = `${html}<div style="margin-top:8px;font-size:0.65rem;color:var(--text-muted);cursor:pointer;" onclick="document.getElementById('voterMediaFile').click()">+ Add more files</div><input type="file" id="voterMediaFile" accept="image/*,video/*" onchange="handleVoterMediaSelect(this)" multiple style="position:absolute;left:-9999px;">`; dz.onclick = function(e) { if (e.target === dz || e.target.classList.contains('dz-placeholder') || e.target.closest('.dz-placeholder')) { document.getElementById('voterMediaFile').click(); } }; }; window.removeVoterFileItem = function(index) { voterMediaUrls.splice(index, 1); updateVoterDropzonePreviewAll(); }; }
 
-            window.submitVote = async function(pollId, opt, pwrCost, creatorVis, creatorVoteSetting, isSidetalk, hasOptions) { const btn = document.getElementById('submitBtn'); btn.disabled = true; btn.textContent = '⏳ Submitting...'; if (!checkCaptcha(document.getElementById('capInput').value)) { toast('Incorrect CAPTCHA answer.'); btn.disabled = false; btn.textContent = 'Submit'; return; } if (opt && hasOptions && pwrCost > 0) { const deducted = await deductPwr(pwrCost, 'Vote'); if (!deducted) { toast(`PWR deduction failed. You need ${pwrCost.toFixed(7)} PWR.`); btn.disabled = false; btn.textContent = 'Submit'; return; } } const text = document.getElementById('sigText').value.trim(); const mediaUrls = [...voterMediaUrls]; let vis = isSidetalk ? 'public' : creatorVis; if (creatorVis === 'choice') { const sel = document.getElementById('sigVisSelect'); vis = sel?.dataset.value || sel?.querySelector('.custom-select-option.active')?.dataset.value || 'public'; } let bindVote = false; if (!isSidetalk && hasOptions && creatorVoteSetting === 'voters_choose') { bindVote = document.getElementById('sigBindVote')?.classList.contains('on') || false; } else if (!isSidetalk && hasOptions && creatorVoteSetting === 'show_vote') { bindVote = true; } const ref = db.ref('polls/' + pollId); ref.transaction(data => { if (!data || new Date(data.expiration) < new Date()) return; if (data.voterChoices?.[userId] || data.commentOnlyUsers?.[userId]) return; if (!data.counts) data.counts = {}; if (!data.voterChoices) data.voterChoices = {}; if (!data.commentOnlyUsers) data.commentOnlyUsers = {}; if (opt && hasOptions) { data.counts[opt] = (data.counts[opt] || 0) + 1; data.voterChoices[userId] = { choice: opt, textSignature: text, mediaSignatures: mediaUrls, visibility: vis, bindVote: bindVote, timestamp: firebase.database.ServerValue.TIMESTAMP }; if (text || mediaUrls.length > 0) { if (!data.comments) data.comments = {}; const cid = 'c_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 4); data.comments[cid] = { userId, text, mediaUrls: mediaUrls, visibility: vis, timestamp: firebase.database.ServerValue.TIMESTAMP, likes: {}, dislikes: {}, type: 'voted', choice: opt, bindVote: bindVote }; } } else { data.commentOnlyUsers[userId] = true; if (!data.comments) data.comments = {}; const cid = 'c_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 4); data.comments[cid] = { userId, text, mediaUrls: mediaUrls, visibility: vis, timestamp: firebase.database.ServerValue.TIMESTAMP, likes: {}, dislikes: {}, type: 'sidetalk', bindVote: false }; } return data; }, (err, committed) => { if (err || !committed) { if (opt && hasOptions && pwrCost > 0) { addPwr(pwrCost, 'Refund', 'Vote failed refund'); } toast('Failed to record submission.'); btn.disabled = false; btn.textContent = 'Submit'; } else { closeModal(); voterMediaUrls = []; toast(opt ? 'Vote submitted!' : 'Comment submitted!'); } }); };
+            window.submitVote = async function(pollId, opt, pwrCost, creatorVis, creatorVoteSetting, isSidetalk, hasOptions) { const btn = document.getElementById('submitBtn'); btn.disabled = true; btn.textContent = '⏳...'; if (!checkCaptcha(document.getElementById('capInput').value)) { toast('Incorrect CAPTCHA answer.'); btn.disabled = false; btn.textContent = 'Submit'; return; } if (opt && hasOptions && pwrCost > 0) { const deducted = await deductPwr(pwrCost, 'Vote'); if (!deducted) { toast(`PWR deduction failed. You need ${pwrCost.toFixed(7)} PWR.`); btn.disabled = false; btn.textContent = 'Submit'; return; } } const text = document.getElementById('sigText').value.trim(); const mediaUrls = [...voterMediaUrls]; let vis = isSidetalk ? 'public' : creatorVis; if (creatorVis === 'choice') { const sel = document.getElementById('sigVisSelect'); vis = sel?.dataset.value || sel?.querySelector('.custom-select-option.active')?.dataset.value || 'public'; } let bindVote = false; if (!isSidetalk && hasOptions && creatorVoteSetting === 'voters_choose') { bindVote = document.getElementById('sigBindVote')?.classList.contains('on') || false; } else if (!isSidetalk && hasOptions && creatorVoteSetting === 'show_vote') { bindVote = true; } const ref = db.ref('polls/' + pollId); ref.transaction(data => { if (!data || new Date(data.expiration) < new Date()) return; if (data.voterChoices?.[userId] || data.commentOnlyUsers?.[userId]) return; if (!data.counts) data.counts = {}; if (!data.voterChoices) data.voterChoices = {}; if (!data.commentOnlyUsers) data.commentOnlyUsers = {}; if (opt && hasOptions) { data.counts[opt] = (data.counts[opt] || 0) + 1; data.voterChoices[userId] = { choice: opt, textSignature: text, mediaSignatures: mediaUrls, visibility: vis, bindVote: bindVote, timestamp: firebase.database.ServerValue.TIMESTAMP }; if (text || mediaUrls.length > 0) { if (!data.comments) data.comments = {}; const cid = 'c_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 4); data.comments[cid] = { userId, text, mediaUrls: mediaUrls, visibility: vis, timestamp: firebase.database.ServerValue.TIMESTAMP, likes: {}, dislikes: {}, type: 'voted', choice: opt, bindVote: bindVote }; } } else { data.commentOnlyUsers[userId] = true; if (!data.comments) data.comments = {}; const cid = 'c_' + Date.now().toString(36) + Math.random().toString(36).substr(2, 4); data.comments[cid] = { userId, text, mediaUrls: mediaUrls, visibility: vis, timestamp: firebase.database.ServerValue.TIMESTAMP, likes: {}, dislikes: {}, type: 'sidetalk', bindVote: false }; } return data; }, (err, committed) => { if (err || !committed) { if (opt && hasOptions && pwrCost > 0) { addPwr(pwrCost, 'Refund', 'Vote failed refund'); } toast('Failed to record submission.'); btn.disabled = false; btn.textContent = 'Submit'; } else { closeModal(); voterMediaUrls = []; toast(opt ? 'Vote submitted!' : 'Comment submitted!'); if (text) processMentions(text, 'comment', pollId, 'Comment on poll'); } }); };
 
             window.toggleReaction = function(pollId, commentId) { const poll = allPolls.find(p => p.id === pollId || p.shortId === pollId); if (!poll || !poll.comments || !poll.comments[commentId]) return; const comment = poll.comments[commentId]; if (!comment.likes) comment.likes = {}; if (!comment.dislikes) comment.dislikes = {}; const hasLiked = !!comment.likes[userId]; const hasDisliked = !!comment.dislikes[userId]; if (!hasLiked && !hasDisliked) { comment.likes[userId] = true; } else if (hasLiked) { delete comment.likes[userId]; comment.dislikes[userId] = true; } else if (hasDisliked) { delete comment.dislikes[userId]; } const lc = Object.keys(comment.likes).length, dc = Object.keys(comment.dislikes).length; const net = lc - dc; const btn = document.querySelector(`.reaction-btn[data-comment="${commentId}"]`); if (btn) { btn.textContent = (hasLiked ? '👎' : (hasDisliked ? '👍' : '👍')) + ' ' + (net >= 0 ? '+' : '') + net; btn.classList.toggle('liked', !!comment.likes[userId]); btn.classList.toggle('disliked', !!comment.dislikes[userId]); } db.ref(`polls/${pollId}/comments/${commentId}`).update({ likes: comment.likes, dislikes: comment.dislikes }); };
 
             function getMediaHtml(mediaUrls) { if (!mediaUrls || (Array.isArray(mediaUrls) && mediaUrls.length === 0)) return ''; const urls = Array.isArray(mediaUrls) ? mediaUrls : [mediaUrls]; let html = ''; for (const url of urls) { if (!url) continue; const ytId = getYouTubeId(url); if (ytId) html += `<iframe src="https://www.youtube.com/embed/${ytId}" allow="fullscreen *; autoplay; encrypted-media" allowfullscreen style="width:100%;height:200px;border:none;border-radius:8px;margin:2px 0;"></iframe>`; else if (/\.(mp4|webm|mov)/i.test(url) || url.startsWith('data:video')) html += `<video src="${esc(url)}" controls style="max-width:100%;max-height:200px;border-radius:8px;margin:2px 0;cursor:pointer;"></video>`; else html += `<img src="${esc(url)}" style="max-width:100%;max-height:200px;border-radius:8px;margin:2px 0;cursor:pointer;" onerror="this.style.display='none'">`; } return html ? `<div class="poll-media">${html}</div>` : ''; }
             function getCommentMediaHtml(mediaUrls) { if (!mediaUrls || (Array.isArray(mediaUrls) && mediaUrls.length === 0)) return ''; const urls = Array.isArray(mediaUrls) ? mediaUrls : [mediaUrls]; let html = ''; for (const url of urls) { if (!url) continue; const ytId = getYouTubeId(url); if (ytId) html += `<iframe src="https://www.youtube.com/embed/${ytId}" allow="fullscreen *; autoplay; encrypted-media" allowfullscreen style="width:100%;height:100px;border:none;border-radius:6px;margin-top:4px;"></iframe>`; else if (/\.(mp4|webm|mov)/i.test(url) || url.startsWith('data:video')) html += `<video src="${esc(url)}" controls class="comment-media"></video>`; else html += `<img src="${esc(url)}" class="comment-media" onerror="this.style.display='none'">`; } return html; }
 
-            function renderPollCard(poll, isDetail) { const opts = poll.options || [], cols = poll.optionColors || [], cnts = poll.counts || {}, total = Object.values(cnts).reduce((a, b) => a + b, 0); const expired = new Date(poll.expiration) < new Date(), vd = poll.voterChoices?.[userId], hasVoted = !!vd, hasCommented = poll.commentOnlyUsers?.[userId]; const mh = getMediaHtml(poll.mediaUrls || poll.mediaUrl); const hasOptions = opts.length > 0; const btns = hasOptions ? opts.map((o, i) => `<button class="vote-btn" style="border-color:${cols[i] || COLORS[i % COLORS.length]};color:${cols[i] || COLORS[i % COLORS.length]};" onclick="castVote('${poll.id}','${esc(o)}',${poll.pwrCost || 1})" ${expired || hasVoted || hasCommented ? 'disabled' : ''}>${esc(o)}</button>`).join('') : ''; const bars = hasOptions ? opts.map((o, i) => { const cnt = cnts[o] || 0, pct = total ? Math.round(cnt / total * 100) : 0; const col = cols[i] || COLORS[i % COLORS.length]; return `<div class="result-row"><span class="result-name" style="color:${col};">${esc(o)}</span><div class="result-track"><div class="result-fill" style="width:${pct}%;background:${col};"></div></div><span class="result-pct" style="color:${col};">${pct}%</span></div>`; }).join('') : ''; const isFav = poll.favoritedBy?.[userId]; const favCount = poll.favoritedBy ? Object.keys(poll.favoritedBy).length : 0; const starHtml = renderUnifiedStar(poll.id, isFav, favCount); const statusBadge = expired ? '<span class="badge badge-ended"><span class="dot" style="background:var(--red);width:6px;height:6px;border-radius:50%;display:inline-block;"></span> Ended</span>' : '<span class="badge badge-live"><span class="dot" style="background:var(--green);width:6px;height:6px;border-radius:50%;display:inline-block;"></span> Live</span>'; const metaLine = isDetail ? `<div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:4px;">Created: ${formatAbsolute(poll.createdAt)}</div>` : ''; let expiryLine = ''; if (isDetail) { expiryLine = expired ? `<div style="font-size:0.68rem;color:var(--text-muted);margin-top:6px;text-align:left;">Closed: ${formatAbsolute(poll.expiration)}</div>` : `<div style="font-size:0.75rem;font-weight:700;color:var(--accent);margin:8px 0 4px 0;font-family:'JetBrains Mono',monospace;">Expiry: ${formatAbsolute(poll.expiration)}</div>`; } const commentsHtml = renderComments(poll, expired); const pwrPill = hasOptions ? `<span style="font-size:0.65rem;color:var(--purple);font-family:'JetBrains Mono',monospace;font-weight:700;">${pwrIconHtml} ${(poll.pwrCost || 1).toFixed(7)} PWR</span>` : ''; let shareBtnHtml; if (isDetail) { shareBtnHtml = `<button class="share-btn inline" data-pollid="${poll.shortId || poll.id}" title="Share"><i class="fa-solid fa-share-nodes"></i></button>`; } else { shareBtnHtml = ''; } const metaRow = isDetail ? `<div class="poll-meta">${statusBadge} <span style="font-size:0.68rem;margin-left:4px;">${safeTs(poll.createdAt)}</span> ${shareBtnHtml}</div>` : `<div class="poll-meta">${statusBadge} <span style="font-size:0.68rem;margin-left:4px;">${safeTs(poll.createdAt)}</span></div>`; const noVotesHtml = hasOptions && total === 0 ? '<div style="font-size:0.68rem;color:var(--text-muted);margin-top:4px;">No votes recorded yet.</div>' : ''; return `<div class="poll-card"><div style="position:absolute;top:12px;right:12px;">${starHtml}</div>${metaRow}${metaLine}<div class="poll-title">${esc(poll.title)}</div>${mh}${hasOptions ? `<div class="vote-grid">${btns}<button class="vote-btn" style="border-color:var(--text-muted);color:var(--text-muted);" onclick="commentOnly('${poll.id}')" ${expired || hasVoted || hasCommented ? 'disabled' : ''}>💬 Comment</button></div>` : `<button class="vote-btn" style="border-color:var(--text-muted);color:var(--text-muted);width:100%;" onclick="commentOnly('${poll.id}')" ${expired || hasCommented ? 'disabled' : ''}>💬 Comment</button>`}${total > 0 && hasOptions ? `<div class="results">${bars}</div>` : noVotesHtml}${hasVoted ? `<div style="font-size:0.65rem;color:var(--green);margin-top:6px;">✅ You voted <strong>${esc(vd.choice)}</strong></div>` : ''}${expiryLine}<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;border-top:1px solid var(--border-subtle);padding-top:6px;"><div style="display:flex;align-items:center;justify-content:space-between;">${pwrPill}</div>${commentsHtml}</div></div>`; }
+            function renderPollCard(poll, isDetail) { const opts = poll.options || [], cols = poll.optionColors || [], cnts = poll.counts || {}, total = Object.values(cnts).reduce((a, b) => a + b, 0); const expired = new Date(poll.expiration) < new Date(), vd = poll.voterChoices?.[userId], hasVoted = !!vd, hasCommented = poll.commentOnlyUsers?.[userId]; const mh = getMediaHtml(poll.mediaUrls || poll.mediaUrl); const hasOptions = opts.length > 0; const btns = hasOptions ? opts.map((o, i) => `<button class="vote-btn" style="border-color:${cols[i] || COLORS[i % COLORS.length]};color:${cols[i] || COLORS[i % COLORS.length]};" onclick="castVote('${poll.id}','${esc(o)}',${poll.pwrCost || 1})" ${expired || hasVoted || hasCommented ? 'disabled' : ''}>${esc(o)}</button>`).join('') : ''; const bars = hasOptions ? opts.map((o, i) => { const cnt = cnts[o] || 0, pct = total ? Math.round(cnt / total * 100) : 0; const col = cols[i] || COLORS[i % COLORS.length]; return `<div class="result-row"><span class="result-name" style="color:${col};">${esc(o)}</span><div class="result-track"><div class="result-fill" style="width:${pct}%;background:${col};"></div></div><span class="result-pct" style="color:${col};">${pct}%</span></div>`; }).join('') : ''; const isFav = poll.favoritedBy?.[userId]; const favCount = poll.favoritedBy ? Object.keys(poll.favoritedBy).length : 0; const starHtml = renderUnifiedStar(poll.id, isFav, favCount); const statusBadge = expired ? '<span class="badge badge-ended"><span class="dot" style="background:var(--red);width:6px;height:6px;border-radius:50%;display:inline-block;"></span> Ended</span>' : '<span class="badge badge-live"><span class="dot" style="background:var(--green);width:6px;height:6px;border-radius:50%;display:inline-block;"></span> Live</span>'; const metaLine = isDetail ? `<div style="font-size:0.68rem;color:var(--text-muted);margin-bottom:4px;">Created: ${formatAbsolute(poll.createdAt)}</div>` : ''; let expiryLine = ''; if (isDetail) { expiryLine = expired ? `<div style="font-size:0.68rem;color:var(--text-muted);margin-top:6px;text-align:left;">Closed: ${formatAbsolute(poll.expiration)}</div>` : `<div style="font-size:0.75rem;font-weight:700;color:var(--accent);margin:8px 0 4px 0;font-family:'JetBrains Mono',monospace;">Expiry: ${formatAbsolute(poll.expiration)}</div>`; } const commentsHtml = renderComments(poll, expired); const pwrPill = hasOptions ? `<span style="font-size:0.65rem;color:var(--purple);font-family:'JetBrains Mono',monospace;font-weight:700;">${pwrIconHtml} ${(poll.pwrCost || 1).toFixed(7)} PWR</span>` : ''; let shareBtnHtml; if (isDetail) { shareBtnHtml = `<button class="share-btn inline" data-pollid="${poll.shortId || poll.id}" title="Share"><i class="fa-solid fa-share-nodes"></i></button>`; } else { shareBtnHtml = ''; } const metaRow = isDetail ? `<div class="poll-meta">${statusBadge} <span style="font-size:0.68rem;margin-left:4px;">${safeTs(poll.createdAt)}</span> ${shareBtnHtml}</div>` : `<div class="poll-meta">${statusBadge} <span style="font-size:0.68rem;margin-left:4px;">${safeTs(poll.createdAt)}</span></div>`; const noVotesHtml = hasOptions && total === 0 ? '<div style="font-size:0.68rem;color:var(--text-muted);margin-top:4px;">No votes recorded yet.</div>' : ''; return `<div class="poll-card"><div style="position:absolute;top:12px;right:12px;">${starHtml}</div>${metaRow}${metaLine}<div class="poll-title">${linkify(poll.title)}</div>${mh}${hasOptions ? `<div class="vote-grid">${btns}<button class="vote-btn" style="border-color:var(--text-muted);color:var(--text-muted);" onclick="commentOnly('${poll.id}')" ${expired || hasVoted || hasCommented ? 'disabled' : ''}>💬 Comment</button></div>` : `<button class="vote-btn" style="border-color:var(--text-muted);color:var(--text-muted);width:100%;" onclick="commentOnly('${poll.id}')" ${expired || hasCommented ? 'disabled' : ''}>💬 Comment</button>`}${total > 0 && hasOptions ? `<div class="results">${bars}</div>` : noVotesHtml}${hasVoted ? `<div style="font-size:0.65rem;color:var(--green);margin-top:6px;">✅ You voted <strong>${esc(vd.choice)}</strong></div>` : ''}${expiryLine}<div style="display:flex;flex-direction:column;gap:6px;margin-top:8px;border-top:1px solid var(--border-subtle);padding-top:6px;"><div style="display:flex;align-items:center;justify-content:space-between;">${pwrPill}</div>${commentsHtml}</div></div>`; }
 
-            function renderComments(poll, isExpired) { const cmts = []; if (poll.comments) Object.entries(poll.comments).forEach(([id, d]) => cmts.push({ id, ...d })); cmts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)); let filteredCmts = cmts.filter(c => { if (c.visibility === 'private' && c.userId !== userId) return false; if (c.visibility === 'post_poll' && !isExpired && c.userId !== userId) return false; if (commentSearchQuery.trim() !== '') { const q = commentSearchQuery.toLowerCase(); return (c.text || '').toLowerCase().includes(q) || (c.userId || '').toLowerCase().includes(q); } return true; }); const h = filteredCmts.map(c => { const lc = Object.keys(c.likes || {}).length, dc = Object.keys(c.dislikes || {}).length; const net = lc - dc; const hasLiked = !!(c.likes || {})[userId]; const hasDisliked = !!(c.dislikes || {})[userId]; let badge = '<span class="comment-badge sidetalk">Sidetalk</span>'; if (c.bindVote && c.choice) badge = `<span class="comment-badge voted">Voted: ${esc(c.choice)}</span>`; const reactionBtn = `<button class="reaction-btn ${hasLiked ? 'liked' : (hasDisliked ? 'disliked' : '')}" data-comment="${c.id}" onclick="toggleReaction('${poll.id}','${c.id}')">${hasLiked ? '👍' : (hasDisliked ? '👎' : '👍')} ${net >= 0 ? '+' : ''}${net}</button>`; const mediaHtml = getCommentMediaHtml(c.mediaUrls || c.mediaUrl); return `<div class="comment-item"><div class="comment-meta"><span>${(c.userId || '').slice(0, 8)}...</span> ${badge} <span>${safeTs(c.timestamp)}</span>${reactionBtn}</div>${c.text ? `<div style="font-size:0.75rem;">${esc(c.text)}</div>` : ''}${mediaHtml ? `<div class="comment-media-scroll">${mediaHtml}</div>` : ''}</div>`; }).join(''); const count = cmts.length; return `<div><button class="btn" style="padding:4px 10px;font-size:0.68rem;" onclick="toggleComments('${poll.id}')">💬 Comments (${fmtNum(count)})</button><div id="comments-${poll.id}" style="display:${openComments[poll.id] ? 'block' : 'none'};margin-top:6px;width:100%;"><div style="margin-bottom:6px;"><input class="form-input" style="font-size:0.7rem;padding:4px 8px;" placeholder="Search comments by keyword or ID..." value="${esc(commentSearchQuery)}" oninput="updateCommentSearch(this.value,'${poll.id}')"></div><div class="comments-vertical-list">${h || '<div style="font-size:0.68rem;color:var(--text-muted);">No comments found.</div>'}</div></div></div>`; }
+            function renderComments(poll, isExpired) { const cmts = []; if (poll.comments) Object.entries(poll.comments).forEach(([id, d]) => cmts.push({ id, ...d })); cmts.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)); let filteredCmts = cmts.filter(c => { if (c.visibility === 'private' && c.userId !== userId) return false; if (c.visibility === 'post_poll' && !isExpired && c.userId !== userId) return false; if (commentSearchQuery.trim() !== '') { const q = commentSearchQuery.toLowerCase(); return (c.text || '').toLowerCase().includes(q) || (c.userId || '').toLowerCase().includes(q); } return true; }); const h = filteredCmts.map(c => { const lc = Object.keys(c.likes || {}).length, dc = Object.keys(c.dislikes || {}).length; const net = lc - dc; const hasLiked = !!(c.likes || {})[userId]; const hasDisliked = !!(c.dislikes || {})[userId]; let badge = '<span class="comment-badge sidetalk">Sidetalk</span>'; if (c.bindVote && c.choice) badge = `<span class="comment-badge voted">Voted: ${esc(c.choice)}</span>`; const reactionBtn = `<button class="reaction-btn ${hasLiked ? 'liked' : (hasDisliked ? 'disliked' : '')}" data-comment="${c.id}" onclick="toggleReaction('${poll.id}','${c.id}')">${hasLiked ? '👍' : (hasDisliked ? '👎' : '👍')} ${net >= 0 ? '+' : ''}${net}</button>`; const mediaHtml = getCommentMediaHtml(c.mediaUrls || c.mediaUrl); return `<div class="comment-item"><div class="comment-meta"><span>${(c.userId || '').slice(0, 8)}...</span> ${badge} <span>${safeTs(c.timestamp)}</span>${reactionBtn}</div>${c.text ? `<div style="font-size:0.75rem;">${linkify(c.text)}</div>` : ''}${mediaHtml ? `<div class="comment-media-scroll">${mediaHtml}</div>` : ''}</div>`; }).join(''); const count = cmts.length; return `<div><button class="btn" style="padding:4px 10px;font-size:0.68rem;" onclick="toggleComments('${poll.id}')">💬 Comments (${fmtNum(count)})</button><div id="comments-${poll.id}" style="display:${openComments[poll.id] ? 'block' : 'none'};margin-top:6px;width:100%;"><div style="margin-bottom:6px;"><input class="form-input" style="font-size:0.7rem;padding:4px 8px;" placeholder="Search comments by keyword or ID..." value="${esc(commentSearchQuery)}" oninput="updateCommentSearch(this.value,'${poll.id}')"></div><div class="comments-vertical-list">${h || '<div style="font-size:0.68rem;color:var(--text-muted);">No comments found.</div>'}</div></div></div>`; }
             window.updateCommentSearch = function(val, pollId) { commentSearchQuery = val; const poll = allPolls.find(p => p.id === pollId || p.shortId === pollId); if (poll) { const el = document.getElementById(`comments-${poll.id}`); if (el) { const expired = new Date(poll.expiration) < new Date(); const list = el.querySelector('.comments-vertical-list'); if (list) { const dd = document.createElement('div'); dd.innerHTML = renderComments(poll, expired); const nl = dd.querySelector('.comments-vertical-list'); if (nl) list.innerHTML = nl.innerHTML; } } } };
             window.toggleComments = function(pollId) { openComments[pollId] = !openComments[pollId]; const el = document.getElementById('comments-' + pollId); if (el) el.style.display = openComments[pollId] ? 'block' : 'none'; };
 
-            function renderFeed() { const feed = document.getElementById('pollFeed'); if (loading) { feed.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>'; return; } let filtered = allPolls.slice(); if (showFavoritesOnly) filtered = filtered.filter(p => p.favoritedBy?.[userId]); const query = searchQuery.trim().toLowerCase(); if (query) { filtered = filtered.filter(p => p.title.toLowerCase().includes(query)); document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); } else { if (activeFilter === 'live') filtered = filtered.filter(p => new Date(p.expiration) >= new Date()); else if (activeFilter === 'ended') filtered = filtered.filter(p => new Date(p.expiration) < new Date()); else if (activeFilter === 'votes') filtered = filtered.filter(p => p.voterChoices && p.voterChoices[userId]); } const durFn = p => new Date(p.expiration) - new Date(p.createdAt); const commentCount = p => Object.keys(p.comments || {}).length; const favCountFn = p => Object.keys(p.favoritedBy || {}).length; if (sortBy === 'recent') filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); else if (sortBy === 'oldest') filtered.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0)); else if (sortBy === 'mostvoted') filtered.sort((a, b) => (Object.values(b.counts || {}).reduce((x, y) => x + y, 0)) - (Object.values(a.counts || {}).reduce((x, y) => x + y, 0))); else if (sortBy === 'mostcommented') filtered.sort((a, b) => commentCount(b) - commentCount(a)); else if (sortBy === 'mostfavorite') filtered.sort((a, b) => favCountFn(b) - favCountFn(a)); else if (sortBy === 'shortest') filtered.sort((a, b) => durFn(a) - durFn(b)); else if (sortBy === 'longest') filtered.sort((a, b) => durFn(b) - durFn(a)); if (filtered.length === 0) { feed.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.85rem;">No posts or polls found.</div>'; return; } feed.innerHTML = filtered.map(p => { const total = Object.values(p.counts || {}).reduce((a, b) => a + b, 0); const opts = p.options || [], cols = p.optionColors || [], cnts = p.counts || {}; const hasOptions = opts.length > 0; const pm = hasOptions ? opts.map((o, i) => ({ name: o, color: cols[i] || COLORS[i % COLORS.length], pct: total ? Math.round((cnts[o] || 0) / total * 100) : 0 })).sort((a, b) => b.pct - a.pct) : []; const top3 = pm.slice(0, 3); const cc = Object.keys(p.comments || {}).length; const expired = new Date(p.expiration) < new Date(); const isFav = p.favoritedBy?.[userId]; const favCount = p.favoritedBy ? Object.keys(p.favoritedBy).length : 0; const starBtn = renderUnifiedStar(p.id, isFav, favCount); const statusPill = expired ? '<span class="badge badge-ended"><span class="dot" style="background:var(--red);"></span> Ended</span>' : '<span class="badge badge-live"><span class="dot" style="background:var(--green);"></span> Live</span>'; const shareBtnHtml = `<button class="share-btn" data-pollid="${p.shortId || p.id}" title="Share"><i class="fa-solid fa-share-nodes"></i></button>`; const subParts = [safeTs(p.createdAt)]; if(hasOptions) subParts.push(`<span class="num-toggle" data-full="${fmtNumFull(total)} votes" data-abbr="${fmtNum(total)} votes" onclick="event.stopPropagation();toggleNumDisplay(this)">${fmtNum(total)} votes</span>`); subParts.push(`${fmtNum(cc)} comments`); return `<div class="history-item" onclick="viewPoll('${p.shortId || p.id}')"><div class="hi-circle" title="${fmtNumFull(total)} total votes">${dur(p.createdAt, new Date(p.expiration))}</div><div class="hi-main"><div class="hi-title">${esc(p.title)}</div><div class="hi-sub">${subParts.join(' · ')}</div><div class="hi-top3">${top3.map(o => `<span style="color:${o.color};" title="${fmtNumFull(cnts[o.name]||0)} votes"><span class="hi-dot" style="background:${o.color};"></span> ${esc(o.name)} <span class="pct-accent">${o.pct}%</span></span>`).join(' ')}</div></div><div class="hi-right-controls"><div style="display:flex;align-items:center;gap:4px;">${shareBtnHtml}${statusPill}</div><div class="hi-bottom-row">${starBtn}</div></div></div>`; }).join(''); }
+            function renderFeed() { const feed = document.getElementById('pollFeed'); if (loading) { feed.innerHTML = '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>'; return; } let filtered = allPolls.slice(); if (showFavoritesOnly) filtered = filtered.filter(p => p.favoritedBy?.[userId]); const query = searchQuery.trim().toLowerCase(); if (query) { filtered = filtered.filter(p => p.title.toLowerCase().includes(query)); document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); } else { if (activeFilter === 'live') filtered = filtered.filter(p => new Date(p.expiration) >= new Date()); else if (activeFilter === 'ended') filtered = filtered.filter(p => new Date(p.expiration) < new Date()); else if (activeFilter === 'votes') filtered = filtered.filter(p => p.voterChoices && p.voterChoices[userId]); } const durFn = p => new Date(p.expiration) - new Date(p.createdAt); const commentCount = p => Object.keys(p.comments || {}).length; const favCountFn = p => Object.keys(p.favoritedBy || {}).length; if (sortBy === 'recent') filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)); else if (sortBy === 'oldest') filtered.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0)); else if (sortBy === 'mostvoted') filtered.sort((a, b) => (Object.values(b.counts || {}).reduce((x, y) => x + y, 0)) - (Object.values(a.counts || {}).reduce((x, y) => x + y, 0))); else if (sortBy === 'mostcommented') filtered.sort((a, b) => commentCount(b) - commentCount(a)); else if (sortBy === 'mostfavorite') filtered.sort((a, b) => favCountFn(b) - favCountFn(a)); else if (sortBy === 'shortest') filtered.sort((a, b) => durFn(a) - durFn(b)); else if (sortBy === 'longest') filtered.sort((a, b) => durFn(b) - durFn(a)); if (filtered.length === 0) { feed.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-muted);font-size:0.85rem;">No posts or polls found.</div>'; return; } feed.innerHTML = filtered.map(p => { const total = Object.values(p.counts || {}).reduce((a, b) => a + b, 0); const opts = p.options || [], cols = p.optionColors || [], cnts = p.counts || {}; const hasOptions = opts.length > 0; const pm = hasOptions ? opts.map((o, i) => ({ name: o, color: cols[i] || COLORS[i % COLORS.length], pct: total ? Math.round((cnts[o] || 0) / total * 100) : 0 })).sort((a, b) => b.pct - a.pct) : []; const top3 = pm.slice(0, 3); const cc = Object.keys(p.comments || {}).length; const expired = new Date(p.expiration) < new Date(); const isFav = p.favoritedBy?.[userId]; const favCount = p.favoritedBy ? Object.keys(p.favoritedBy).length : 0; const starBtn = renderUnifiedStar(p.id, isFav, favCount); const statusPill = expired ? '<span class="badge badge-ended"><span class="dot" style="background:var(--red);"></span> Ended</span>' : '<span class="badge badge-live"><span class="dot" style="background:var(--green);"></span> Live</span>'; const shareBtnHtml = `<button class="share-btn" data-pollid="${p.shortId || p.id}" title="Share"><i class="fa-solid fa-share-nodes"></i></button>`; const subParts = [safeTs(p.createdAt)]; if(hasOptions) subParts.push(`<span class="num-toggle" data-full="${fmtNumFull(total)} votes" data-abbr="${fmtNum(total)} votes" onclick="event.stopPropagation();toggleNumDisplay(this)">${fmtNum(total)} votes</span>`); subParts.push(`${fmtNum(cc)} comments`); return `<div class="history-item" onclick="viewPoll('${p.shortId || p.id}')"><div class="hi-circle" title="${fmtNumFull(total)} total votes">${dur(p.createdAt, new Date(p.expiration))}</div><div class="hi-main"><div class="hi-title">${linkify(p.title)}</div><div class="hi-sub">${subParts.join(' · ')}</div><div class="hi-top3">${top3.map(o => `<span style="color:${o.color};" title="${fmtNumFull(cnts[o.name]||0)} votes"><span class="hi-dot" style="background:${o.color};"></span> ${esc(o.name)} <span class="pct-accent">${o.pct}%</span></span>`).join(' ')}</div></div><div class="hi-right-controls"><div style="display:flex;align-items:center;gap:4px;">${shareBtnHtml}${statusPill}</div><div class="hi-bottom-row">${starBtn}</div></div></div>`; }).join(''); }
 
             function renderAll() { if (activePollId) { document.getElementById('heroSection').style.display = 'none'; document.getElementById('filterBar').style.display = 'none'; document.getElementById('favFilterBtn').style.display = 'none'; } else { document.getElementById('heroSection').style.display = 'flex'; document.getElementById('filterBar').style.display = 'flex'; document.getElementById('favFilterBtn').style.display = ''; } renderFeed(); const liveCount = allPolls.filter(p => new Date(p.expiration) >= new Date()).length; document.getElementById('liveCount').textContent = fmtNum(liveCount); document.getElementById('endedCount').textContent = fmtNum(allPolls.length - liveCount); document.getElementById('totalPollsCount').textContent = fmtNum(allPolls.length); document.getElementById('totalVotesCount').textContent = fmtNum(allPolls.reduce((s, p) => s + Object.values(p.counts || {}).reduce((a, b) => a + b, 0), 0)); updatePwrUI(); updateHeroClaimButton(); updateBackButton(); if (!localStorage.getItem('banner_dismissed')) { let mrp = null; for (const p of allPolls) { if (!mrp || (p.createdAt || 0) > (mrp.createdAt || 0)) { mrp = p; } } if (mrp) { document.getElementById('bannerContent').innerHTML = renderPollCard(mrp, false); document.getElementById('bannerCard').style.display = 'block'; } else { document.getElementById('bannerCard').style.display = 'none'; } } }
 
